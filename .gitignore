@@ -1,0 +1,45 @@
+# Node modules
+front-end/node_modules/
+server/node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*
+
+# Build output
+dist/
+build/
+
+# Dependency directories
+jspm_packages/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE or editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Package lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Others
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
