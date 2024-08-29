@@ -6,12 +6,13 @@ import { AppContext } from "../AppContext";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 
-const CreateMoviePage = () => {
+const CreateCinemaPage = () => {
   const { backendDomain } = useContext(AppContext);
   const [formData, setFormData] = useState({
     location: "",
     capacity: "",
     operator: "",
+    halls: []
   });
 
   const handleChange = (e) => {
@@ -21,6 +22,39 @@ const CreateMoviePage = () => {
       [name]: value,
     }));
   };
+
+  const handleHallChange = (index, e) => {
+    const {name, value} = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]:value
+    }));
+  }
+
+  const handleBayChange = (hallIndex, bayIndex, e) => {
+    const {name, value} = e.target;
+    const updatedHalls = [...formData.halls];
+    const updatedBays = [...updatedHalls[hallIndex].bays];
+
+    updatedBays[bayIndex][name] = value;
+    updatedHalls[hallIndex].bays = updatedBays;
+    setFormData({...formData, halls: updatedHalls});
+  }
+
+  const addHall = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      halls: [...prevData.halls, {name: "", bays: [] }]
+    })); 
+  }
+
+  const addBay = (hallIndex) => {
+    const updatedHalls = [...formData.halls];
+    updatedHalls[hallIndex].bays = [
+      {bay_name: "", rows: "", seats_per_row: ""}
+    ];
+    setFormData({...formData, halls: updatedHalls});
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,6 +119,56 @@ const CreateMoviePage = () => {
             <option value="DADI">DADI</option>
           </select>
         </div>
+        <div className="form-group">
+          <label>Halls</label>
+          {formData.halls.map((hall, hallIndex) => (
+            <div key={hallIndex} className="hall-group">
+              <input
+                type="text"
+                name="name"
+                placeholder={`Hall Name ${hallIndex + 1}`}
+                value={hall.name}
+                onChange={(e) => handleHallChange(hallIndex, e)}
+                required
+              />
+
+              {hall.bays.map((bay, bayIndex) => (
+                <div key={bayIndex} className="bay-group">
+                  <input
+                    type="text"
+                    name="bay_name"
+                    placeholder={`Bay Name ${bayIndex + 1}`}
+                    value={bay.bay_name}
+                    onChange={(e) => handleBayChange(hallIndex, bayIndex, e)}
+                    required
+                  />
+                  <input
+                    type="number"
+                    name="rows"
+                    placeholder="Number of Rows"
+                    value={bay.rows}
+                    onChange={(e) => handleBayChange(hallIndex, bayIndex, e)}
+                    required
+                  />
+                  <input
+                    type="number"
+                    name="seats_per_row"
+                    placeholder="Seats per Row"
+                    value={bay.seats_per_row}
+                    onChange={(e) => handleBayChange(hallIndex, bayIndex, e)}
+                    required
+                  />
+                </div>
+              ))}
+              <button type="button" onClick={() => addBay(hallIndex)}>
+                Add Bay
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={addHall}>
+            Add Hall
+          </button>
+        </div>
         <button type="submit" className="submit-button">
           Submit
         </button>
@@ -93,4 +177,4 @@ const CreateMoviePage = () => {
   );
 };
 
-export default CreateMoviePage;
+export default CreateCinemaPage;
