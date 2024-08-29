@@ -3,13 +3,14 @@ const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 
 const createCinema = async (req, res) => {
-  let { location, operator, capacity } = req.body;
+  let { location, operator, capacity, halls } = req.body;
 
   try {
     const cinema = await Cinema.create({
       location,
       operator,
       capacity,
+      halls,
     });
     res.status(201).json(cinema);
   } catch (error) {
