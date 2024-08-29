@@ -19,6 +19,7 @@ import ViewAllMovieListingsPage from "./components/ViewAllMovieListingsPage.js";
 import AlertProvider from "./AlertContext";
 import Alert from "./components/Alert";
 import DashboardBar from "./components/DashboardBar";
+import MovieBookingPage from "./components/MovieBooking/MovieBookingPage.js";
 
 function AppContent() {
   const { isLoading } = useAppContext();
@@ -64,6 +65,10 @@ function AppContent() {
         <ProtectedRoute
           path="/view-all-movie-listings"
           component={ViewAllMovieListingsPage}
+        ></ProtectedRoute>
+         <ProtectedRoute
+          path="/book-movie"
+          component={MovieBookingPage}
         ></ProtectedRoute>
       </Switch>
     </>

@@ -12,6 +12,8 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
+        console.log('user!');
+        console.log(user);
         if (!user) {
           console.log("User not found, redirecting to login");
           return <Redirect to="/login" />;
