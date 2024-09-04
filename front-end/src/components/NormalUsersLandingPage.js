@@ -8,11 +8,10 @@ const NormalUsersLandingPage = () => {
   // const [bookedTickets, setBookedTickets]
   const history = useHistory();
   const location = useLocation();
-  const { backendDomain } = useContext(AppContext);
+  const { backendDomain, user } = useContext(AppContext);
   const { showAlert } = useAlert();
 
-  console.log(location.state.data);
-  const userFirstname = JSON.parse(location.state.data).firstname;
+  const userFirstname = user.firstname;
 
   const handleLogout = () => {
     fetch(`${backendDomain}/api/v1/auth/logout`, { method: "DELETE" }).then(

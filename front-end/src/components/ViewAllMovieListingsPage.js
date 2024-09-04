@@ -39,9 +39,12 @@ const MovieListingsPage = () => {
   const handleAction = (movieId) => {
     alert(`Action clicked for movie ID: ${movieId}`);
   };
-  const redirectToBooking = () => {
-    history.push('book-movie');
+  const redirectToBooking = (movieId) => {
+    history.push('book-movie', {data:movieId});
   }
+  // const redirectToBooking = () => {
+  //   history.push('book-movie');
+  // }
 
   return (
     <div className="container mx-auto p-4">
@@ -86,7 +89,8 @@ const MovieListingsPage = () => {
                             listing.cinemaDetails.location +
                             " "}
                           Movie: {listing.movieDetails.movieName}
-                          <Button onClick={redirectToBooking}>Book now!</Button>
+                          <Button onClick={redirectToBooking(listing.movieDetails._id)}>Book now!</Button>
+                          {/* <Button onClick={redirectToBooking}>Book now!</Button> */}
                         </div>
                       </li>
                     ))

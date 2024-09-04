@@ -13,7 +13,7 @@ const {
   logout,
 } = require("../controllers/authController");
 
-router.get("/admin-landing-page", authorizePermissions("admin"));
+router.get("/admin-landing-page", authenticateUser, authorizePermissions("admin"));
 router.post("/sign-up", signup);
 router.post("/verify-email", verifyEmail);
 router.post("/login", login);

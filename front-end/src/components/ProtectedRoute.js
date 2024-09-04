@@ -12,10 +12,7 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
-        console.log('user!');
-        console.log(user);
         if (!user) {
-          console.log("User not found, redirecting to login");
           return <Redirect to="/login" />;
         }
         if (roles && !roles.includes(user.role)) {
@@ -24,7 +21,6 @@ const ProtectedRoute = ({ component: Component, roles, ...rest }) => {
           );
           return <Redirect to="/homepage" />;
         }
-        console.log(user);
         console.log(`User role ${user.role} authorized, rendering component`);
         return <Component {...props} />;
       }}

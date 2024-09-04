@@ -38,12 +38,12 @@ BaySchema.pre("save", function (next){
 })
 
 const HallSchema = new mongoose.Schema({
-  name: {
+  hall_name: {
     type: String,
     required: [true, 'Please provide a name for this hall'],
   },
   bays: {
-    type: BaySchema,
+    type: [BaySchema],
     required: true
   }
 });

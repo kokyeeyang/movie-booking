@@ -119,11 +119,12 @@ const AdminLandingPage = () => {
       <h1>Welcome! {userFirstName} </h1>
       <h2>Admin dashboard</h2>
       <div className="admin-panel"></div>
-      <p>
+      <p className="mb-6 ml-8">
         {/* <Link href={`${backendDomain}/api/v1/auth/logout`}>Logout */}
-        <button onClick={createMoviePage}>Create a movie</button>
-        <button onClick={createCinemaPage}>Create a cinema</button>
-        <button onClick={createMovieListingPage}>Create a movie listing</button>
+        <Button 
+        sx={{color: "black", backgroundColor: "turquoise", "&:hover": {backgroundColor: "yellow"}, marginRight: "12px"}} onClick={createMoviePage}>Create a movie</Button>
+        <Button sx={{color: "black", backgroundColor: "turquoise", "&:hover": {backgroundColor: "yellow"}, marginRight: "12px"}} onClick={createCinemaPage}>Create a cinema</Button>
+        <Button sx={{color: "black", backgroundColor: "turquoise", "&:hover": {backgroundColor: "yellow"}, marginRight: "12px"}} onClick={createMovieListingPage}>Create a movie listing</Button>
       </p>
       <Button
         sx={{

@@ -20,9 +20,10 @@ import AlertProvider from "./AlertContext";
 import Alert from "./components/Alert";
 import DashboardBar from "./components/DashboardBar";
 import MovieBookingPage from "./components/MovieBooking/MovieBookingPage.js";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min.js";
 
 function AppContent() {
-  const { isLoading } = useAppContext();
+  const { user, isLoading } = useAppContext();
   const location = useLocation();
   const pathsWithoutDashboard = ["/login", "/sign-up", "/verify-email"];
 
@@ -34,6 +35,17 @@ function AppContent() {
     <>
       {!pathsWithoutDashboard.includes(location.pathname) && <DashboardBar />}
       <Switch>
+        <Route exact path="/" render={
+          () => {
+            if(!user){
+              return <Redirect to="/login" />;
+            } else if (user === "admin"){
+              return <Redirect to="/admin-landing-page" />;
+            } else if (user === "user"){
+              return <Redirect to="/homepage" />
+            }
+          }
+        } />
         <Route path="/login" component={LoginForm}></Route>
         <Route path="/sign-up" component={SignupForm}></Route>
         <Route path="/verify-email" component={VerifyEmail}></Route>

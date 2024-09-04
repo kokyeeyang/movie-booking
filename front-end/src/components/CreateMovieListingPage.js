@@ -55,12 +55,6 @@ const CreateMovieListingPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const formDataToSend = new FormData();
-    // formDataToSend.append("movie", formData.movie);
-    // formDataToSend.append("location", formData.location);
-
-    // console.log(formDataToSend);
-
     try {
       console.log(formData);
       const response = await axios.post(
