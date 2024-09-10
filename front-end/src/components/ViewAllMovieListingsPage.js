@@ -89,7 +89,7 @@ const MovieListingsPage = () => {
                             listing.cinemaDetails.location +
                             " "}
                           Movie: {listing.movieDetails.movieName}
-                          <Button onClick={redirectToBooking(listing.movieDetails._id)}>Book now!</Button>
+                          <Button onClick={() => redirectToBooking(listing.movieDetails._id)}>Book now!</Button>
                           {/* <Button onClick={redirectToBooking}>Book now!</Button> */}
                         </div>
                       </li>

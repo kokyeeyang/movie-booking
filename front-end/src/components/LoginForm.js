@@ -25,7 +25,6 @@ function LoginForm({ onSubmit }) {
           login,
           { withCredentials: true, credentials: "include" }
         );
-        console.log(data);
         // console.log(data.data.user.role);
         showAlert("Logged in successfully!", "success");
         saveUser(data.data.user);
@@ -52,6 +51,7 @@ function LoginForm({ onSubmit }) {
     e.preventDefault();
 
     try {
+      console.log('wqeqeqeq');
       const user = await loginUser(values.email, values.password);
     } catch (error) {
       console.error("Login failed:", error);
