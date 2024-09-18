@@ -16,7 +16,8 @@ const {
 
 router
   .route("/create-movie-listing")
-  .post(authenticateUser, authorizePermissions("admin"), createMovieListing);
+  // .post(authenticateUser, authorizePermissions("admin"), createMovieListing);
+  .post(createMovieListing);
 
 router
   .route("/show-all-movie-listings")

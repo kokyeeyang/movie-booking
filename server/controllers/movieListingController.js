@@ -3,12 +3,13 @@ const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 const { create } = require("../models/Movie");
 const mongoose = require("mongoose");
+const Cinema = require("../models/Cinema");
 
 const createMovieListing = async (req, res) => {
   let { movie, cinema } = req.body;
 
-  //   const movieObjectId = mongoose.Types.ObjectId(movie);
-  //   const cinemaObjectId = mongoose.Types.ObjectId(cinema);
+  // find the current cinema details
+  const relatedCinemaDetails = await Cinema.findById(cinema);
 
   try {
     const movieListing = await MovieListing.create({
@@ -50,11 +51,13 @@ const selectAllMovieListings = async (req, res) => {
       {
         $project: {
           _id: 1,
+          "movieDetails._id": 1,
           "movieDetails.movieName": 1,
           "movieDetails.genre": 1,
           "movieDetails.duration": 1,
           "movieDetails.ageRating": 1,
           "movieDetails.image": 1,
+          "cinemaDetails._id": 1,
           "cinemaDetails.location": 1,
           "cinemaDetails.operator": 1,
         },
