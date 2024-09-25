@@ -4,7 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 
 const createMovie = async (req, res) => {
   let { movieName, duration, genre, ageRating, startDate, endDate } = req.body;
-  console.log(genre);
+
   const image = req.file ? req.file.path : "";
   try {
     const movie = await Movie.create({

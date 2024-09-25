@@ -1,21 +1,24 @@
 import React, { useState, useContext, useEffect } from "react";
 import "../styles/CreateEntryPage.css";
 import "../styles/SelectBoxForm.css";
-import DatePicker from "react-datepicker";
 import { AppContext } from "../AppContext";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
+import "../styles/SelectBoxForm.css";
 
 const CreateMovieListingPage = () => {
   const { user, setUser, backendDomain } = useContext(AppContext);
-  console.log(user);
   const [formData, setFormData] = useState({
     movie: "",
     cinema: "",
+    timing: [],
   });
 
   const [movies, setMovies] = useState([]);
   const [cinemas, setCinemas] = useState([]);
+  const [halls, setHalls] = useState([]);
+  const [seatingLayout, setSeatingLayout] = useState([]);
+  const [selectedBox, setSelectedBox] = useState([]);
 
   useEffect(() => {
     const fetchMovies = async (req, res) => {
@@ -45,31 +48,99 @@ const CreateMovieListingPage = () => {
     fetchCinemas();
   }, [backendDomain]);
 
+  const toggleBox = (timingId) => {
+    if (selectedBox.includes(timingId)) {
+      setSelectedBox(selectedBox.filter((value) => value !== timingId));
+      setFormData((prevData) => ({
+        ...prevData,
+        timing: prevData.timing.filter((g) => g !== timingId),
+      }));
+    } else {
+      setSelectedBox([...selectedBox, timingId]);
+      setFormData((prevData) => ({
+        ...prevData,
+        timing: [...prevData.timing, timingId],
+      }));
+    }
+  };
+
+  const timings = [
+    { id: 1, value: "11.00 am" },
+    { id: 2, value: "1.30 pm" },
+    { id: 3, value: "4.00 pm" },
+    { id: 4, value: "6.30 pm" },
+    { id: 5, value: "9.00 pm" },
+    { id: 6, value: "11.30 pm" },
+  ];
+
+  const fetchHalls = async (cinemaId) => {
+    console.log('inside fetch halls');
+    try {
+      const response = await axios.get(
+        `${backendDomain}/api/v1/cinema/${cinemaId}/halls`
+      );
+      setHalls(response.data);
+    } catch (error){
+      console.log("Error fetching halls:", error);
+    }
+  }
+
+  const fetchSeatingLayout = async (hallId) => {
+    try {
+      const response = await axios.get(
+        `${backendDomain}/api/v1/cinema/${hallId}/bays`
+      );
+      console.log(response);
+    } catch (error){
+      console.log("Error fetching seating layout: ", error);
+    }
+  }
+
   const handleChange = async (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+
+    // if a cinema is selected, fetch associated halls
+    if(name == "cinema") {
+      fetchHalls(value);
+    }
+
+    if(name == "hall") {
+      fetchSeatingLayout(value);
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      console.log(formData);
-      const response = await axios.post(
-        `${backendDomain}/api/v1/movieListing/create-movie-listing`,
-        formData,
-        {
-          headers: {
-            // "Content-Type": "multipart/form-data",
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
+      console.log('we are here!')
+      // TODO need to save into multiple different documents, instead of one single document
+      // also need to get the associated cinema seats, bay etc and save into movie listing
+      for(let i = 0; i < formData.timing.length; i++){
+        const timing = formData.timing[i];
+        const movieListingData = {
+          movie: formData.movie,
+          cinema: formData.cinema,
+          hall: formData.hall,
+          showTime: timing,
         }
-      );
-      if (response.status === 201) {
-        alert("Movie listing created!");
+        const response = await axios.post(
+          `${backendDomain}/api/v1/movieListing/create-movie-listing`,
+          movieListingData,
+          {
+            headers: {
+              // "Content-Type": "multipart/form-data",
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        if (response.status === 201) {
+          alert("Movie listing created!");
+        }
       }
     } catch (error) {
       console.error("Error:", error);
@@ -97,6 +168,38 @@ const CreateMovieListingPage = () => {
               </option>
             ))}
           </select>
+        </div>
+        {formData.cinema && (
+          <div className="form-group">
+            <label htmlFor="hall">Halls</label>
+            <select name="hall" value={formData.hall} onChange={handleChange}>
+              <option value>Select a hall</option>
+              {halls.map((hall) => (
+                <option key={hall._id} value={hall._id}>
+                  {hall.hall_name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        <div className="form-group">
+          <label htmlFor="timing">Timings</label>
+          <div className="box-container">
+            {timings.map((timing, i) => (
+              <label key={timing.value} className="select-box-label">
+                <div
+                  className={`select-box ${
+                    selectedBox.includes(timing.value) ? "selected" : ""
+                  }`}
+                  onClick={() => toggleBox(timing.value)}
+                  aria-checked={selectedBox.includes(timing.value)}
+                  role="checkbox"
+                >
+                  {timing.value}
+                </div>
+              </label>
+            ))}
+          </div>
         </div>
         <button type="submit" className="submit-button">
           Submit

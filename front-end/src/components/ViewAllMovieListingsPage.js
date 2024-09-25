@@ -26,9 +26,10 @@ const MovieListingsPage = () => {
           }
         );
         const data = await response.json();
-        console.log(data);
         setMovieListing(data);
+        console.log(data);
       } catch (error) {
+        console.log(error);
         showAlert("Failed to fetch movie listings", "error");
       } finally {
         // setLoading(false);
@@ -42,9 +43,6 @@ const MovieListingsPage = () => {
   const redirectToBooking = (movieId) => {
     history.push("book-movie", { data: movieId });
   };
-  // const redirectToBooking = () => {
-  //   history.push('book-movie');
-  // }
 
   return (
     <div className="container mx-auto p-4">
@@ -89,7 +87,8 @@ const MovieListingsPage = () => {
                           " " +
                           listing.cinemaDetails.location +
                           " "}
-                        Movie: {listing.movieDetails.movieName}
+                        Movie: {listing.movieDetails.movieName + " "}
+                        ShowTime : {listing.showTime}
                         <Button onClick={() => redirectToBooking(listing._id)}>
                           Book now!
                         </Button>

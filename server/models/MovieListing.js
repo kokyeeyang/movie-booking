@@ -1,11 +1,34 @@
 const mongoose = require("mongoose");
 
+const BaySchema = new mongoose.Schema({
+  bay_name: {
+    type: String,
+    required: true,
+  },
+  rows: {
+    type: Number,
+    required: true,
+  },
+  seats_per_row: {
+    type: Number,
+    required: true,
+  },
+  layout: {
+    type: Map,
+    of: [String],
+    default: {}
+  }
+});
+
 const MovieListingSchema = new mongoose.Schema({
   movie: { type: mongoose.Types.ObjectId, ref: "Movie" },
   cinema: { type: mongoose.Types.ObjectId, ref: "Cinema" },
-  bayId: { type: String, required: true }, // Identify bay by name
-  showTime: { type: Date, required: true }, // Date and time of the showing
-  seats: { type: Map, of: [String], default: {} }, // Seat layout for this showing
+  hallId: { type: String, required: true }, // Identify hall by id
+  showTime: { type: String, required: true }, // time of the showing,
+  seatingAvailability: {
+    type: [BaySchema],
+    required: true,
+  }
 });
 
 module.exports = mongoose.model("MovieListing", MovieListingSchema);

@@ -82,10 +82,7 @@ const AdminLandingPage = () => {
         const data = await response.json();
         setMovieListing(data);
 
-        movieListings.map((listing) => {
-          console.log(listing.cinemaDetails.location);
-        });
-        console.log(movieListings);
+        console.log(data);
       } catch (error) {
         showAlert("Failed to fetch movie listings", "error");
       } finally {
@@ -166,7 +163,8 @@ const AdminLandingPage = () => {
                             " " +
                             listing.cinemaDetails.location +
                             " "}
-                          Movie: {listing.movieDetails.movieName}
+                          Movie: {listing.movieDetails.movieName + " "}
+                          Halls: {listing.cinemaDetails.halls.hall_name}
                         </div>
                       </li>
                     ))

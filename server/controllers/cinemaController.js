@@ -28,4 +28,25 @@ const selectAllCinemas = async (req, res) => {
   }
 };
 
-module.exports = { createCinema, selectAllCinemas };
+async function findHallById(hallId) {
+  try {
+    const cinema = await Cinema.findOne({
+      'halls._id': mongoose.Types.ObjectId(hallId) // Match the hall by its _id
+    }, {
+      'halls.$': 1 // Only return the matched hall
+    });
+
+    if (cinema) {
+      const hall = cinema.halls[0]; // The matched hall will be the first (and only) element in the `halls` array
+      console.log(hall);
+      return hall;
+    } else {
+      console.log("No hall found with the given id");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching hall:", error);
+    throw error;
+  }
+}
+module.exports = { createCinema, selectAllCinemas, findHallById};
