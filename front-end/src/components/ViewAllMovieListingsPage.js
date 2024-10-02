@@ -82,7 +82,7 @@ const MovieListingsPage = () => {
                   movieListings.map((listing) => (
                     <li key={listing._id}>
                       <div className="">
-                        Cinema: -
+                        Cinema:
                         {listing.cinemaDetails.operator +
                           " " +
                           listing.cinemaDetails.location +
@@ -92,7 +92,6 @@ const MovieListingsPage = () => {
                         <Button onClick={() => redirectToBooking(listing._id)}>
                           Book now!
                         </Button>
-                        {/* <Button onClick={redirectToBooking}>Book now!</Button> */}
                       </div>
                     </li>
                   ))

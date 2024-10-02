@@ -1,7 +1,7 @@
-import React from 'react';
-import { Stage, Layer } from 'react-konva';
-import Section from './Section';
-import * as layout from './layout';
+import React from "react";
+import { Stage, Layer } from "react-konva";
+import Section from "./Section";
+import * as layout from "./layout";
 
 const useFetch = (url) => {
   const [data, setData] = React.useState(null);
@@ -13,8 +13,10 @@ const useFetch = (url) => {
   return data;
 };
 
-const MainStage = (props) => {
-  const jsonData = useFetch('./seats-data.json');
+const MainStage = ({ movieListing }) => {
+  const jsonData = useFetch("./seats-data.json");
+  console.log("dummy data = ", jsonData);
+  console.log(movieListing);
   const containerRef = React.useRef(null);
   const stageRef = React.useRef(null);
 
@@ -70,13 +72,13 @@ const MainStage = (props) => {
   const handleSelect = React.useCallback(
     (seatId) => {
       let newIds;
-      console.log(seatId)
+      console.log(seatId);
       const index = selectedSeatsIds.indexOf(seatId);
-      if(index == -1){
+      if (index == -1) {
         newIds = selectedSeatsIds.concat([seatId]);
       } else {
-        console.log('deselecting!')
-        newIds =  selectedSeatsIds.slice();
+        console.log("deselecting!");
+        newIds = selectedSeatsIds.slice();
         newIds.splice(newIds.indexOf(seatId), 1);
       }
       setSelectedSeatsIds(newIds);
@@ -84,46 +86,37 @@ const MainStage = (props) => {
     [selectedSeatsIds]
   );
   console.log(selectedSeatsIds);
-  // const handleDeselect = React.useCallback(
-  //   (seatId) => {
-  //     console.log('deselecting')
-  //     console.log(seatId)
-  //     const ids = selectedSeatsIds.slice();
-  //     ids.splice(ids.indexOf(seatId), 1);
+
+  // const handleDeselect = React.useCallback((seatId) => {
+  //   const ids = [...selectedSeatsIds];
+  //   const index = ids.indexOf(seatId);
+
+  //   if (index !== -1) {
+  //     ids.splice(index, 1); // remove the seatId if it is already present inside the selectedSeatsIds
   //     setSelectedSeatsIds(ids);
-  //   },
-  //   [selectedSeatsIds]
-  // );
-
-  const handleDeselect = React.useCallback(
-    (seatId) => {
-      const ids = [...selectedSeatsIds];
-      const index = ids.indexOf(seatId);
-
-      if(index !== -1) {
-        ids.splice(index,1); // remove the seatId if it is already present inside the selectedSeatsIds
-        setSelectedSeatsIds(ids);
-      } else {
-        console.log(`seat id ${seatId} is not found inside already selected seats`);
-      }
-    }
-  )
+  //   } else {
+  //     console.log(
+  //       `seat id ${seatId} is not found inside already selected seats`
+  //     );
+  //   }
+  // });
 
   if (jsonData === null) {
     return <div ref={containerRef}>Loading...</div>;
   }
-
+  const seatingAvailability = movieListing[0].seatingAvailability;
   const maxSectionWidth = layout.getMaximimSectionWidth(
     jsonData.seats.sections
   );
+  const height = layout.getSectionHeight(seatingAvailability);
 
   return (
     <div
       style={{
-        position: 'relative',
-        backgroundColor: 'turquoise',
-        width: '100vw',
-        height: '100vh',
+        position: "relative",
+        backgroundColor: "turquoise",
+        width: "100vw",
+        height: "100vh",
       }}
       ref={containerRef}
     >
@@ -137,8 +130,17 @@ const MainStage = (props) => {
         scaleY={scale}
       >
         <Layer>
-          {jsonData.seats.sections.map((section, index) => {
-            console.log(section)
+          {
+            <Section
+              x={20}
+              y={20}
+              height={height} // Using the calculated height
+              section={seatingAvailability}
+              selectedSeatsIds={selectedSeatsIds}
+              onSelectSeat={handleSelect}
+            />
+          }
+          {/* {jsonData.seats.sections.map((section, index) => {
             const height = layout.getSectionHeight(section);
             const position = lastSectionPosition + layout.SECTIONS_MARGIN;
             lastSectionPosition = position + height;
@@ -155,10 +157,9 @@ const MainStage = (props) => {
                 section={section}
                 selectedSeatsIds={selectedSeatsIds}
                 onSelectSeat={handleSelect}
-                // onDeselectSeat={handleDeselect}
               />
             );
-          })}
+          })} */}
         </Layer>
       </Stage>
     </div>

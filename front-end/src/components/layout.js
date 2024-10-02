@@ -5,35 +5,26 @@ const SUBSECTION_PADDING = 80;
 const SECTIONS_MARGIN = 15;
 const SECTION_TOP_PADDING = 40;
 
-const getSubsectionWidth = subsection => {
-  const rows = Object.keys(subsection.container_by_rows);
-  const maxRows = Math.max(
-    ...rows.map(r => Object.keys(subsection.container_by_rows[r]).length)
-  );
-  return SEATS_DISTANCE * maxRows + SUBSECTION_PADDING * 1;
+// Get the width for a single bay based on its seats per row
+const getBayWidth = (bay) => {
+  const { seats_per_row } = bay;
+  return SEATS_DISTANCE * seats_per_row + SUBSECTION_PADDING * 2;
 };
 
-const getSubsectionHeight = subsection => {
-  const rows = Object.keys(subsection.container_by_rows);
-  return SEATS_DISTANCE * rows.length + SUBSECTION_PADDING * 2;
+// Get the height for a single bay based on the number of rows
+const getBayHeight = (bay) => {
+  const { rows } = bay;
+  return SEATS_DISTANCE * rows + SUBSECTION_PADDING * 2;
 };
 
-const getSectionWidth = section => {
-  const width = section.subsections.reduce((sum, subsection) => {
-    return sum + getSubsectionWidth(subsection);
-  }, 0);
-  return width;
+// Get the maximum section (bay) width for all bays
+const getMaximimSectionWidth = (bays) => {
+  return Math.max(...bays.map(getBayWidth));
 };
 
-const getSectionHeight = section => {
-  return (
-    Math.max(...section.subsections.map(getSubsectionHeight)) +
-    SECTION_TOP_PADDING
-  );
-};
-
-const getMaximimSectionWidth = sections => {
-  return Math.max(...sections.map(getSectionWidth));
+// Get the height for the section (the tallest bay)
+const getSectionHeight = (bays) => {
+  return Math.max(...bays.map(getBayHeight)) + SECTION_TOP_PADDING;
 };
 
 export {
@@ -42,9 +33,8 @@ export {
   SUBSECTION_PADDING,
   SECTIONS_MARGIN,
   SECTION_TOP_PADDING,
-  getSubsectionWidth, 
-  getSubsectionHeight, 
-  getSectionWidth, 
+  getBayWidth,
+  getBayHeight,
+  getMaximimSectionWidth,
   getSectionHeight,
-  getMaximimSectionWidth
 };

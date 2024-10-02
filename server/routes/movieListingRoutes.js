@@ -12,6 +12,7 @@ const {
 const {
   createMovieListing,
   selectAllMovieListings,
+  selectMovieListing,
 } = require("../controllers/movieListingController");
 
 router
@@ -22,5 +23,8 @@ router
   .route("/show-all-movie-listings")
   .get(authenticateUser, selectAllMovieListings);
 
-// router.route("/show-all-movie-listings").get(selectAllMovieListings);
+router
+  .route("/show-movie-listing/:id")
+  .get(authenticateUser, selectMovieListing);
+
 module.exports = router;

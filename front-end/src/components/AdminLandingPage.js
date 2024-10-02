@@ -118,10 +118,39 @@ const AdminLandingPage = () => {
       <div className="admin-panel"></div>
       <p className="mb-6 ml-8">
         {/* <Link href={`${backendDomain}/api/v1/auth/logout`}>Logout */}
-        <Button 
-        sx={{color: "black", backgroundColor: "turquoise", "&:hover": {backgroundColor: "yellow"}, marginRight: "12px"}} onClick={createMoviePage}>Create a movie</Button>
-        <Button sx={{color: "black", backgroundColor: "turquoise", "&:hover": {backgroundColor: "yellow"}, marginRight: "12px"}} onClick={createCinemaPage}>Create a cinema</Button>
-        <Button sx={{color: "black", backgroundColor: "turquoise", "&:hover": {backgroundColor: "yellow"}, marginRight: "12px"}} onClick={createMovieListingPage}>Create a movie listing</Button>
+        <Button
+          sx={{
+            color: "black",
+            backgroundColor: "turquoise",
+            "&:hover": { backgroundColor: "yellow" },
+            marginRight: "12px",
+          }}
+          onClick={createMoviePage}
+        >
+          Create a movie
+        </Button>
+        <Button
+          sx={{
+            color: "black",
+            backgroundColor: "turquoise",
+            "&:hover": { backgroundColor: "yellow" },
+            marginRight: "12px",
+          }}
+          onClick={createCinemaPage}
+        >
+          Create a cinema
+        </Button>
+        <Button
+          sx={{
+            color: "black",
+            backgroundColor: "turquoise",
+            "&:hover": { backgroundColor: "yellow" },
+            marginRight: "12px",
+          }}
+          onClick={createMovieListingPage}
+        >
+          Create a movie listing
+        </Button>
       </p>
       <Button
         sx={{
@@ -164,7 +193,8 @@ const AdminLandingPage = () => {
                             listing.cinemaDetails.location +
                             " "}
                           Movie: {listing.movieDetails.movieName + " "}
-                          Halls: {listing.cinemaDetails.halls.hall_name}
+                          Halls: {listing.cinemaDetails.halls.hall_name + " "}
+                          Time: {listing.showTime}
                         </div>
                       </li>
                     ))
