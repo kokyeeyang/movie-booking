@@ -1,64 +1,87 @@
 import React from "react";
-import { Stage, Layer } from "react-konva";
+import { Stage, Layer, Image } from "react-konva";
+import useImage from "use-image";
 import Section from "./Section";
 import * as layout from "./layout";
+import "../styles/style.css";
 
-const useFetch = (url) => {
-  const [data, setData] = React.useState(null);
-  React.useEffect(() => {
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => setData(data));
-  }, [url]);
-  return data;
+const MovieScreen = ({ imageUrl, stageWidth, paddingBottom }) => {
+  const [image] = useImage(imageUrl);
+
+  // const screenWidth = stageWidth * 0.4;
+  // const screenHeight = 200;
+  const screenWidth = `${stageWidth * 0.4}px`; //
+  const screenHeight = `${200}px`; // Fixed height for the screen
+  const screenX = (stageWidth - screenWidth) / 2; // Center horizontally
+  const screenY = 10; // Vertical position of the screen (without top padding)
+
+  return (
+    <img
+      src={imageUrl} // You can use 'imageUrl' directly instead of 'image' from useImage
+      style={{
+        position: "relative",
+        width: screenWidth,
+        height: screenHeight,
+        paddingBottom: `${paddingBottom}px`, // Apply bottom padding only
+        left: "550px",
+      }}
+      alt="Movie Screen"
+    />
+  );
 };
 
 const MainStage = ({ movieListing }) => {
-  const jsonData = useFetch("./seats-data.json");
-  console.log("dummy data = ", jsonData);
-  console.log(movieListing);
   const containerRef = React.useRef(null);
   const stageRef = React.useRef(null);
 
   const [scale, setScale] = React.useState(1);
   const [scaleToFit, setScaleToFit] = React.useState(1);
   const [size, setSize] = React.useState({
-    width: 100,
-    height: 100,
-    virtualWidth: 100,
+    width: window.innerWidth * 0.8, // take 80% of the window width
+    height: window.innerHeight * 0.5, // take 50% of the window height
+    // virtualWidth: 20,
   });
-  const [virtualWidth, setVirtualWidth] = React.useState(100);
 
   const [selectedSeatsIds, setSelectedSeatsIds] = React.useState([]);
 
-  const [popup, setPopup] = React.useState({ seat: null });
-
-  // calculate available space for drawing
+  // Calculate available space for drawing
   React.useEffect(() => {
-    const newSize = {
-      width: containerRef.current.offsetWidth,
-      height: containerRef.current.offsetHeight,
+    const resizeHandler = () => {
+      if (containerRef.current) {
+        const newSize = {
+          width: containerRef.current.offsetWidth,
+          height: containerRef.current.offsetHeight,
+        };
+        if (newSize.width !== size.width || newSize.height !== size.height) {
+          setSize(newSize);
+        }
+      }
     };
-    if (newSize.width !== size.width || newSize.height !== size.height) {
-      setSize(newSize);
-    }
-  });
+    resizeHandler();
+    window.addEventListener("resize", resizeHandler);
 
-  // calculate initial scale
+    if (stageRef.current) {
+      stageRef.current.draw(); // Force a re-draw after the size is set
+    }
+
+    return () => window.removeEventListener("resize", resizeHandler);
+  }, [size.width, size.height]);
+
+  // Calculate initial scale based on content size
   React.useEffect(() => {
-    if (!stageRef.current) {
-      return;
-    }
-    const stage = stageRef.current;
-    const clientRect = stage.getClientRect({ skipTransform: false });
+    setTimeout(() => {
+      if (!stageRef.current) return;
+      const stage = stageRef.current;
+      const clientRect = stage.getClientRect({ skipTransform: false });
+      const scaleToFit = size.width / clientRect.width;
+      setScale(scaleToFit);
+      setScaleToFit(scaleToFit);
 
-    const scaleToFit = size.width / clientRect.width;
-    setScale(scaleToFit);
-    setScaleToFit(scaleToFit);
-    setVirtualWidth(clientRect.width);
-  }, [jsonData, size]);
+      stageRef.current.draw();
+    }, 100);
+  }, []);
 
-  // togle scale on double clicks or taps
+  // Toggle zoom/scale
   const toggleScale = React.useCallback(() => {
     if (scale === 1) {
       setScale(scaleToFit);
@@ -67,99 +90,88 @@ const MainStage = ({ movieListing }) => {
     }
   }, [scale, scaleToFit]);
 
-  let lastSectionPosition = 0;
-
+  // Handle seat selection
   const handleSelect = React.useCallback(
     (seatId) => {
       let newIds;
-      console.log(seatId);
       const index = selectedSeatsIds.indexOf(seatId);
-      if (index == -1) {
+      if (index === -1) {
         newIds = selectedSeatsIds.concat([seatId]);
       } else {
-        console.log("deselecting!");
         newIds = selectedSeatsIds.slice();
-        newIds.splice(newIds.indexOf(seatId), 1);
+        newIds.splice(index, 1);
       }
       setSelectedSeatsIds(newIds);
     },
     [selectedSeatsIds]
   );
-  console.log(selectedSeatsIds);
-
-  // const handleDeselect = React.useCallback((seatId) => {
-  //   const ids = [...selectedSeatsIds];
-  //   const index = ids.indexOf(seatId);
-
-  //   if (index !== -1) {
-  //     ids.splice(index, 1); // remove the seatId if it is already present inside the selectedSeatsIds
-  //     setSelectedSeatsIds(ids);
-  //   } else {
-  //     console.log(
-  //       `seat id ${seatId} is not found inside already selected seats`
-  //     );
-  //   }
-  // });
-
-  if (jsonData === null) {
+  // Loading state
+  if (!movieListing || movieListing.length === 0) {
     return <div ref={containerRef}>Loading...</div>;
   }
+  // console.log(movieListing);
   const seatingAvailability = movieListing[0].seatingAvailability;
-  const maxSectionWidth = layout.getMaximimSectionWidth(
-    jsonData.seats.sections
-  );
-  const height = layout.getSectionHeight(seatingAvailability);
+  const padding = 20; // Padding around the movie screen
+  // const equalSpacing = totalAvailableWidth / totalBays;
+
+  const movieImageUrl = movieListing[0].movieDetails.image;
+
+  // const movieImageUrl = movieListing
 
   return (
     <div
+      className="no-scroll"
       style={{
         position: "relative",
-        backgroundColor: "turquoise",
-        width: "100vw",
-        height: "100vh",
+        width: "100%",
+        height: "110vh",
+        background: "pink",
+        display: "flex",
+        flexDirection: "column",
+        padding: "0 10px",
       }}
       ref={containerRef}
     >
+      <MovieScreen
+        imageUrl={movieImageUrl}
+        stageWidth={size.width - 20}
+      ></MovieScreen>
       <Stage
         ref={stageRef}
         width={size.width}
         height={size.height}
-        onDblTap={toggleScale}
-        onDblClick={toggleScale}
         scaleX={scale}
         scaleY={scale}
+        style={{ marginTop: padding + "px" }} // Space between screen and stage
       >
         <Layer>
-          {
-            <Section
-              x={20}
-              y={20}
-              height={height} // Using the calculated height
-              section={seatingAvailability}
-              selectedSeatsIds={selectedSeatsIds}
-              onSelectSeat={handleSelect}
-            />
-          }
-          {/* {jsonData.seats.sections.map((section, index) => {
-            const height = layout.getSectionHeight(section);
-            const position = lastSectionPosition + layout.SECTIONS_MARGIN;
-            lastSectionPosition = position + height;
-            const width = layout.getSectionWidth(section);
+          {seatingAvailability.map((bay, index) => {
+            if (!bay.layout) return null;
 
-            const offset = (maxSectionWidth - width) / 2;
+            const bayWidth = layout.getBayWidth(bay);
+            const margin = -200;
+
+            // const xPosition = index * (layout.getBayWidth(bay) + margin);
+            const xPosition =
+              index > 0
+                ? seatingAvailability.slice(0, index).reduce((acc, prevBay) => {
+                    return acc + layout.getBayWidth(prevBay) + margin; // Add previous bay width and margin
+                  }, 0)
+                : 0; // Start from 0 for the first bay
+
+            const yPosition = 0; // Keep constant Y to align them horizontally
 
             return (
               <Section
-                x={offset}
-                y={position}
-                height={height}
+                x={xPosition}
+                y={yPosition}
                 key={index}
-                section={section}
+                section={bay}
                 selectedSeatsIds={selectedSeatsIds}
                 onSelectSeat={handleSelect}
               />
             );
-          })} */}
+          })}
         </Layer>
       </Stage>
     </div>

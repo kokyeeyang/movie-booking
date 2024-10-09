@@ -1,14 +1,17 @@
 const SEAT_SIZE = 30;
-const SEATS_DISTANCE = 40;
-const SUBSECTION_PADDING = 80;
+const SEATS_DISTANCE = 60;
+const SUBSECTION_PADDING = 10;
 
 const SECTIONS_MARGIN = 15;
 const SECTION_TOP_PADDING = 40;
+const BAY_MARGIN = 2;
 
 // Get the width for a single bay based on its seats per row
 const getBayWidth = (bay) => {
-  const { seats_per_row } = bay;
-  return SEATS_DISTANCE * seats_per_row + SUBSECTION_PADDING * 2;
+  if (bay) {
+    const { seats_per_row } = bay;
+    return SEATS_DISTANCE * seats_per_row + SUBSECTION_PADDING * 2;
+  }
 };
 
 // Get the height for a single bay based on the number of rows
@@ -33,6 +36,7 @@ export {
   SUBSECTION_PADDING,
   SECTIONS_MARGIN,
   SECTION_TOP_PADDING,
+  BAY_MARGIN,
   getBayWidth,
   getBayHeight,
   getMaximimSectionWidth,
