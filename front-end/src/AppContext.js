@@ -3,8 +3,12 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const initialBackendDomain = "http://localhost:5000";
-  const initialFrontendDomain = "http://localhost:3000";
+  // const initialBackendDomain = "http://localhost:5000";
+  // const initialFrontendDomain = "http://localhost:3000";
+  const initialBackendDomain =
+    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  const initialFrontendDomain =
+    process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000";
   const [backendDomain, setBackendDomain] = useState(initialBackendDomain);
   const [frontendDomain, setFrontendDomain] = useState(initialFrontendDomain);
   const [user, setUser] = useState(null);
