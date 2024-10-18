@@ -57,7 +57,6 @@ const login = async (req, res) => {
     throw new CustomError.BadRequestError("Please verify your account first");
   }
   attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-  console.log(tokenUser);
   res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 

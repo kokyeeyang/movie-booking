@@ -8,7 +8,6 @@ export default React.memo(
     // `section` instead of `bay`
     const containerRef = React.useRef();
 
-    console.log("inside section!!!! ", section);
     let bayName = section.bay_name;
     if (section.bay_name == "Bay 1") {
       bayName = "B1";
@@ -42,7 +41,7 @@ export default React.memo(
           return row.map((seat, seatIndex) => {
             let seatName = `${bayName}-${rowKey}-${seatIndex}`;
             const isSelected = selectedSeatsIds.includes(seatName);
-            console.log(selectedSeatsIds);
+            // console.log(selectedSeatsIds);
 
             return (
               <Seat

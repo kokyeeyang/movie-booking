@@ -10,6 +10,7 @@ const authRouter = require("./routes/authRoutes");
 const movieRouter = require("./routes/movieRoutes");
 const cinemaRouter = require("./routes/cinemaRoutes");
 const movieListingRouter = require("./routes/movieListingRoutes");
+const customerRouter = require("./routes/customerRoutes");
 
 const port = process.env.PORT || 5000;
 
@@ -26,6 +27,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/movie", movieRouter);
 app.use("/api/v1/cinema", cinemaRouter);
 app.use("/api/v1/movieListing", movieListingRouter);
+app.use("/api/v1/customer", customerRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const start = async () => {

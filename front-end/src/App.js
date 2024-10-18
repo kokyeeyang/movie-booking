@@ -16,6 +16,7 @@ import CreateMoviePage from "./components/CreateMoviePage";
 import CreateCinemaPage from "./components/CreateCinemaPage";
 import CreateMovieListingPage from "./components/CreateMovieListingPage";
 import ViewAllMovieListingsPage from "./components/ViewAllMovieListingsPage.js";
+import CheckoutPage from "./components/MovieBooking/CheckoutPage.js";
 import AlertProvider from "./AlertContext";
 import Alert from "./components/Alert";
 import DashboardBar from "./components/DashboardBar";
@@ -35,17 +36,19 @@ function AppContent() {
     <>
       {!pathsWithoutDashboard.includes(location.pathname) && <DashboardBar />}
       <Switch>
-        <Route exact path="/" render={
-          () => {
-            if(!user){
+        <Route
+          exact
+          path="/"
+          render={() => {
+            if (!user) {
               return <Redirect to="/login" />;
-            } else if (user === "admin"){
+            } else if (user === "admin") {
               return <Redirect to="/admin-landing-page" />;
-            } else if (user === "user"){
-              return <Redirect to="/homepage" />
+            } else if (user === "user") {
+              return <Redirect to="/homepage" />;
             }
-          }
-        } />
+          }}
+        />
         <Route path="/login" component={LoginForm}></Route>
         <Route path="/sign-up" component={SignupForm}></Route>
         <Route path="/verify-email" component={VerifyEmail}></Route>
@@ -78,7 +81,11 @@ function AppContent() {
           path="/view-all-movie-listings"
           component={ViewAllMovieListingsPage}
         ></ProtectedRoute>
-         <ProtectedRoute
+        <ProtectedRoute
+          path="/checkout"
+          component={CheckoutPage}
+        ></ProtectedRoute>
+        <ProtectedRoute
           path="/book-movie"
           component={MovieBookingPage}
         ></ProtectedRoute>

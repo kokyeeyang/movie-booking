@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Stage, Layer, Image } from "react-konva";
 import useImage from "use-image";
 import Section from "./Section";
 import * as layout from "./layout";
 import "../styles/style.css";
+import PurchaseTicketFooter from "./MovieBooking/PurchaseTicketFooter";
+import axios from "axios";
+import { AppContext } from "../AppContext";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const MovieScreen = ({ imageUrl, stageWidth, paddingBottom }) => {
   const [image] = useImage(imageUrl);
-
   // const screenWidth = stageWidth * 0.4;
   // const screenHeight = 200;
   const screenWidth = `${stageWidth * 0.4}px`; //
@@ -33,6 +36,7 @@ const MovieScreen = ({ imageUrl, stageWidth, paddingBottom }) => {
 const MainStage = ({ movieListing }) => {
   const containerRef = React.useRef(null);
   const stageRef = React.useRef(null);
+  const { backendDomain, user } = useContext(AppContext);
 
   const [scale, setScale] = React.useState(1);
   const [scaleToFit, setScaleToFit] = React.useState(1);
@@ -43,6 +47,7 @@ const MainStage = ({ movieListing }) => {
   });
 
   const [selectedSeatsIds, setSelectedSeatsIds] = React.useState([]);
+  const history = useHistory();
 
   // Calculate available space for drawing
   React.useEffect(() => {
@@ -105,6 +110,17 @@ const MainStage = ({ movieListing }) => {
     },
     [selectedSeatsIds]
   );
+
+  const handlePurchase = async () => {
+    const selectedSeats = selectedSeatsIds.join(",");
+    console.log("selected seats are here!");
+    console.log(selectedSeats);
+    history.push({
+      pathname: "/checkout",
+      state: { userId: user.userId, selectedSeats, movieListing },
+    });
+  };
+
   // Loading state
   if (!movieListing || movieListing.length === 0) {
     return <div ref={containerRef}>Loading...</div>;
@@ -174,6 +190,10 @@ const MainStage = ({ movieListing }) => {
           })}
         </Layer>
       </Stage>
+      <PurchaseTicketFooter
+        selectedSeats={selectedSeatsIds}
+        onPurchase={handlePurchase}
+      ></PurchaseTicketFooter>
     </div>
   );
 };
