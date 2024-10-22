@@ -3,7 +3,11 @@ const Token = require("../models/Token");
 const crypto = require("crypto");
 const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
-require("dotenv").config();
+// require("dotenv").config();
+const dotenv = require('dotenv');
+
+// Load the environment variables
+dotenv.config();
 const {
   attachCookiesToResponse,
   createTokenUser,
