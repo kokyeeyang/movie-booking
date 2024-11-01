@@ -19,6 +19,19 @@ const customerRouter = require("./routes/customerRoutes");
 
 const port = process.env.PORT || 5000;
 
+const allowedOrigins = [
+  "https://bookanymovie.netlify.app", // Your production frontend URL
+  "http://localhost:3000", // Your local development URL
+];
+
+// app.use(
+//   cors({
+//     // origin: "http://localhost:3000",
+//     origin: process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000",
+//     credentials: true,
+//   })
+// );
+
 app.use(
   cors({
     // origin: "http://localhost:3000",

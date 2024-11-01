@@ -46,30 +46,30 @@ const MovieListingsPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Movie Listings</h1>
       <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: {
-            xs: "90%",
-            sm: "80%",
-            md: "60%",
-            lg: "40%",
-          },
-          // bgcolor: "background.paper",
-          bgcolor: "background.paper",
-          border: "2px solid #000",
-          boxShadow: 24,
-          p: 4,
-          top: "30%",
-        }}
-        className="relative bg-white border-2 border-black shadow-lg p-4 mb-16 transform translate-x-1/2 translate-y-1/2"
+        // sx={{
+        //   position: "absolute",
+        //   top: "50%",
+        //   left: "50%",
+        //   transform: "translate(-50%, -50%)",
+        //   width: {
+        //     xs: "90%",
+        //     sm: "80%",
+        //     md: "60%",
+        //     lg: "40%",
+        //   },
+        //   // bgcolor: "background.paper",
+        //   bgcolor: "background.paper",
+        //   border: "2px solid #000",
+        //   boxShadow: 24,
+        //   p: 4,
+        //   top: "30%",
+        // }}
+        // className="relative bg-white border-2 border-black shadow-lg p-4 mb-16 transform translate-x-1/2 translate-y-1/2"
+        className="bg-white border-2 border-black p-4 mb-4"
       >
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          Text in a modal
+        Movie Listings
         </Typography>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
           <section className="movie-listings">
@@ -81,14 +81,14 @@ const MovieListingsPage = () => {
                 {movieListings.length > 0 ? (
                   movieListings.map((listing) => (
                     <li key={listing._id}>
-                      <div className="">
+                      <div className="text-sm">
                         Cinema:
                         {listing.cinemaDetails.operator +
                           " " +
                           listing.cinemaDetails.location +
                           " "}
                         Movie: {listing.movieDetails.movieName + " "}
-                        ShowTime : {listing.showTime}
+                        {listing.showTime}
                         <Button onClick={() => redirectToBooking(listing._id)}>
                           Book now!
                         </Button>
