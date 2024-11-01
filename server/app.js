@@ -1,5 +1,10 @@
 const express = require("express");
+const Stripe = require("stripe");
 const app = express();
+const stripe = Stripe(
+  "sk_test_51QDe7hJBWqEZm7T0UULpU5Jxqf0d4RnUiCIhO9z5h9FV2h4fQuUatpN0TEcprUcdbkBaNIDyreIDEFK1JgLfmCyB00Q9cAlBO1"
+);
+
 require("dotenv").config();
 const connectDB = require("./db/connect");
 const cors = require("cors");
@@ -31,6 +36,24 @@ app.use("/api/v1/movieListing", movieListingRouter);
 app.use("/api/v1/customer", customerRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.post("/create-payment-intent", async (req, res) => {
+  const { totalPrice, currency } = req.body; // receive totalPrice from frontend
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: totalPrice * 100, // Amount is in cents, so multiply by 100
+      currency: currency || "RM",
+      payment_method_types: ["card"],
+    });
+
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
