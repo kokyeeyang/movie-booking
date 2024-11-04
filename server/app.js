@@ -32,13 +32,26 @@ const allowedOrigins = [
 //   })
 // );
 
-app.use(
-  cors({
-    // origin: "http://localhost:3000",
-    origin: process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000",
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+// app.use(
+//   cors({
+//     // origin: "http://localhost:3000",
+//     origin: process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000",
+//     credentials: true,
+//   })
+// );
+
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(express.urlencoded({ extended: true }));
