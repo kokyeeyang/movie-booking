@@ -16,10 +16,10 @@ const MovieListingsPage = () => {
   const { loading, setLoading } = useState(true);
   const history = useHistory();
   useEffect(() => {
-    const fetchMovieListings = async () => {
+    const fetchCinemaLocations = async () => {
       try {
         const response = await fetch(
-          `${backendDomain}/api/v1/movieListing/show-all-movie-listings`,
+          `${backendDomain}/api/v1/movieListing/show-all-cinema-locations`,
           {
             method: "GET",
             credentials: "include",
@@ -35,7 +35,7 @@ const MovieListingsPage = () => {
         // setLoading(false);
       }
     };
-    fetchMovieListings();
+    // fetchMovieListings();
   }, [backendDomain, showAlert]);
   const handleAction = (movieId) => {
     alert(`Action clicked for movie ID: ${movieId}`);

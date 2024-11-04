@@ -74,16 +74,16 @@ const CreateMovieListingPage = () => {
   ];
 
   const fetchHalls = async (cinemaId) => {
-    console.log('inside fetch halls');
+    console.log("inside fetch halls");
     try {
       const response = await axios.get(
         `${backendDomain}/api/v1/cinema/${cinemaId}/halls`
       );
       setHalls(response.data);
-    } catch (error){
+    } catch (error) {
       console.log("Error fetching halls:", error);
     }
-  }
+  };
 
   const fetchSeatingLayout = async (hallId) => {
     try {
@@ -91,10 +91,10 @@ const CreateMovieListingPage = () => {
         `${backendDomain}/api/v1/cinema/${hallId}/bays`
       );
       console.log(response);
-    } catch (error){
+    } catch (error) {
       console.log("Error fetching seating layout: ", error);
     }
-  }
+  };
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -104,11 +104,11 @@ const CreateMovieListingPage = () => {
     }));
 
     // if a cinema is selected, fetch associated halls
-    if(name == "cinema") {
+    if (name == "cinema") {
       fetchHalls(value);
     }
 
-    if(name == "hall") {
+    if (name == "hall") {
       fetchSeatingLayout(value);
     }
   };
@@ -116,17 +116,17 @@ const CreateMovieListingPage = () => {
     e.preventDefault();
 
     try {
-      console.log('we are here!')
+      console.log("we are here!");
       // TODO need to save into multiple different documents, instead of one single document
       // also need to get the associated cinema seats, bay etc and save into movie listing
-      for(let i = 0; i < formData.timing.length; i++){
+      for (let i = 0; i < formData.timing.length; i++) {
         const timing = formData.timing[i];
         const movieListingData = {
           movie: formData.movie,
           cinema: formData.cinema,
           hall: formData.hall,
           showTime: timing,
-        }
+        };
         const response = await axios.post(
           `${backendDomain}/api/v1/movieListing/create-movie-listing`,
           movieListingData,
