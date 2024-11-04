@@ -42,9 +42,9 @@ function AppContent() {
           render={() => {
             if (!user) {
               return <Redirect to="/login" />;
-            } else if (user === "admin") {
+            } else if (user.role === "admin") {
               return <Redirect to="/admin-landing-page" />;
-            } else if (user === "user") {
+            } else if (user.role === "user") {
               return <Redirect to="/homepage" />;
             }
           }}
