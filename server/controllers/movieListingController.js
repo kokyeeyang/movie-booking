@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const Cinema = require("../models/Cinema");
 
 const createMovieListing = async (req, res) => {
-  let { movie, cinema, showTime, hall } = req.body;
+  let { movie, cinema, showTime, hall, showDate } = req.body;
   // const timingString = timing.join(',');
   // find the current cinema details
   try {
@@ -23,6 +23,7 @@ const createMovieListing = async (req, res) => {
         showTime: showTime,
         hallId: hall,
         seatingAvailability: bays,
+        showDate,
       });
 
       res.status(201).json(movieListing);
@@ -76,6 +77,7 @@ const selectAllMovieListings = async (req, res) => {
         $project: {
           _id: 1,
           showTime: 1,
+          showDate: 1,
           seatingAvailability: 1,
           "movieDetails._id": 1,
           "movieDetails.movieName": 1,
@@ -88,6 +90,87 @@ const selectAllMovieListings = async (req, res) => {
           "cinemaDetails.location": 1,
           "cinemaDetails.operator": 1,
           "cinemaDetails.halls.hall_name": 1,
+        },
+      },
+    ]);
+
+    res.status(StatusCodes.OK).json(movieListings);
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
+  }
+};
+
+const showCinemaMovieListings = async (req, res) => {
+  try {
+    const { id } = req.params; // Cinema ID from the URL
+    const { startDate, endDate } = req.query; // Date range from query parameters
+
+    const matchStage = {
+      $match: {
+        $expr: {
+          $and: [
+            { $eq: ["$cinemaDetails.halls._id", { $toObjectId: "$hallId" }] },
+            { $eq: ["$cinemaDetails._id", { $toObjectId: id }] },
+          ],
+        },
+        // Add date range filtering
+        ...(startDate &&
+          endDate && {
+            showDate: {
+              $gte: new Date(startDate),
+              $lte: new Date(endDate),
+            },
+          }),
+      },
+    };
+
+    const movieListings = await MovieListing.aggregate([
+      {
+        $lookup: {
+          from: "movies",
+          localField: "movie",
+          foreignField: "_id",
+          as: "movieDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "cinemas",
+          localField: "cinema",
+          foreignField: "_id",
+          as: "cinemaDetails",
+        },
+      },
+      { $unwind: "$movieDetails" },
+      { $unwind: "$cinemaDetails" },
+      { $unwind: "$cinemaDetails.halls" },
+      matchStage, // Apply the match stage with optional date filtering
+      {
+        $group: {
+          _id: "$movieDetails._id",
+          movieName: { $first: "$movieDetails.movieName" },
+          genre: { $first: "$movieDetails.genre" },
+          duration: { $first: "$movieDetails.duration" },
+          ageRating: { $first: "$movieDetails.ageRating" },
+          image: { $first: "$movieDetails.image" },
+          cinemaDetails: { $first: "$cinemaDetails" },
+          showTimes: { $push: "$showTime" },
+          showDates: { $push: "$showDate" },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          movieName: 1,
+          genre: 1,
+          duration: 1,
+          ageRating: 1,
+          image: 1,
+          "cinemaDetails._id": 1,
+          "cinemaDetails.location": 1,
+          "cinemaDetails.operator": 1,
+          showTimes: 1,
+          showDates: 1,
         },
       },
     ]);
@@ -169,5 +252,6 @@ const selectMovieListing = async (req, res) => {
 module.exports = {
   createMovieListing,
   selectAllMovieListings,
+  showCinemaMovieListings,
   selectMovieListing,
 };

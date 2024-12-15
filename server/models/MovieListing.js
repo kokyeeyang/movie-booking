@@ -16,8 +16,8 @@ const BaySchema = new mongoose.Schema({
   layout: {
     type: Map,
     of: [String],
-    default: {}
-  }
+    default: {},
+  },
 });
 
 const MovieListingSchema = new mongoose.Schema({
@@ -25,10 +25,11 @@ const MovieListingSchema = new mongoose.Schema({
   cinema: { type: mongoose.Types.ObjectId, ref: "Cinema" },
   hallId: { type: String, required: true }, // Identify hall by id
   showTime: { type: String, required: true }, // time of the showing,
+  showDate: { type: Date, required: true },
   seatingAvailability: {
     type: [BaySchema],
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model("MovieListing", MovieListingSchema);

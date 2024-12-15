@@ -16,17 +16,17 @@ const BaySchema = new mongoose.Schema({
   layout: {
     type: Map,
     of: [String],
-    default: {}
-  }
+    default: {},
+  },
 });
 
-BaySchema.pre("save", function (next){
+BaySchema.pre("save", function (next) {
   const bay = this;
-  if(bay.isNew){
+  if (bay.isNew) {
     const layout = {};
     const seatStatus = "available";
 
-    for (let i = 0; i < bay.rows; i++){
+    for (let i = 0; i < bay.rows; i++) {
       // A B C ...
       const rowLabel = String.fromCharCode(65 + i);
       layout[rowLabel] = Array(bay.seats_per_row).fill(seatStatus);
@@ -35,17 +35,17 @@ BaySchema.pre("save", function (next){
     bay.layout = layout;
   }
   next();
-})
+});
 
 const HallSchema = new mongoose.Schema({
   hall_name: {
     type: String,
-    required: [true, 'Please provide a name for this hall'],
+    required: [true, "Please provide a name for this hall"],
   },
   bays: {
     type: [BaySchema],
-    required: true
-  }
+    required: true,
+  },
 });
 
 const CinemaSchema = new mongoose.Schema({
@@ -63,8 +63,9 @@ const CinemaSchema = new mongoose.Schema({
   },
   halls: {
     type: [HallSchema],
-    required: [true, "Please provide at least one hall for this cinema"]
-  }
+    required: [true, "Please provide at least one hall for this cinema"],
+  },
+  image: { type: String, required: [true, "Please upload an image"] }, // Save the image path as a string
 });
 
 module.exports = mongoose.model("Cinema", CinemaSchema);

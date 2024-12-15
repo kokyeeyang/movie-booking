@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const Movie = require("../models/Movie");
 const Cinema = require("../models/Cinema");
 const mongoose = require("../node_modules/mongoose");
+const multer = require("multer");
+const path = require("path");
 
 const {
   authenticateUser,
@@ -15,50 +17,83 @@ const {
   selectAllCinemas,
 } = require("../controllers/cinemaController");
 
-router.post("/create-cinema", createCinema, authorizePermissions("admin"));
-router
-  .route("/select-all-cinemas")
-  .get(selectAllCinemas, authorizePermissions("admin"));
-router.get('/:cinemaId/halls', async( req,res) => {
+const uploadDirectory = path.join("uploads");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDirectory);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+router.post(
+  "/create-cinema",
+  authenticateUser,
+  authorizePermissions("admin"),
+  upload.single("image"),
+  createCinema
+);
+router.get("/:cinemaId/halls", async (req, res) => {
   try {
-    const {cinemaId} = req.params;
+    const { cinemaId } = req.params;
 
-    const cinemaHalls = await Cinema.findById(cinemaId, 'halls');
+    const cinemaHalls = await Cinema.findById(cinemaId, "halls");
 
-    if(!cinemaHalls) {
-      return res.status(404).json({error: 'Cinema not found'});
+    if (!cinemaHalls) {
+      return res.status(404).json({ error: "Cinema hall not found" });
     }
     res.status(200).json(cinemaHalls.halls);
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred while fetching the halls' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the halls" });
   }
 });
-router.get('/:hallId/bays', async( req,res) => {
+router
+  .route("/show-all-cinema-locations")
+  // .get(authenticateUser, selectAllCinemas);
+  .get(selectAllCinemas);
+
+router.get("/:hallId/bays", async (req, res) => {
   try {
-    const {hall} = req.params;
+    const { hall } = req.params;
 
-    const cinema = await Cinema.findOne({
-      'halls._id': mongoose.Types.ObjectId(hall)
-    }, {
-      'halls.$' : 1
-    });
+    const cinema = await Cinema.findOne(
+      {
+        "halls._id": mongoose.Types.ObjectId(hall),
+      },
+      {
+        "halls.$": 1,
+      }
+    );
 
-    if(cinema) {
+    if (cinema) {
       const hall = cinema.halls[0];
       res.status(200).json(hall);
     } else {
-      return res.status(404).json({error: 'Hall not found with the provided id'});
+      return res
+        .status(404)
+        .json({ error: "Hall not found with the provided id" });
     }
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred while fetching the halls' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the halls" });
   }
 
   try {
-    const cinema = await Cinema.findOne({
-      'halls._id': mongoose.Types.ObjectId(hallId) // Match the hall by its _id
-    }, {
-      'halls.$': 1 // Only return the matched hall
-    });
+    const cinema = await Cinema.findOne(
+      {
+        "halls._id": mongoose.Types.ObjectId(hallId), // Match the hall by its _id
+      },
+      {
+        "halls.$": 1, // Only return the matched hall
+      }
+    );
 
     if (cinema) {
       const hall = cinema.halls[0]; // The matched hall will be the first (and only) element in the `halls` array

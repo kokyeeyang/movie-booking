@@ -12,16 +12,19 @@ const {
 const {
   createMovieListing,
   selectAllMovieListings,
+  showCinemaMovieListings,
   selectMovieListing,
 } = require("../controllers/movieListingController");
 
-router
-  .route("/create-movie-listing")
-  .post(authenticateUser, authorizePermissions("admin"), createMovieListing);
+router.route("/create-movie-listing").post(createMovieListing);
 
 router
   .route("/show-all-movie-listings")
   .get(authenticateUser, selectAllMovieListings);
+
+router
+  .route("/view-cinema-movie-listings/:id")
+  .get(authenticateUser, showCinemaMovieListings);
 
 router
   .route("/show-movie-listing/:id")

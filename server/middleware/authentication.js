@@ -6,6 +6,8 @@ const { attachCookiesToResponse } = require("../utils");
 const authenticateUser = async (req, res, next) => {
   // const token = req.signedCookies.token;
   const { refreshToken, accessToken } = req.signedCookies;
+  console.log("Access Token:", accessToken);
+  console.log("Refresh Token:", refreshToken);
   try {
     if (accessToken) {
       const payload = isTokenValid(accessToken);
@@ -21,7 +23,7 @@ const authenticateUser = async (req, res, next) => {
       user: payload.user.userId,
       refreshToken: payload.refreshToken,
     });
-    console.log("weweqe");
+    console.log("heloooooooooooooooooooooooooo");
     console.log(payload);
 
     if (!existingToken || !existingToken?.isValid) {

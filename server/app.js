@@ -43,6 +43,19 @@ const corsOptions = {
   credentials: true,
 };
 
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     console.log("Origin:", origin); // Debugging the incoming origin
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       console.error("Blocked by CORS:", origin); // Log the blocked origin
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+// };
+
 app.use(cors(corsOptions));
 // app.use(
 //   cors({

@@ -35,7 +35,7 @@ const CreateMovieListingPage = () => {
     const fetchCinemas = async (req, res) => {
       try {
         const response = await axios.get(
-          `${backendDomain}/api/v1/cinema/select-all-cinemas`
+          `${backendDomain}/api/v1/cinema/show-all-cinema-locations`
         );
 
         setCinemas(response.data);
@@ -103,6 +103,18 @@ const CreateMovieListingPage = () => {
       [name]: value,
     }));
 
+    if (name == "movie") {
+      const selectedMovie = movies.find((movie) => movie._id === value);
+
+      if (selectedMovie) {
+        setFormData((prevData) => ({
+          ...prevData,
+          startDate: selectedMovie.startDate,
+          endDate: selectedMovie.endDate,
+        }));
+      }
+    }
+
     // if a cinema is selected, fetch associated halls
     if (name == "cinema") {
       fetchHalls(value);
@@ -115,35 +127,54 @@ const CreateMovieListingPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let allSuccessful = true; // Track the success of all API calls
     try {
-      console.log("we are here!");
       // TODO need to save into multiple different documents, instead of one single document
       // also need to get the associated cinema seats, bay etc and save into movie listing
+      console.log(movies);
       for (let i = 0; i < formData.timing.length; i++) {
         const timing = formData.timing[i];
-        const movieListingData = {
-          movie: formData.movie,
-          cinema: formData.cinema,
-          hall: formData.hall,
-          showTime: timing,
-        };
-        const response = await axios.post(
-          `${backendDomain}/api/v1/movieListing/create-movie-listing`,
-          movieListingData,
-          {
-            headers: {
-              // "Content-Type": "multipart/form-data",
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
+        const start = new Date(formData.startDate);
+        const end = new Date(formData.endDate);
+
+        for (let day = start; day <= end; day.setDate(day.getDate() + 1)) {
+          const currentDate = new Date(day).toISOString().split("T")[0];
+
+          // for (const showTime of timing) {
+          const movieListingData = {
+            movie: formData.movie,
+            cinema: formData.cinema,
+            hall: formData.hall,
+            showTime: formData.timing[i],
+            showDate: currentDate,
+          };
+          console.log(movieListingData);
+          const response = await axios.post(
+            `${backendDomain}/api/v1/movieListing/create-movie-listing`,
+            movieListingData,
+            {
+              headers: {
+                // "Content-Type": "multipart/form-data",
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          );
+          if (response.status !== 201) {
+            allSuccessful = false; // Mark as failed if status is not 201
           }
-        );
-        if (response.status === 201) {
-          alert("Movie listing created!");
         }
+      }
+      if (allSuccessful) {
+        alert("Movie listing created!");
+      } else {
+        alert(
+          "Some movie listings could not be created. Check the console for details."
+        );
       }
     } catch (error) {
       console.error("Error:", error);
+      allSuccessful = false;
     }
   };
   return (

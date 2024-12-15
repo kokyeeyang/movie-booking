@@ -16,6 +16,7 @@ import CreateMoviePage from "./components/CreateMoviePage";
 import CreateCinemaPage from "./components/CreateCinemaPage";
 import CreateMovieListingPage from "./components/CreateMovieListingPage";
 import ViewAllMovieListingsPage from "./components/ViewAllMovieListingsPage.js";
+import ViewCinemaMovieTimesPage from "./components/ViewCinemaMovieTimesPage.js";
 import ViewAllCinemaLocationsPage from "./components/ViewAllCinemaLocationsPage.js";
 import CheckoutPage from "./components/MovieBooking/CheckoutPage.js";
 import AlertProvider from "./AlertContext";
@@ -81,6 +82,10 @@ function AppContent() {
         <ProtectedRoute
           path="/view-all-movie-listings"
           component={ViewAllMovieListingsPage}
+        ></ProtectedRoute>
+        <ProtectedRoute
+          path="/view-cinema-movie-times"
+          component={ViewCinemaMovieTimesPage}
         ></ProtectedRoute>
         <ProtectedRoute
           path="/view-all-cinema-locations"

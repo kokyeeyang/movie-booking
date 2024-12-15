@@ -5,12 +5,17 @@ const { StatusCodes } = require("http-status-codes");
 const createCinema = async (req, res) => {
   let { location, operator, capacity, halls } = req.body;
 
+  const image = req.file ? req.file.path : "";
+  const parsedHalls = halls ? JSON.parse(halls) : [];
+  console.log("inside cinema controller");
+  console.log(req.body);
   try {
     const cinema = await Cinema.create({
       location,
       operator,
       capacity,
-      halls,
+      halls: parsedHalls,
+      image,
     });
     res.status(201).json(cinema);
   } catch (error) {
