@@ -84,17 +84,20 @@ const MovieListingsPage = () => {
             ) : cinemaLocation.length > 0 ? (
               <div className="h-full w-[300px] pb-8 sm:w-[20%] md:w-[80%] lg:w-[100%] h-[250px] md:h-[300px] lg:h-[350px]">
                 <Slider {...settings}>
-                  {cinemaLocation.map((cinema) => (
-                    <div
-                      key={cinema._id}
-                      className="w-full lg:w-[90%] sm:w-[50%] h-auto object-cover ml-6 sm:ml-2"
-                      onClick={() => redirectToCinemaPage(cinema._id)}
-                    >
-                      <img src={cinema.image} alt={cinema.name} />
-                      <h3>{cinema.name}</h3>
-                      <p>{cinema.location}</p>
-                    </div>
-                  ))}
+                  {cinemaLocation.map((cinema) => {
+                    const imageUrl = `${backendDomain}/${cinema.image}`;
+                    return (
+                      <div
+                        key={cinema._id}
+                        className="w-full lg:w-[90%] sm:w-[50%] h-auto object-cover ml-6 sm:ml-2"
+                        onClick={() => redirectToCinemaPage(cinema._id)}
+                      >
+                        <img src={imageUrl} alt={cinema.name} />
+                        <h3>{cinema.name}</h3>
+                        <p>{cinema.location}</p>
+                      </div>
+                    );
+                  })}
                 </Slider>
               </div>
             ) : (
