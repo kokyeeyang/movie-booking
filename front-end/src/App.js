@@ -99,6 +99,10 @@ function AppContent() {
           path="/book-movie"
           component={MovieBookingPage}
         ></ProtectedRoute>
+        <ProtectedRoute
+          path="/cinema-movie-listings"
+          component={MovieBookingPage}
+        ></ProtectedRoute>
       </Switch>
     </>
   );

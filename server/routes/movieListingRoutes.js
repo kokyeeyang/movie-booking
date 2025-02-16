@@ -14,6 +14,7 @@ const {
   selectAllMovieListings,
   showCinemaMovieListings,
   selectMovieListing,
+  selectMoviesByDateAndCinema,
 } = require("../controllers/movieListingController");
 
 router.route("/create-movie-listing").post(createMovieListing);
@@ -22,6 +23,7 @@ router
   .route("/show-all-movie-listings")
   .get(authenticateUser, selectAllMovieListings);
 
+// we can use this already to get movies available for each individual cinema and date
 router
   .route("/view-cinema-movie-listings/:id")
   .get(authenticateUser, showCinemaMovieListings);
