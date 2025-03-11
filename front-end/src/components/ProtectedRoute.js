@@ -1,31 +1,31 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import { useRouter } from "next/router";
 import { useAppContext } from "../AppContext";
+import { useEffect, useState } from "react";
 
-const ProtectedRoute = ({ component: Component, roles, ...rest }) => {
-  const { user, isLoading } = useAppContext();
+const ProtectedRoute = (WrappedComponent, roles = []) => {
+  return function WithAuth(props) {
+    const { user, isLoading } = useAppContext();
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
+    useEffect(() => {
+      if (!isLoading) {
         if (!user) {
-          return <Redirect to="/login" />;
+          router.replace("/login"); // Redirect to login if not authenticated
+        } else if (roles.length > 0 && !roles.includes(user.role)) {
+          router.replace("/homepage"); // Redirect if role is unauthorized
+        } else {
+          setLoading(false); // Allow rendering
         }
-        if (roles && !roles.includes(user.role)) {
-          console.log(
-            `User role ${user.role} not authorized, redirecting to homepage`
-          );
-          return <Redirect to="/homepage" />;
-        }
-        console.log(`User role ${user.role} authorized, rendering component`);
-        return <Component {...props} />;
-      }}
-    />
-  );
+      }
+    }, [user, isLoading, router]);
+
+    if (isLoading || loading) {
+      return <div>Loading...</div>;
+    }
+
+    return <WrappedComponent {...props} />;
+  };
 };
 
 export default ProtectedRoute;

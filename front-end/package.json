@@ -17,10 +17,11 @@
     "konva": "^9.3.14",
     "moment": "^2.30.1",
     "mui": "^0.0.1",
+    "next": "^15.2.1",
     "normalize.css": "^8.0.1",
-    "react": "^18.3.1",
+    "react": "^19.0.0",
     "react-datepicker": "^7.3.0",
-    "react-dom": "^18.3.1",
+    "react-dom": "^19.0.0",
     "react-icons": "^4.7.1",
     "react-konva": "^18.2.10",
     "react-router-dom": "^5.2.1",
@@ -33,11 +34,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "CI=false react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "start-custom-port": "react-scripts start --port 8080"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "eslintConfig": {
     "extends": [
