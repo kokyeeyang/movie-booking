@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, ChangeEvent, FormEvent } from "react";
 import "../styles/CreateEntryPage.css";
 import "../styles/SelectBoxForm.css";
 import DatePicker from "react-datepicker";
@@ -6,9 +6,21 @@ import { AppContext } from "../AppContext";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 
-const CreateMoviePage = () => {
-  const { backendDomain } = useContext(AppContext);
-  const [formData, setFormData] = useState({
+interface FormData {
+  movieName: string;
+  duration: string;
+  genre: string[];
+  ageRating: string;
+  startDate: Date | null;
+  endDate: Date | null;
+  image: File | null;
+}
+
+const CreateMoviePage: React.FC = () => {
+  const appContext = useContext(AppContext);
+  const backendDomain = appContext?.backendDomain || "localhost:5000";
+  // const { backendDomain } = useContext(AppContext);
+  const [formData, setFormData] = useState<FormData>({
     movieName: "",
     duration: "",
     genre: [],
@@ -18,11 +30,11 @@ const CreateMoviePage = () => {
     image: null,
   });
 
-  const [selectedBox, setSelectedBox] = useState([]);
+  const [selectedBox, setSelectedBox] = useState<string[]>([]);
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image") {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, files } = e.target as HTMLInputElement;
+    if (name === "image" && files) {
       setFormData((prevData) => ({
         ...prevData,
         image: files[0],
@@ -35,7 +47,7 @@ const CreateMoviePage = () => {
     }
   };
 
-  const handleDateChange = (dates) => {
+  const handleDateChange = (dates: [Date | null, Date | null]) => {
     const [start, end] = dates;
     setFormData((prevData) => ({
       ...prevData,
@@ -44,13 +56,13 @@ const CreateMoviePage = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const formDataToSend = new FormData();
     formDataToSend.append("movieName", formData.movieName);
     formDataToSend.append("duration", formData.duration);
-    formDataToSend.append("genre", formData.genre); // Adjust format if needed
+    formDataToSend.append("genre", JSON.stringify(formData.genre)); // Ensure proper format
     formDataToSend.append("ageRating", formData.ageRating);
     formDataToSend.append(
       "startDate",
@@ -63,7 +75,6 @@ const CreateMoviePage = () => {
     if (formData.image) {
       formDataToSend.append("image", formData.image);
     }
-    console.log(formDataToSend);
 
     try {
       const response = await axios.post(
@@ -85,7 +96,7 @@ const CreateMoviePage = () => {
     }
   };
 
-  const toggleBox = (genreId) => {
+  const toggleBox = (genreId: string) => {
     if (selectedBox.includes(genreId)) {
       setSelectedBox(selectedBox.filter((value) => value !== genreId));
       setFormData((prevData) => ({
@@ -130,7 +141,6 @@ const CreateMoviePage = () => {
             type="text"
             id="duration"
             name="duration"
-            placeholder="required"
             value={formData.duration}
             onChange={handleChange}
             required
@@ -139,12 +149,10 @@ const CreateMoviePage = () => {
         <div className="form-group">
           <label htmlFor="genre">Genre</label>
           <div className="box-container">
-            {genres.map((genre, i) => (
+            {genres.map((genre) => (
               <label key={genre.value} className="select-box-label">
                 <div
-                  className={`select-box ${
-                    selectedBox.includes(genre.value) ? "selected" : ""
-                  }`}
+                  className={`select-box ${selectedBox.includes(genre.value) ? "selected" : ""}`}
                   onClick={() => toggleBox(genre.value)}
                   aria-checked={selectedBox.includes(genre.value)}
                   role="checkbox"
@@ -157,12 +165,7 @@ const CreateMoviePage = () => {
         </div>
         <div className="form-group">
           <label htmlFor="ageRating">Age Rating</label>
-          <select
-            id="ageRating"
-            name="ageRating"
-            value={formData.ageRating}
-            onChange={handleChange}
-          >
+          <select id="ageRating" name="ageRating" value={formData.ageRating} onChange={handleChange}>
             <option value="" disabled></option>
             <option value="all">Suitable for all ages</option>
             <option value="13">PG-13</option>
@@ -171,33 +174,22 @@ const CreateMoviePage = () => {
         </div>
         <div className="form-group">
           <label htmlFor="dateRange">Movie date range</label>
-          <div>
-            <DatePicker
-              selected={formData.startDate}
-              onChange={handleDateChange}
-              startDate={formData.startDate}
-              endDate={formData.endDate}
-              selectsRange
-              dateFormat="yyyy/MM/dd"
-              placeholderText="Select a date range"
-              name="dateRange"
-              isClearable={true}
-            />
-          </div>
+          <DatePicker
+            selected={formData.startDate}
+            onChange={handleDateChange}
+            startDate={formData.startDate}
+            endDate={formData.endDate}
+            selectsRange
+            dateFormat="yyyy/MM/dd"
+            placeholderText="Select a date range"
+            isClearable
+          />
         </div>
         <div className="form-group">
           <label htmlFor="image">Upload image</label>
-          <input
-            type="file"
-            id="image"
-            name="image"
-            accept="image/*"
-            onChange={handleChange}
-          />
+          <input type="file" id="image" name="image" accept="image/*" onChange={handleChange} />
         </div>
-        <button type="submit" className="submit-button">
-          Submit
-        </button>
+        <button type="submit" className="submit-button">Submit</button>
       </form>
     </div>
   );

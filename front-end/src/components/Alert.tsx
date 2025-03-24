@@ -1,7 +1,7 @@
 import React from "react";
 import { useAlert } from "../AlertContext";
 
-const Alert = () => {
+const Alert: React.FC = () => {
   const { alert } = useAlert();
 
   if (!alert) return null;

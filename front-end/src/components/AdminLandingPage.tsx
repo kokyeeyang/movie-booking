@@ -1,15 +1,33 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { AppContext } from "../AppContext";
+import { AppContext, useAppContext } from "../AppContext";
 import { useAlert } from "../AlertContext";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import "../styles/AdminLandingPage.css";
+import styles from "@/styles/AdminLandingPage.module.css"; // Update CSS import for Next.js
+
+// Define types for movie listings
+interface CinemaDetails {
+  operator: string;
+  location: string;
+  halls: { hall_name: string }; // Adjust if `halls` is an array
+}
+
+interface MovieDetails {
+  movieName: string;
+}
+
+interface MovieListing {
+  _id: string;
+  cinemaDetails: CinemaDetails;
+  movieDetails: MovieDetails;
+  showTime: string;
+}
 
 const style = {
-  position: "absolute",
+  position: "absolute" as const, // Ensures TypeScript recognizes it correctly
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -20,14 +38,16 @@ const style = {
   p: 4,
 };
 
-const AdminLandingPage = () => {
+const AdminLandingPage: React.FC = () => {
   console.log("just came in!");
   const router = useRouter();
-  const { backendDomain, user } = useContext(AppContext);
-  const [loading, setLoading] = useState(true);
+  const appContext = useContext(AppContext);
+  const backendDomain = appContext?.backendDomain || "https://localhost:5000";
+  const {user} = useAppContext();
   const { showAlert } = useAlert();
-  const [movieListings, setMovieListing] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [movieListings, setMovieListing] = useState<MovieListing[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!user) {
@@ -45,7 +65,7 @@ const AdminLandingPage = () => {
             credentials: "include",
           }
         );
-        const data = await response.json();
+        const data: MovieListing[] = await response.json();
         setMovieListing(data);
         console.log(data);
       } catch (error) {
@@ -58,18 +78,18 @@ const AdminLandingPage = () => {
     fetchMovieListings();
   }, [backendDomain, showAlert, user, router]);
 
-  const userFirstName = user?.firstname || "";
+  const userFirstName: string = user?.firstname || "";
 
-  const navigateTo = (path) => {
+  const navigateTo = (path: string): void => {
     router.push(path);
   };
 
   return (
-    <div className="landing-page">
+    <div className={styles.landingPage}>
       <h1>Welcome! {userFirstName} </h1>
-      <h2>Admin dashboard</h2>
+      <h2>Admin Dashboard</h2>
 
-      <div className="admin-panel">
+      <div className={styles.adminPanel}>
         <Button
           sx={{
             color: "black",
@@ -111,7 +131,7 @@ const AdminLandingPage = () => {
           backgroundColor: "green",
           "&:hover": { backgroundColor: "yellow" },
         }}
-        className="view-movie-listings"
+        className={styles.viewMovieListings}
         onClick={() => setOpen(true)}
       >
         View movie listings
@@ -130,10 +150,10 @@ const AdminLandingPage = () => {
                   movieListings.map((listing) => (
                     <li key={listing._id}>
                       <div>
-                        Cinema: {listing.cinemaDetails.operator} -{" "}
-                        {listing.cinemaDetails.location} <br />
-                        Movie: {listing.movieDetails.movieName} <br />
-                        Halls: {listing.cinemaDetails.halls.hall_name} <br />
+                        Cinema: {listing.cinemaDetails?.operator} -{" "}
+                        {listing.cinemaDetails?.location} <br />
+                        Movie: {listing.movieDetails?.movieName} <br />
+                        Halls: {listing.cinemaDetails?.halls?.hall_name} <br />
                         Time: {listing.showTime}
                       </div>
                     </li>
