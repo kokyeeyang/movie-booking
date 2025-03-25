@@ -48,11 +48,12 @@ const CreateMoviePage: React.FC = () => {
   };
 
   const handleDateChange = (dates: [Date | null, Date | null]) => {
+    if(!dates) return;
     const [start, end] = dates;
     setFormData((prevData) => ({
       ...prevData,
-      startDate: start,
-      endDate: end,
+      startDate: start ?? null,
+      endDate: end ?? null,
     }));
   };
 
@@ -175,10 +176,10 @@ const CreateMoviePage: React.FC = () => {
         <div className="form-group">
           <label htmlFor="dateRange">Movie date range</label>
           <DatePicker
-            selected={formData.startDate}
-            onChange={handleDateChange}
-            startDate={formData.startDate}
-            endDate={formData.endDate}
+            selected={formData.startDate || undefined}
+            onChange={(update) => handleDateChange(update)}
+            startDate={formData.startDate || undefined}
+            endDate={formData.endDate || undefined}
             selectsRange
             dateFormat="yyyy/MM/dd"
             placeholderText="Select a date range"

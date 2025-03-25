@@ -1,67 +1,80 @@
-import { useState, useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useState, useContext, FormEvent, ChangeEvent } from "react";
+import { useRouter } from "next/router";
 import axios from "axios";
 import { AppContext } from "../AppContext";
 import { useAlert } from "../AlertContext";
+import Link from "next/link";
 
-function LoginForm({ onSubmit }) {
-  const { saveUser, backendDomain } = useContext(AppContext);
-  const history = useHistory();
+interface User {
+  id: string;
+  email: string;
+  role: "user" | "admin";
+}
+interface LoginFormProps {
+  onSubmit?: (user: User) => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+  const appContext = useContext(AppContext);
+  const {saveUser, backendDomain = "http://localhost:5000"} = appContext || {};
+  const router = useRouter();
+  const { showAlert } = useAlert();
+
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
-  // const { backendDomain } = useContext(AppContext);
-  const { showAlert } = useAlert();
-  const handleChange = (e) => {
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
-  const loginUser = async (email, password) => {
+
+  const loginUser = async (email: string, password: string) => {
     try {
       if (email && password) {
         const login = { email, password };
-        const data = await axios.post(
+        const { data } = await axios.post(
           `${backendDomain}/api/v1/auth/login`,
           login,
-          { withCredentials: true, credentials: "include" }
+          { withCredentials: true }
         );
-        // console.log(data.data.user.role);
-        showAlert("Logged in successfully!", "success");
-        saveUser(data.data.user);
-        console.log(data.data.user);
-        if (data.data.user.role === "user") {
-          history.push("/homepage", {
-            data: JSON.stringify(data.data.user),
-          });
-        } else if (data.data.user.role === "admin") {
-          history.push("/admin-landing-page", {
-            data: JSON.stringify(data.data.user),
-          });
+
+        if(saveUser){
+          showAlert("Logged in successfully!", "success");
+          saveUser(data.data.user);
         }
-        return data.user;
+        
+        if (data.data.user.role === "user") {
+          router.push({
+            pathname: "/homepage",
+            query: {data: JSON.stringify(data.data.user)}
+          })
+        } else if (data.data.user.role === "admin") {
+          router.push({
+            pathname: "/admin-landing-page",
+            query: {data:JSON.stringify(data.data.user)}
+          })
+        }
+        return data.data.user;
       }
-      // onSubmit(user);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    console.log("byeee");
-    e.preventDefault();
-
-    try {
-      console.log('wqeqeqeq');
-      const user = await loginUser(values.email, values.password);
     } catch (error) {
       console.error("Login failed:", error);
       showAlert("Login failed. Please try again.", "error");
     }
   };
 
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      await loginUser(values.email, values.password);
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
   return (
     <form className="form" onSubmit={handleSubmit}>
-      <h4>login form</h4>
+      <h4>Login Form</h4>
       <div className="form-row">
         <label htmlFor="email" className="form-label">
           Email
@@ -87,13 +100,13 @@ function LoginForm({ onSubmit }) {
         />
       </div>
       <button type="submit" className="btn btn-block submit-btn">
-        submit
+        Submit
       </button>
       <p>
-        Don't have an account? <Link to="/sign-up">Sign up</Link>
+        Don't have an account? <Link href="/sign-up">Sign up</Link>
       </p>
     </form>
   );
-}
+};
 
 export default LoginForm;
