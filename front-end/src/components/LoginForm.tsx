@@ -1,80 +1,68 @@
-import { useState, useContext, FormEvent, ChangeEvent } from "react";
-import { useRouter } from "next/router";
+import { useState, useContext, ChangeEvent, FormEvent } from "react";
+import Link from "next/link";
+import {useRouter} from "next/navigation";
 import axios from "axios";
 import { AppContext } from "../AppContext";
 import { useAlert } from "../AlertContext";
-import Link from "next/link";
 
-interface User {
-  id: string;
-  email: string;
-  role: "user" | "admin";
-}
 interface LoginFormProps {
-  onSubmit?: (user: User) => void;
+  onSubmit?: (user:any) => void;
 }
-
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+const LoginForm = ({onSubmit} : LoginFormProps) => {
   const appContext = useContext(AppContext);
-  const {saveUser, backendDomain = "http://localhost:5000"} = appContext || {};
+  const backendDomain = appContext?.backendDomain || "http://localhost:5000";
+  // const { saveUser, backendDomain } = useContext(AppContext);
   const router = useRouter();
-  const { showAlert } = useAlert();
-
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
-
+  // const { backendDomain } = useContext(AppContext);
+  const { showAlert } = useAlert();
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
-
   const loginUser = async (email: string, password: string) => {
     try {
       if (email && password) {
         const login = { email, password };
-        const { data } = await axios.post(
+        const data = await axios.post(
           `${backendDomain}/api/v1/auth/login`,
           login,
           { withCredentials: true }
         );
-
-        if(saveUser){
-          showAlert("Logged in successfully!", "success");
-          saveUser(data.data.user);
-        }
-        
+        // console.log(data.data.user.role);
+        showAlert("Logged in successfully!", "success");
+        appContext?.setUser(data.data.user);
         if (data.data.user.role === "user") {
-          router.push({
-            pathname: "/homepage",
-            query: {data: JSON.stringify(data.data.user)}
-          })
+          router.push("/homepage");
         } else if (data.data.user.role === "admin") {
-          router.push({
-            pathname: "/admin-landing-page",
-            query: {data:JSON.stringify(data.data.user)}
-          })
+          router.push("/admin-landing-page");
         }
         return data.data.user;
       }
+      // onSubmit(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    console.log("byeee");
+    e.preventDefault();
+
+    try {
+      console.log('wqeqeqeq');
+      const user = await loginUser(values.email, values.password);
     } catch (error) {
       console.error("Login failed:", error);
       showAlert("Login failed. Please try again.", "error");
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      await loginUser(values.email, values.password);
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
-  };
-
   return (
     <form className="form" onSubmit={handleSubmit}>
-      <h4>Login Form</h4>
+      <h4>login form</h4>
       <div className="form-row">
         <label htmlFor="email" className="form-label">
           Email
@@ -100,13 +88,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         />
       </div>
       <button type="submit" className="btn btn-block submit-btn">
-        Submit
+        submit
       </button>
       <p>
         Don't have an account? <Link href="/sign-up">Sign up</Link>
       </p>
     </form>
   );
-};
+}
 
 export default LoginForm;
