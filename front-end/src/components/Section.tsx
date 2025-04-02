@@ -1,12 +1,35 @@
 import React from "react";
 import { Group, Rect, Text, Image } from "react-konva";
+import Konva from "konva";
 import Seat from "./Seat";
 import { getBayWidth } from "./layout";
+// import { Group } from "konva/lib/Group";
+// import { Group as KonvaGroup} from "konva";
 
-export default React.memo(
-  ({ section, height, x, y, onSelectSeat, selectedSeatsIds }) => {
-    // `section` instead of `bay`
-    const containerRef = React.useRef();
+interface SectionProps {
+  section: Bay;
+  height: number;
+  x: number;
+  y :number;
+  isSelected: boolean;
+  onSelectSeat : (seatName:string) => void;
+  selectedSeatsIds: string[];
+}
+
+interface Seat {
+  name: string;
+  status: "booked" | "available";
+}
+
+interface Bay {
+  bay_name: string;
+  rows?: number;
+  seats_per_row?: number;
+  layout: Record<string, Seat[]>
+}
+
+const Section = ({section, height, x, y, onSelectSeat, selectedSeatsIds} : SectionProps) => {
+  const containerRef = React.useRef<Konva.Group>(null);
 
     let bayName = section.bay_name;
     if (section.bay_name == "Bay 1") {
@@ -19,7 +42,7 @@ export default React.memo(
     React.useEffect(() => {
       if (containerRef.current) {
         containerRef.current.cache();
-        containerRef.current.getLayer().batchDraw();
+        containerRef.current.getLayer()?.batchDraw();
       }
     }, [section, selectedSeatsIds]);
 
@@ -64,5 +87,6 @@ export default React.memo(
         />
       </Group>
     );
-  }
-);
+};
+
+export default Section;

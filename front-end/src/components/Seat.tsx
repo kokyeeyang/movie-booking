@@ -2,7 +2,18 @@ import React from "react";
 import { Rect } from "react-konva";
 import { SEAT_SIZE } from "./layout";
 
-function getColor(isBooked, isSelected) {
+interface SeatProps {
+  x: number;
+  y: number;
+  data: {
+    name: string;
+    status: "booked" | 'available';
+  };
+  isSelected: boolean;
+  onSelect: (seatName: string) => void;
+}
+
+const getColor = (isBooked: boolean, isSelected: boolean): string => {
   if (isSelected) {
     return "brown";
   } else if (isBooked) {
@@ -10,25 +21,25 @@ function getColor(isBooked, isSelected) {
   } else {
     return "white";
   }
-}
+};
 
-const Seat = props => {
-  const isBooked = props.data.status === "booked";
+const Seat = ({x, y, data, isSelected, onSelect} : SeatProps) => {
+  const isBooked = data.status === "booked";
   // Toggle selection on click
   const handleClick = () => {
     if (isBooked) return; // Do nothing if the seat is booked
-    props.onSelect(props.data.name); // Use id to identify the seat
+    onSelect(data.name); // Use id to identify the seat
   };
   
   return (
     <Rect
-      x={props.x}
-      y={props.y}
+      x={x}
+      y={y}
       width={SEAT_SIZE}
       height={SEAT_SIZE}
       strokeWidth={1}
       stroke="lightgrey"
-      fill={getColor(isBooked, props.isSelected)}
+      fill={getColor(isBooked, isSelected)}
       onClick={handleClick}
     />
   );

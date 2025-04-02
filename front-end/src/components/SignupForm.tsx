@@ -1,12 +1,16 @@
 import React, { useState, useContext } from "react";
-import { useHistory } from "react-router-dom"; // Import Link from react-router-dom
+// import { useHistory } from "react-router-dom"; // Import Link from react-router-dom
+import {useRouter} from "next/router";
 import axios from "axios";
 import { AppContext } from "../AppContext";
 
-function SignupForm(onSubmit) {
+function SignupForm() {
   // the properties here are the names in the signup form
-  const { backendDomain } = useContext(AppContext);
-  const history = useHistory();
+  const appContext = useContext(AppContext);
+  const backendDomain = appContext?.backendDomain || process.env.NEXT_PUBLIC_BACKEND_URL || "https://localhost:5000";
+  // const { backendDomain } = useContext(AppContext);
+  // const history = useHistory();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -15,7 +19,7 @@ function SignupForm(onSubmit) {
     confirmPassword: "",
   });
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -23,7 +27,7 @@ function SignupForm(onSubmit) {
     }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       const response = await axios.post(
@@ -33,9 +37,9 @@ function SignupForm(onSubmit) {
 
       if (response.status == 201) {
         alert("Successfully signed up!");
-        history.push("/login");
+        router.push("/login");
       }
-    } catch (error) {
+    } catch (error:any) {
       if (error.response && error.response.data && error.response.data.error) {
         console.log(error);
         alert(error.response.data.error);
@@ -44,11 +48,11 @@ function SignupForm(onSubmit) {
       }
     }
 
-    const onSubmit = async (event) => {
-      console.log(event);
-    };
+    // const onSubmit = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    //   console.log(event);
+    // };
 
-    onSubmit(formData);
+    // onSubmit(formData);
   };
 
   return (
