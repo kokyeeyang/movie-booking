@@ -1,8 +1,6 @@
 import React from "react";
-import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { loadStripe } from "@stripe/stripe-js";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import { AppContext } from "../../AppContext";
 import CheckoutForm from "./CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 

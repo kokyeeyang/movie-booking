@@ -4,7 +4,28 @@ import Seat from "./Seat";
 
 import { SEATS_DISTANCE, SUBSECTION_PADDING, SEAT_SIZE } from "./layout";
 
-export default ({ width, x, y, data, onSelectSeat, selectedSeatsIds }) => {
+interface SeatData {
+  name: string;
+  [key: string]: any;
+}
+
+interface RowData {
+  [key:string]: SeatData[];
+}
+
+interface SectionProps {
+  width: number;
+  x: number;
+  y: number;
+  data: {
+    name: string;
+    container_by_rows: RowData;
+  };
+  onSelectSeat: (seat: SeatData) => void;
+  selectedSeatsIds: string[];
+}
+
+const seatLayout = ({width, x, y, data, onSelectSeat, selectedSeatsIds} : SectionProps) => {
   return (
     <Group x={x} y={y}>
       {Object.keys(data.container_by_rows).map((rowKey, rowIndex) => {
@@ -35,22 +56,6 @@ export default ({ width, x, y, data, onSelectSeat, selectedSeatsIds }) => {
         );
       })}
 
-      {/* {data.container_by_rows['A'].map((_, seatIndex) => {
-        return (
-          <Text
-            text={(seatIndex + 1).toString()}
-            x={seatIndex * SEATS_DISTANCE + 98 - 50}
-            width={100}
-            y={
-              Object.keys(data.container_by_rows).length * SEATS_DISTANCE +
-              SUBSECTION_PADDING
-            }
-            key={"label-bottom" + seatIndex}
-            align="center"
-          />
-        );
-      })} */}
-
       {Object.keys(data.container_by_rows).map((row, rowIndex) => {
         // Check if this is the last row
         const isLastRow =
@@ -80,4 +85,4 @@ export default ({ width, x, y, data, onSelectSeat, selectedSeatsIds }) => {
       <Text text={data.name} width={width} padding={20} align="center" />
     </Group>
   );
-};
+}

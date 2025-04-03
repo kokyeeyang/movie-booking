@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
 // import { Link, useLocation } from "react-router-dom";
 // import { AppContext } from "../AppContext";
-import { AppContext, useAppContext } from "../AppContext";
+import { AppContext, useAppContext } from "../src/AppContext";
 import { useRouter } from "next/router";
-import { useAlert } from "../AlertContext";
+import { useAlert } from "../src/AlertContext";
 
 const NormalUsersLandingPage = () => {
   // const [bookedTickets, setBookedTickets]

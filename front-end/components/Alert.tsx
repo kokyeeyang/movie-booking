@@ -1,5 +1,5 @@
 import React from "react";
-import { useAlert } from "../AlertContext";
+import { useAlert } from "../src/AlertContext";
 
 const Alert: React.FC = () => {
   const { alert } = useAlert();

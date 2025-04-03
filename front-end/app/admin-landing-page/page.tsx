@@ -1,4 +1,4 @@
-import AdminLandingPageComponent  from "@/components/AdminLandingPage";
+import AdminLandingPageComponent  from "components/AdminLandingPage";
 export default function AdminLandingPage() {
     return (
         <div>

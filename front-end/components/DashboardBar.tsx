@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
-import { AppContext, useAppContext } from "../AppContext";
-import { useAlert } from "../AlertContext";
-import "../styles/DashboardBar.css";
+import { AppContext, useAppContext } from "../src/AppContext";
+import { useAlert } from "../src/AlertContext";
+import "../styles/DashboardBar.module.css";
 
 const router = useRouter();
 // Define the expected structure of the user object

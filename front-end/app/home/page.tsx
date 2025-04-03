@@ -1,4 +1,4 @@
-import NormalUsersLandingPageComponent from "@/components/NormalUsersLandingPage";
+import NormalUsersLandingPageComponent from "components/NormalUsersLandingPage";
 
 export default function NormalUserHomePage () {
     return (

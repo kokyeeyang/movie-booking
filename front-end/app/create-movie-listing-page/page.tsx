@@ -1,4 +1,4 @@
-import CreateMovieListingPageComponent from "@/components/CreateMovieListingPage";
+import CreateMovieListingPageComponent from "components/CreateMovieListingPage";
 
 export default function CreateMovieListing () {
     return (

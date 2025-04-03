@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, ChangeEvent, FormEvent } from "react";
 import "../styles/CreateEntryPage.css";
 import "../styles/SelectBoxForm.css";
-import { AppContext } from "../AppContext";
+import { AppContext } from "../src/AppContext";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 

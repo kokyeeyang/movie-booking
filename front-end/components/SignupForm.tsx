@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 // import { useHistory } from "react-router-dom"; // Import Link from react-router-dom
 import {useRouter} from "next/router";
 import axios from "axios";
-import { AppContext } from "../AppContext";
+import { AppContext } from "../src/AppContext";
 
 function SignupForm() {
   // the properties here are the names in the signup form

@@ -3,21 +3,27 @@ import "../styles/ViewAllMovieListingsPage.css";
 // import "../styles/style.css";
 // import MainStage from "../MainStage";
 import Box from "@mui/material/Box";
-import { AppContext } from "../AppContext";
-import { useAlert } from "../AlertContext";
+import { AppContext } from "../src/AppContext";
+import { useAlert } from "../src/AlertContext";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useRouter } from "next/navigation";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const MovieListingsPage = () => {
-  const { backendDomain } = useContext(AppContext);
-  const [cinemaLocation, setCinemaLocation] = useState([]);
+const MovieLocationsPage = () => {
+  const router = useRouter();
+  const appContext = useContext(AppContext);
+  const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN || "http://localhost:5000";
   const { showAlert } = useAlert();
-  const { loading, setLoading } = useState(true);
-  const history = useHistory();
+  interface Cinema {
+    _id: string;
+    name: string;
+    location: string;
+    image: string;
+  }
+  const [cinemaLocation, setCinemaLocation] = useState<Cinema[]>([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchCinemaLocations = async () => {
       try {
@@ -41,67 +47,58 @@ const MovieListingsPage = () => {
     };
     fetchCinemaLocations();
   }, [backendDomain, showAlert]);
-  const handleAction = (movieId) => {
-    alert(`Action clicked for movie ID: ${movieId}`);
-  };
-  const redirectToCinemaPage = (cinemaId) => {
-    // console.log(cinemaId);
-    history.push("view-cinema-movie-times", { data: cinemaId });
+ 
+  const redirectToCinemaPage = (cinemaId: string) => {
+    router.push(`/view-cinema-movie-times?cinemaId=${cinemaId}`);
   };
 
-  const settings = {
+  const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 640, // Tailwind's 'sm' breakpoint (mobile screens)
-        settings: {
-          slidesToShow: 1, // Show only one slide
-        },
-      },
+      { breakpoint: 1024, settings: { slidesToShow: 2 } },
+      { breakpoint: 640, settings: { slidesToShow: 1 } },
     ],
   };
   return (
     <div className="container mx-auto p-4">
-      <Box className="bg-white border-2 border-black p-4 mb-4 sm:bg-red">
-        <Typography id="modal-modal-title" variant="h6" component="h2">
+      <Box className="bg-white border-2 border-black p-4 mb-4">
+        <Typography variant="h6" component="h2">
           Cinema Locations
         </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+        <Typography sx={{ mt: 2 }}>
           <section className="movie-listings">
-            <h2 className="ml-10">Cinemas</h2>
+            <h2 className="ml-10 font-semibold text-lg">Cinemas</h2>
             {loading ? (
-              <p>Loading...</p>
+              <p className="text-gray-500">Loading...</p>
             ) : cinemaLocation.length > 0 ? (
-              <div className="h-full w-[300px] pb-8 sm:w-[20%] md:w-[80%] lg:w-[100%] h-[250px] md:h-[300px] lg:h-[350px]">
-                <Slider {...settings}>
+              <div className="w-full pb-8 md:w-[80%] lg:w-[100%]">
+                <Slider {...sliderSettings}>
                   {cinemaLocation.map((cinema) => {
                     const imageUrl = `${backendDomain}/${cinema.image}`;
                     return (
                       <div
                         key={cinema._id}
-                        className="w-full lg:w-[90%] sm:w-[50%] h-auto object-cover ml-6 sm:ml-2"
+                        className="w-full lg:w-[90%] sm:w-[50%] h-auto object-cover ml-6 sm:ml-2 cursor-pointer"
                         onClick={() => redirectToCinemaPage(cinema._id)}
                       >
-                        <img src={imageUrl} alt={cinema.name} />
-                        <h3>{cinema.name}</h3>
-                        <p>{cinema.location}</p>
+                        <img
+                          src={imageUrl}
+                          alt={cinema.name}
+                          className="w-full h-40 object-cover rounded-lg shadow-md"
+                        />
+                        <h3 className="mt-2 text-lg font-semibold">{cinema.name}</h3>
+                        <p className="text-gray-600">{cinema.location}</p>
                       </div>
                     );
                   })}
                 </Slider>
               </div>
             ) : (
-              <p>No cinemas available.</p>
+              <p className="text-gray-500">No cinemas available.</p>
             )}
           </section>
         </Typography>
@@ -136,4 +133,4 @@ const MovieListingsPage = () => {
   </Slider>
 </div>; */
 
-export default MovieListingsPage;
+export default MovieLocationsPage;

@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import Box from "@mui/material/Box";
-import { AppContext } from "../AppContext";
-import { useAlert } from "../AlertContext";
+import { AppContext } from "../src/AppContext";
+import { useAlert } from "../src/AlertContext";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";

@@ -8,8 +8,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { AppProvider, useAppContext } from "./AppContext";
 import AlertProvider from "./AlertContext";
-import Alert from "./components/Alert";
-import DashboardBar from "./components/DashboardBar";
+import Alert from "../components/Alert";
+import DashboardBar from "../components/DashboardBar";
 
 function MyApp({ Component, pageProps }: { Component: any; pageProps: any }) {
   const router = useRouter();

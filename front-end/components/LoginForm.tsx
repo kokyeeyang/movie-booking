@@ -2,8 +2,8 @@ import { useState, useContext, ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import axios from "axios";
-import { AppContext } from "../AppContext";
-import { useAlert } from "../AlertContext";
+import { AppContext } from "../src/AppContext";
+import { useAlert } from "../src/AlertContext";
 
 interface LoginFormProps {
   onSubmit?: (user:any) => void;

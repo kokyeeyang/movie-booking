@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useAppContext } from "../AppContext";
+import { useAppContext } from "../src/AppContext";
 import { useEffect, useState } from "react";
 
 const ProtectedRoute = (WrappedComponent, roles = []) => {

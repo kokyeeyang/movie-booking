@@ -6,7 +6,7 @@ import Section from "./Section";
 import * as layout from "./layout";
 import "../styles/style.css";
 import PurchaseTicketFooter from "./MovieBooking/PurchaseTicketFooter";
-import { AppContext } from "../AppContext";
+import { AppContext } from "../src/AppContext";
 import { useRouter } from "next/navigation";
 
 interface Bay {

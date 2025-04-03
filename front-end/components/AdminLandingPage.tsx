@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { AppContext, useAppContext } from "../AppContext";
-import { useAlert } from "../AlertContext";
+import { AppContext, useAppContext } from "../src/AppContext";
+import { useAlert } from "../src/AlertContext";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";

@@ -1,20 +1,33 @@
 import React, { useState, useContext, useEffect } from "react";
 import "../styles/ViewAllMovieListingsPage.css";
-// import "../styles/style.css";
-// import MainStage from "../MainStage";
 import Box from "@mui/material/Box";
-import { AppContext } from "../AppContext";
-import { useAlert } from "../AlertContext";
+import { AppContext } from "../src/AppContext";
+import { useAlert } from "../src/AlertContext";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+// import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import {useRouter} from "next/navigation";
+
+interface MovieListingProps {
+  _id: string;
+  cinemaDetails :{
+    operator: string;
+    location: string;
+  };
+  movieDetails : {
+    movieName: string;
+  };
+  showTime: string;
+}
 
 const MovieListingsPage = () => {
-  const { backendDomain } = useContext(AppContext);
-  const [movieListings, setMovieListing] = useState([]);
+  const appContext = useContext(AppContext);
+  const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN || "http://localhost:5000";
+  const [movieListings, setMovieListing] = useState<MovieListingProps[]>([]);
   const { showAlert } = useAlert();
-  const { loading, setLoading } = useState(true);
-  const history = useHistory();
+
+  const [ loading, setLoading ] = useState(true);
+  const router = useRouter();
   useEffect(() => {
     const fetchMovieListings = async () => {
       try {
@@ -37,11 +50,9 @@ const MovieListingsPage = () => {
     };
     fetchMovieListings();
   }, [backendDomain, showAlert]);
-  const handleAction = (movieId) => {
-    alert(`Action clicked for movie ID: ${movieId}`);
-  };
-  const redirectToBooking = (movieId) => {
-    history.push("book-movie", { data: movieId });
+
+  const redirectToBooking = (movieId: string) => {
+    router.push(`book-movie?movieId=${movieId}`);
   };
 
   return (

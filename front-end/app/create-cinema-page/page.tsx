@@ -1,4 +1,4 @@
-import CreateCinemaPageComponent from "@/components/CreateCinemaPage";
+import CreateCinemaPageComponent from "components/CreateCinemaPage";
 
 export default function CreateCinemaPage() {
     return (

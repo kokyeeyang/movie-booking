@@ -1,6 +1,6 @@
 import React, { useState, useContext, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
-import { AppContext } from "../AppContext";
+import { AppContext } from "../src/AppContext";
 
 interface Bay {
   bay_name: string;

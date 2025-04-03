@@ -2,8 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import MainStage from "../MainStage";
 import "../../styles/style.css";
-import { AppContext } from "../../AppContext";
-import { useAlert } from "../../AlertContext";
+import { AppContext } from "../../src/AppContext";
+import { useAlert } from "../../src/AlertContext";
 
 const MovieBookingPage = () => {
   const { backendDomain } = useContext(AppContext);
