@@ -1,6 +1,10 @@
 import React from "react";
 
-const Footer = ({ selectedSeats, onPurchase }) => {
+interface FooterProps {
+  selectedSeats: string[];
+  onPurchase: any
+}
+const Footer = ({ selectedSeats, onPurchase } : FooterProps) => {
   return (
     <div
       style={{

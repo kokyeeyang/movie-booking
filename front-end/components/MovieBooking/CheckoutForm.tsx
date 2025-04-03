@@ -10,10 +10,8 @@ import {useSearchParams} from "next/navigation";
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  // const { user, backendDomain } = useContext(AppContext); // Context for user and backend URL
-  const appContext = useContext(AppContext);
-  // const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN_URL || "http://localhost:5000";
   const {user, backendDomain} = useAppContext();
+  
   const [numberOfTickets1, setNumberOfTickets1] = useState(0);
   const [numberOfTickets2, setNumberOfTickets2] = useState(0);
   const [totalStudentPrice, setTotalStudentPrice] = useState(0);
