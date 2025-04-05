@@ -1,37 +1,40 @@
+"use client";
+
 import { useState, useContext, ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { AppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
 
 interface LoginFormProps {
-  onSubmit?: (user:any) => void;
+  onSubmit?: (user: any) => void;
 }
-const LoginForm = ({onSubmit} : LoginFormProps) => {
+
+const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const appContext = useContext(AppContext);
   const backendDomain = appContext?.backendDomain || "http://localhost:5000";
-  // const { saveUser, backendDomain } = useContext(AppContext);
   const router = useRouter();
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
-  // const { backendDomain } = useContext(AppContext);
   const { showAlert } = useAlert();
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
+
   const loginUser = async (email: string, password: string) => {
     try {
       if (email && password) {
+        console.log(email)
         const login = { email, password };
         const data = await axios.post(
           `${backendDomain}/api/v1/auth/login`,
           login,
           { withCredentials: true }
         );
-        // console.log(data.data.user.role);
         showAlert("Logged in successfully!", "success");
         appContext?.setUser(data.data.user);
         if (data.data.user.role === "user") {
@@ -41,60 +44,71 @@ const LoginForm = ({onSubmit} : LoginFormProps) => {
         }
         return data.data.user;
       }
-      // onSubmit(user);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    console.log("byeee");
-    e.preventDefault();
-
-    try {
-      console.log('wqeqeqeq');
-      const user = await loginUser(values.email, values.password);
-    } catch (error) {
-      console.error("Login failed:", error);
       showAlert("Login failed. Please try again.", "error");
     }
   };
 
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await loginUser(values.email, values.password);
+  };
+
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <h4>login form</h4>
-      <div className="form-row">
-        <label htmlFor="email" className="form-label">
-          Email
-        </label>
-        <input
-          type="email"
-          className="form-input email-input"
-          name="email"
-          value={values.email}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="form-row">
-        <label htmlFor="password" className="form-label">
-          Password
-        </label>
-        <input
-          type="password"
-          name="password"
-          className="form-input password-input"
-          value={values.password}
-          onChange={handleChange}
-        />
-      </div>
-      <button type="submit" className="btn btn-block submit-btn">
-        submit
-      </button>
-      <p>
-        Don't have an account? <Link href="/sign-up">Sign up</Link>
-      </p>
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md"
+      >
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Login
+        </h2>
+
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-1">
+            Email
+          </label>
+          <input
+            type="email"
+            name="email"
+            value={values.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-1">
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            value={values.password}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200"
+        >
+          Sign In
+        </button>
+
+        <p className="mt-4 text-sm text-center text-gray-600">
+          Don't have an account?{" "}
+          <Link href="/sign-up" className="text-blue-600 hover:underline">
+            Sign up
+          </Link>
+        </p>
+      </form>
+    </div>
   );
-}
+};
 
 export default LoginForm;

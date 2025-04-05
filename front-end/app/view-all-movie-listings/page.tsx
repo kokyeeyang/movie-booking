@@ -2,9 +2,6 @@ import ViewAllMovieListingsPageComponent from "components/ViewAllMovieListingsPa
 
 export default function ViewAllMovieListingsPage() {
     return (
-        <div>
-            <h1>View all available movie listings!</h1>
-            <ViewAllMovieListingsPageComponent />
-        </div>
+        <ViewAllMovieListingsPageComponent />
     );
 };

@@ -1,8 +1,9 @@
+"use client";
 import React, { useState, useContext } from "react";
 // import { Link, useLocation } from "react-router-dom";
 // import { AppContext } from "../AppContext";
 import { AppContext, useAppContext } from "../src/AppContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useAlert } from "../src/AlertContext";
 
 const NormalUsersLandingPage = () => {

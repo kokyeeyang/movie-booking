@@ -43,3 +43,7 @@ pnpm-lock.yaml
 *.swo
 *.bak
 *.orig
+
+# nextjs
+.next/
+front-end/.next

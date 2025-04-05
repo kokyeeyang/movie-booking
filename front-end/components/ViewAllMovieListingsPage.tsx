@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useContext, useEffect } from "react";
 import "../styles/ViewAllMovieListingsPage.css";
 import Box from "@mui/material/Box";
@@ -58,41 +59,51 @@ const MovieListingsPage = () => {
   return (
     <div className="container mx-auto p-4">
       <Box className="bg-white border-2 border-black p-4 mb-4">
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Movie Listings
+      <Typography id="modal-modal-title" variant="h6" component="h2">
+        Movie Listings
+      </Typography>
+
+      <section className="movie-listings mt-4">
+        <Typography variant="subtitle1" className="text-lg font-semibold mb-4">
+          Current Movie Listings
         </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          <section className="movie-listings">
-            <h2>Current Movie Listings</h2>
-            {loading ? (
-              <p>Loading...</p>
+
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <ul className="space-y-2">
+            {movieListings.length > 0 ? (
+              movieListings.map((listing) => (
+                <li
+                  key={listing._id}
+                  className="bg-gray-100 p-3 rounded shadow-sm"
+                >
+                  <div className="text-sm">
+                    <strong>Cinema:</strong>{" "}
+                    {listing.cinemaDetails.operator} -{" "}
+                    {listing.cinemaDetails.location}
+                    <br />
+                    <strong>Movie:</strong> {listing.movieDetails.movieName}
+                    <br />
+                    <strong>Showtime:</strong> {listing.showTime}
+                  </div>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    className="mt-2"
+                    onClick={() => redirectToBooking(listing._id)}
+                  >
+                    Book now!
+                  </Button>
+                </li>
+              ))
             ) : (
-              <ul>
-                {movieListings.length > 0 ? (
-                  movieListings.map((listing) => (
-                    <li key={listing._id}>
-                      <div className="text-sm">
-                        Cinema:
-                        {listing.cinemaDetails.operator +
-                          " " +
-                          listing.cinemaDetails.location +
-                          " "}
-                        Movie: {listing.movieDetails.movieName + " "}
-                        {listing.showTime}
-                        <Button onClick={() => redirectToBooking(listing._id)}>
-                          Book now!
-                        </Button>
-                      </div>
-                    </li>
-                  ))
-                ) : (
-                  <p>No movie listings available.</p>
-                )}
-              </ul>
+              <p>No movie listings available.</p>
             )}
-          </section>
-        </Typography>
-      </Box>
+          </ul>
+        )}
+      </section>
+    </Box>
     </div>
   );
 };
