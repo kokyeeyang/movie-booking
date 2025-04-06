@@ -1,26 +1,25 @@
-import React, { useState, useContext, useEffect } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
-import { AppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
+import { useAppContext } from "@/AppContext";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { useLocation } from "react-router-dom";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const CinemaMovieTimesPage = () => {
-  const { backendDomain } = useContext(AppContext);
-  const [movieListings, setMovieListing] = useState([]);
-  const [filteredListings, setFilteredListings] = useState([]);
   const { showAlert } = useAlert();
-  // const [selectedShowtime, setSelectedShowtime] = useState(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [cinemaId, setCinemaId] = useState<string | null>(null);
+  const [movieListings, setMovieListing] = useState<MovieListing[]>([]);
+  const [filteredListings, setFilteredListings] = useState<MovieListing[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const appContext = useAppContext();
+  const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN || "http://localhost:5000";
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
-  ); // Default to today's date
-  const history = useHistory();
-  const location = useLocation();
-  const cinemaId = location.state.data || {};
+  );
 
   // Generate 7 days starting from today
   const getNext7Days = () => {
@@ -35,15 +34,31 @@ const CinemaMovieTimesPage = () => {
   };
 
   const [weekDates, setWeekDates] = useState(getNext7Days());
+  const [isClient, setIsClient] = useState(false);
+
+  interface MovieListing {
+    _id: string;
+    movieName: string;
+    image: string;
+    showDates: string[];
+    showTimes: string[];
+  }
 
   useEffect(() => {
+    setIsClient(true);  // This ensures the client-only rendering happens
+  }, []);
+
+  useEffect(() => {
+    const cinemaIdFromQuery = searchParams.get("cinemaId");
+    if (cinemaIdFromQuery) {
+      setCinemaId(cinemaIdFromQuery);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!cinemaId) return;
     const fetchMovieListings = async () => {
       try {
-        const today = new Date();
-        // const startDate = today.toISOString();
-        // const endDate = new Date(
-        //   today.setDate(today.getDate() + 6)
-        // ).toISOString();
         const response = await fetch(
           `${backendDomain}/api/v1/movieListing/view-cinema-movie-listings/${cinemaId}`,
           {
@@ -61,18 +76,18 @@ const CinemaMovieTimesPage = () => {
     };
 
     fetchMovieListings();
-  }, [backendDomain, showAlert, cinemaId]);
+  }, [cinemaId, showAlert]);
 
-  const handleDateSelect = (date) => {
+  const handleDateSelect = (date: string) => {
     setSelectedDate(date);
-    console.log(date);
-    // Filter movie listings for the selected date
     const updatedListings = movieListings
       .map((listing) => {
         const filteredShowDates = listing.showDates.filter((showDate) => {
           let listingDate = new Date(showDate).toISOString().split("T")[0]; // Format to "YYYY-MM-DD"
           return listingDate === date;
         });
+        console.log('byeeeee');
+        console.log(movieListings);
         if (filteredShowDates.length > 0) {
           return {
             ...listing,
@@ -84,31 +99,17 @@ const CinemaMovieTimesPage = () => {
         }
       })
       .filter(Boolean);
-    console.log(updatedListings);
-    setFilteredListings(updatedListings);
+    setFilteredListings(updatedListings.filter((listing): listing is MovieListing => listing !== null));
   };
 
-  const redirectToBooking = (movieId) => {
-    history.push("book-movie", { data: movieId });
+  const redirectToBooking = (movieId: string) => {
+    router.push(`book-movie?movieId=${movieId}`);
   };
 
-  // const filteredListings = movieListings.filter((listing) => {
-  //   listing.showDates.forEach((showDate) => {
-  //     let listingDate = new Date(showDate).toISOString().split("T")[0];
-  //     return listingDate === selectedDate;
-  //   });
-  // });
+  if (!isClient) return null;
 
-  // const filteredListings = movieListings.filter((listing) =>
-  //   listing.showDates.some((showDate) => {
-  //     let listingDate = new Date(showDate).toString().split("T")[0];
-  //     return listingDate === selectedDate;
-  //   })
-  // );
-  console.log(filteredListings);
   return (
     <div className="container mx-auto p-4">
-      {/* Parent container with vertical layout */}
       <Box className="flex flex-col gap-4">
         {/* Date Filter Carousel */}
         <Box className="overflow-x-scroll" sx={{ gap: 2 }}>
@@ -137,7 +138,7 @@ const CinemaMovieTimesPage = () => {
               {filteredListings.map((listing) => (
                 <div key={listing._id} className="flex-shrink-0 w-48">
                   <img
-                    src={listing.image}
+                    src={`${backendDomain}/${listing.image}`}
                     alt={listing.movieName}
                     className="w-full h-64 object-cover rounded-lg cursor-pointer hover:opacity-80"
                     onClick={() => redirectToBooking(listing._id)}

@@ -1,29 +1,17 @@
-import React, { useContext } from "react";
-import {useRouter} from "next/navigation";
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AppContext, useAppContext } from "../src/AppContext";
+import { useAppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
 import "../styles/DashboardBar.module.css";
 
-const router = useRouter();
-// Define the expected structure of the user object
-interface User {
-  firstname: string;
-  role?: "admin" | "user"; // Restrict role to specific values
-}
-
 const DashboardBar: React.FC = () => {
-  const appContext = useContext(AppContext);
-  const backendDomain = appContext?.backendDomain || "https://localhost:5000";
-  // const { user, backendDomain } = useAppContext();
-  const {user} = useAppContext();
+  const router = useRouter();
+  const { user, backendDomain } = useAppContext();
   const { showAlert } = useAlert();
 
-  if (!user) {
-    return null;
-  }
-
-  const userFirstName: string = user.firstname;
+  if (!user) return null;
 
   const handleLogout = async () => {
     try {
@@ -44,24 +32,18 @@ const DashboardBar: React.FC = () => {
     }
   };
 
-  const redirectToLandingPage = () => {
-    if (user.role === "admin") {
-      router.push("/admin-landing-page");
-    } else {
-      router.push("/homepage");
-    }
-  };
-
   return (
     <div className="dashboard-bar">
       <div className="dashboard-bar-left">
         <h1>
-          <button onClick={redirectToLandingPage}>My Dashboard</button>
+          <button onClick={() => router.push(user.role === "admin" ? "/admin-landing-page" : "/homepage")}>
+            My Dashboard
+          </button>
         </h1>
       </div>
       <div className="dashboard-bar-right">
         <button onClick={handleLogout}>Logout</button>
-        <Link href="/profile">View {userFirstName}'s Profile</Link>
+        <Link href="/profile">View {user.firstname}'s Profile</Link>
       </div>
     </div>
   );

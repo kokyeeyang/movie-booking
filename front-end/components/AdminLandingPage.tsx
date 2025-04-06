@@ -7,7 +7,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import styles from "@/styles/AdminLandingPage.module.css"; // Update CSS import for Next.js
+// import styles from "@/styles/AdminLandingPage.module.css"; // Update CSS import for Next.js
+import styles from "../styles/AdminLandingPage.module.css";
 
 // Define types for movie listings
 interface CinemaDetails {
