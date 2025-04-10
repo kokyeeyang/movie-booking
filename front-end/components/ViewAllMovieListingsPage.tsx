@@ -42,6 +42,7 @@ const MovieListingsPage = () => {
         const data = await response.json();
         setMovieListing(data);
         console.log(data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
         showAlert("Failed to fetch movie listings", "error");

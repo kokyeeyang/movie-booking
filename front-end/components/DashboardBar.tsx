@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
-import "../styles/DashboardBar.module.css";
 
 const DashboardBar: React.FC = () => {
   const router = useRouter();
@@ -33,17 +32,29 @@ const DashboardBar: React.FC = () => {
   };
 
   return (
-    <div className="dashboard-bar">
-      <div className="dashboard-bar-left">
-        <h1>
-          <button onClick={() => router.push(user.role === "admin" ? "/admin-landing-page" : "/homepage")}>
+    <div className="bg-gray-800 text-white p-4 sm:p-6 flex justify-between items-center shadow-md">
+      <div className="flex items-center space-x-4">
+        <h1 className="text-xl sm:text-2xl font-bold">
+          <button
+            onClick={() =>
+              router.push(user.role === "admin" ? "/admin-landing-page" : "/homepage")
+            }
+            className="hover:text-blue-400 transition"
+          >
             My Dashboard
           </button>
         </h1>
       </div>
-      <div className="dashboard-bar-right">
-        <button onClick={handleLogout}>Logout</button>
-        <Link href="/profile">View {user.firstname}'s Profile</Link>
+      <div className="flex items-center space-x-4">
+        <Link href="/profile" className="text-sm sm:text-base hover:text-blue-400 transition">
+          View {user.firstname}'s Profile
+        </Link>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm sm:text-base"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );

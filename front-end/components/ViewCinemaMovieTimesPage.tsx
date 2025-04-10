@@ -14,6 +14,7 @@ const CinemaMovieTimesPage = () => {
   const [cinemaId, setCinemaId] = useState<string | null>(null);
   const [movieListings, setMovieListing] = useState<MovieListing[]>([]);
   const [filteredListings, setFilteredListings] = useState<MovieListing[]>([]);
+  console.log("filtered listings : ", filteredListings);
   const [loading, setLoading] = useState(true);
   const appContext = useAppContext();
   const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN || "http://localhost:5000";
@@ -99,11 +100,31 @@ const CinemaMovieTimesPage = () => {
         }
       })
       .filter(Boolean);
-    setFilteredListings(updatedListings.filter((listing): listing is MovieListing => listing !== null));
+    setFilteredListings(updatedListings.filter((listing): listing is Listing => listing !== null));
   };
 
-  const redirectToBooking = (movieId: string) => {
-    router.push(`book-movie?movieId=${movieId}`);
+  interface Listing {
+    _id: string;
+    ageRating: string;
+    duration: number;
+    cinemaDetails: {
+      _id: string; // assuming you want the cinema's _id too
+      operator: string;
+      location: string;
+    };
+    genre: string;
+    hallId: string;
+    image: string;
+    movieName: string;
+    showDates: string[]; // Array of date strings or you could use Date if necessary
+    showTimes: string[]; // Array of time strings
+    // Add other properties as needed
+  }
+  // const redirectToBookingSlots = (movieId: string) => {
+  const redirectToBookingSlots = (listing: Listing) => {
+    console.log('this is the listing', listing)
+    localStorage.setItem('movieListing', JSON.stringify(listing));
+    router.push(`movie-booking-slots`);
   };
 
   if (!isClient) return null;
@@ -141,7 +162,7 @@ const CinemaMovieTimesPage = () => {
                     src={`${backendDomain}/${listing.image}`}
                     alt={listing.movieName}
                     className="w-full h-64 object-cover rounded-lg cursor-pointer hover:opacity-80"
-                    onClick={() => redirectToBooking(listing._id)}
+                    onClick={() => redirectToBookingSlots(listing)}
                   />
                   <Typography className="text-center mt-2 font-semibold">
                     {listing.movieName}

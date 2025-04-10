@@ -93,7 +93,6 @@ const selectAllMovieListings = async (req, res) => {
         },
       },
     ]);
-
     res.status(StatusCodes.OK).json(movieListings);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
@@ -144,7 +143,9 @@ const showCinemaMovieListings = async (req, res) => {
       { $unwind: "$movieDetails" },
       { $unwind: "$cinemaDetails" },
       { $unwind: "$cinemaDetails.halls" },
-      matchStage, // Apply the match stage with optional date filtering
+    
+      matchStage,
+    
       {
         $group: {
           _id: "$movieDetails._id",
@@ -157,8 +158,10 @@ const showCinemaMovieListings = async (req, res) => {
           cinemaDetails: { $first: "$cinemaDetails" },
           showTimes: { $addToSet: "$showTime" },
           showDates: { $addToSet: "$showDate" },
+          seatingAvailability: { $first: "$seatingAvailability" }, // ✅ Include it here
         },
       },
+    
       {
         $project: {
           _id: 1,
@@ -168,6 +171,7 @@ const showCinemaMovieListings = async (req, res) => {
           ageRating: 1,
           image: 1,
           hallId: 1,
+          seatingAvailability: 1, // ✅ Include it here too
           "cinemaDetails._id": 1,
           "cinemaDetails.location": 1,
           "cinemaDetails.operator": 1,
@@ -176,7 +180,7 @@ const showCinemaMovieListings = async (req, res) => {
         },
       },
     ]);
-
+    
     res.status(StatusCodes.OK).json(movieListings);
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
