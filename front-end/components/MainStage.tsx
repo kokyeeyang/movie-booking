@@ -1,4 +1,3 @@
-// app/MainStage.tsx or pages/MainStage.tsx depending on your structure
 "use client";
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useAppContext } from "../src/AppContext";
@@ -41,11 +40,11 @@ const MovieScreen = ({ imageUrl, stageWidth, paddingBottom = 0 }: MovieScreenPro
     src={imageUrl}
     style={{
       position: "relative",
-      width: stageWidth * 0.4 + "px",
+      width: `${stageWidth * 0.4}px`,
       height: "200px",
       paddingBottom: `${paddingBottom}px`,
-      left: "550px",
-      transform: "translateX(0%)",
+      left: "50%",
+      transform: "translateX(-50%)",
     }}
     alt="Movie Screen"
   />
@@ -101,30 +100,27 @@ const MainStage = ({ movieListing }: MainStageProps) => {
 
   return (
     <div
-      className="no-scroll"
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "110vh",
-        background: "pink",
-        display: "flex",
-        flexDirection: "column",
-        padding: "0 10px",
-      }}
       ref={containerRef}
+      className="flex flex-col items-center justify-between w-full h-full bg-green-100 p-4 md:p-6 lg:p-8"
     >
+      {/* Movie Screen */}
       <MovieScreen
         imageUrl={movieListing.image}
         stageWidth={size.width - 20}
         paddingBottom={0}
       />
+
+      {/* Stage */}
       <ClientOnlyStage
         width={size.width}
         height={size.height}
         scale={scale}
         seatingAvailability={movieListing.seatingAvailability}
+        selectedSeats={selectedSeatsIds}
         onSelect={handleSelect}
       />
+
+      {/* Footer */}
       <PurchaseTicketFooter
         selectedSeats={selectedSeatsIds}
         onPurchase={handlePurchase}

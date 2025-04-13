@@ -6,10 +6,6 @@ const StageComponent = dynamic(() => import("./StageComponent"), {
   loading: () => <p>Loading...</p>,
 });
 
-const SimpleComponent = dynamic(() => import("./SimpleComponent"), {
-  ssr: false
-});
-
 const ClientOnlyStage = (props: any) => {
   return <StageComponent {...props} />;
 };

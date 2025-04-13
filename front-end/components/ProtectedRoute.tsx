@@ -1,12 +1,12 @@
+"use client";
 import { useRouter } from "next/router";
 import { useAppContext } from "../src/AppContext";
 import { useEffect, useState } from "react";
 
-const ProtectedRoute = (WrappedComponent, roles = []) => {
-  return function WithAuth(props) {
+const ProtectedRoute = ({ children, roles = []} : { children: React.ReactNode; roles?:string[]}) => {
     const { user, isLoading } = useAppContext();
     const router = useRouter();
-    const [loading, setLoading] = useState(true);
+    const [allowRender, setAllowRender] = useState(true);
 
     useEffect(() => {
       if (!isLoading) {
@@ -15,17 +15,17 @@ const ProtectedRoute = (WrappedComponent, roles = []) => {
         } else if (roles.length > 0 && !roles.includes(user.role)) {
           router.replace("/homepage"); // Redirect if role is unauthorized
         } else {
-          setLoading(false); // Allow rendering
+          setAllowRender(true); // Allow rendering
         }
       }
     }, [user, isLoading, router]);
 
-    if (isLoading || loading) {
+    if (isLoading || !allowRender) {
       return <div>Loading...</div>;
     }
 
-    return <WrappedComponent {...props} />;
+    return <>{children}</>
+
   };
-};
 
 export default ProtectedRoute;
