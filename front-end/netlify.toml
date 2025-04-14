@@ -8,7 +8,7 @@
   # Set environment variables here if needed (already available through Netlify UI, but you can set them here too)
   REACT_APP_BACKEND_URL = "https://movie-booking-wrhs.onrender.com"
   # Optionally specify the Node.js version you want Netlify to use
-  NODE_VERSION = "16"
+  NODE_VERSION = "22"
 
 [[redirects]]
   # Ensure client-side routing works (like using React Router)
