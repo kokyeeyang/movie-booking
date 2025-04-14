@@ -26,6 +26,7 @@ const login = async (req, res) => {
   }
 
   const user = await User.findOne({ email });
+
   if (!user) {
     throw new CustomError.BadRequestError("Invalid credentials");
   }
@@ -37,7 +38,6 @@ const login = async (req, res) => {
 
   let refreshToken = "";
   const existingToken = await Token.findOne({ user: user._id });
-  console.log(existingToken);
 
   if (existingToken) {
     const { isValid } = existingToken;

@@ -6,20 +6,15 @@ import DashboardBar from "../components/DashboardBar";
 
 export default function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isNotFound, setIsNotFound] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  // Detect if the children contain a 404 page
   useEffect(() => {
-    const notFoundDetected =
-      typeof document !== "undefined" &&
-      document.title.includes("404") || // works if your 404 title includes 404
-      document.body.innerText.includes("This page could not be found"); // default message from Next.js
+    setHasMounted(true);
+  }, []);
 
-    setIsNotFound(notFoundDetected);
-  }, [pathname]);
+  if (!hasMounted) return null; // Prevent premature rendering before hydration
 
-  const shouldShowDashboardBar =
-    pathname !== "/login" && !isNotFound;
+  const shouldShowDashboardBar = pathname !== "/login";
 
   return (
     <>

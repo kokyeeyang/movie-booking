@@ -5,12 +5,13 @@ import Link from "next/link";
 import { useAppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
 
-const DashboardBar: React.FC = () => {
+export default function DashboardBar() {
   const router = useRouter();
   const { user, backendDomain } = useAppContext();
   const { showAlert } = useAlert();
 
-  if (!user) return null;
+  console.log('dashboard bar is shown!');
+  console.log(user);
 
   const handleLogout = async () => {
     try {
@@ -37,7 +38,7 @@ const DashboardBar: React.FC = () => {
         <h1 className="text-xl sm:text-2xl font-bold">
           <button
             onClick={() =>
-              router.push(user.role === "admin" ? "/admin-landing-page" : "/homepage")
+              user && router.push(user.role === "admin" ? "/admin-landing-page" : "/homepage")
             }
             className="hover:text-blue-400 transition"
           >
@@ -45,19 +46,19 @@ const DashboardBar: React.FC = () => {
           </button>
         </h1>
       </div>
-      <div className="flex items-center space-x-4">
-        <Link href="/profile" className="text-sm sm:text-base hover:text-blue-400 transition">
-          View {user.firstname}'s Profile
-        </Link>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm sm:text-base"
-        >
-          Logout
-        </button>
-      </div>
+      {user && (
+        <div className="flex items-center space-x-4">
+          <Link href="/profile" className="text-sm sm:text-base hover:text-blue-400 transition">
+            View {user.firstname}'s Profile
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm sm:text-base"
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </div>
   );
-};
-
-export default DashboardBar;
+}

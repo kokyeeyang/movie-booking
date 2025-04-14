@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useContext, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { AppContext, useAppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
 import Box from "@mui/material/Box";

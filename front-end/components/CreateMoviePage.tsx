@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useContext, ChangeEvent, FormEvent } from "react";
 import "../styles/CreateEntryPage.css";
 import "../styles/SelectBoxForm.css";

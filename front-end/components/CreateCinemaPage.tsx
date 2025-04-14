@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useContext, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { AppContext } from "../src/AppContext";
