@@ -1,6 +1,7 @@
+"use client";
 import React, { useState, useContext } from "react";
 // import { useHistory } from "react-router-dom"; // Import Link from react-router-dom
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 import axios from "axios";
 import { AppContext } from "../src/AppContext";
 
