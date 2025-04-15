@@ -123,7 +123,7 @@ const CinemaMovieTimesPage = () => {
   // const redirectToBookingSlots = (movieId: string) => {
   const redirectToBookingSlots = (listing: Listing) => {
     console.log('this is the listing', listing)
-    localStorage.setItem('movieListing', JSON.stringify(listing));
+    localStorage.setItem('selectedDate', JSON.stringify(selectedDate));
     router.push(`movie-booking-slots`);
   };
 

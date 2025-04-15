@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 
 type User = {
-  id: string;
+  userId: string;
   isVerified:boolean;
   role: string;
   firstname: string;

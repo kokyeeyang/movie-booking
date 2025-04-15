@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import MainStage from "../components/MainStage";
+import { useAppContext } from "@/AppContext";
 
 const timings = [
   { id: 1, value: "11.00 am" },
@@ -14,7 +15,8 @@ const timings = [
 const MovieBookingSlots = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [listing, setListing] = useState<any[]>([]);
-  console.log('listing! = ', listing);
+  const [timeSlot, setTimeSlot] = useState<string[]>([]);
+  const {backendDomain} = useAppContext();
 
   useEffect(() => {
     const storedListing = localStorage.getItem("movieListing");
@@ -23,8 +25,37 @@ const MovieBookingSlots = () => {
     }
   }, []);
 
-  const handleTimeSelect = (time: string) => {
-    setSelectedTime(time);
+  const handleTimeSelect = async (time: string) => {
+    const selectedDay = localStorage.getItem('selectedDate')?.replace(/^"|"$/g, ""); // Removes surrounding quotes
+    const encodedDate = encodeURIComponent(selectedDay ?? "");
+    const cleanedTime = time?.replace(/^"|"$/g, "")
+    const encodedTime = encodeURIComponent(cleanedTime);
+  
+    try {
+      const timeSlot = await fetch(
+        `${backendDomain}/api/v1/movieListing/select-single-time-slot/${encodedDate}/${encodedTime}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      const timeSlotData = await timeSlot.json(); // assuming the response is JSON
+      console.log('Time slot:', timeSlotData);
+      localStorage.setItem('movieListing', JSON.stringify(timeSlotData));
+  
+      // If `listing` comes from somewhere else (e.g., context or props), make sure it's accessible
+      console.log('weeeee');
+      console.log(timeSlotData);
+
+      setSelectedTime(time);
+      setTimeSlot(timeSlotData);
+    } catch (error) {
+      console.error('Error selecting time slot:', error);
+    }
   };
 
   return (
@@ -44,7 +75,7 @@ const MovieBookingSlots = () => {
       </div>
 
       {/* {selectedTime && <MainStage movie={"testing"} selectedTime={selectedTime} />} Conditionally render MainStage */}
-      {selectedTime && <MainStage movieListing={listing} />} {/* Conditionally render MainStage */}
+      {selectedTime && timeSlot.length > 0 && <MainStage timeSlot={timeSlot} />} {/* Conditionally render MainStage */}
     </div>
   );
 };

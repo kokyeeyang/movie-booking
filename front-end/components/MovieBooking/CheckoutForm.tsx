@@ -20,12 +20,15 @@ const CheckoutForm = () => {
 
   const searchParams = useSearchParams();
   const selectedSeats = searchParams.get("selectedSeats");
-  const movieListing = JSON.parse(searchParams.get("movieListing") || "[]");
+  const movieListing = JSON.parse(localStorage.getItem('movieListing'));
+  console.log(movieListing[0]);
 
   const router = useRouter();
   // const { selectedSeats, movieListing } = router.query; // Fetch query params from URL
 
   const selectedSeatsArray = selectedSeats ? selectedSeats.split(",") : [];
+  console.log('selected seats array = ')
+  console.log(selectedSeatsArray)
   const totalSeats = selectedSeatsArray.length;
   const date = new Date();
 
@@ -103,7 +106,22 @@ const CheckoutForm = () => {
       console.error("Payment failed:", error);
       alert("Payment failed. Please try again.");
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      console.log('paying now!');
+      console.log(movieListing);
+      await fetch(`${backendDomain}/api/v1/movieListing/book-seats`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          movieListingId: movieListing._id,
+          seatIds: selectedSeatsArray,
+          userId: user?.userId
+        }),
+      });
       alert("Payment successful!");
+
+      // router.push('homepage');
     }
   };
 
@@ -136,6 +154,7 @@ const CheckoutForm = () => {
       }
 
       confirmPayment(clientSecret);
+
     } catch (error) {
       console.error("Error confirming purchase:", error);
     }
@@ -151,9 +170,10 @@ const CheckoutForm = () => {
             {movieListing?.cinemaDetails?.halls?.hall_name}
           </h3>
           <p className="text-gray-600">
-            Movie: {movieListing?.movieDetails?.movieName}
+            Movie: {movieListing[0].movieName}
           </p>
-          <p className="text-gray-600">Showtime: {movieListing?.showTime}</p>
+          <p className="text-gray-600">Showtime: {movieListing[0].showTime}</p>
+          <p className="text-gray-600">Hall : {movieListing[0].hallName}</p>
         </div>
 
         <div className="mb-6">

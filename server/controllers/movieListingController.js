@@ -149,6 +149,7 @@ const showCinemaMovieListings = async (req, res) => {
       {
         $group: {
           _id: "$movieDetails._id",
+          movieListingIds: { $addToSet: "$_id" }, // <-- Add this line
           movieName: { $first: "$movieDetails.movieName" },
           genre: { $first: "$movieDetails.genre" },
           duration: { $first: "$movieDetails.duration" },
@@ -165,13 +166,14 @@ const showCinemaMovieListings = async (req, res) => {
       {
         $project: {
           _id: 1,
+          movieListingIds: 1,
           movieName: 1,
           genre: 1,
           duration: 1,
           ageRating: 1,
           image: 1,
           hallId: 1,
-          seatingAvailability: 1, // ✅ Include it here too
+          seatingAvailability: 1,
           "cinemaDetails._id": 1,
           "cinemaDetails.location": 1,
           "cinemaDetails.operator": 1,
@@ -200,7 +202,7 @@ const selectMovieListing = async (req, res) => {
         $lookup: {
           from: "movies", // Collection to join with
           localField: "movie", // Field in MovieListing that contains the ObjectId
-          foreignField: "_id", // Field in the movies collection that matches the ObjectId
+          foreignField: "_id",
           as: "movieDetails", // Name of the new array field to add to the output documents
         },
       },
@@ -255,9 +257,146 @@ const selectMovieListing = async (req, res) => {
   }
 };
 
+const selectSingleTimeSlot = async (req, res) => {
+  try {
+    const { date, time } = req.params;
+
+    // const listing = await MovieListing.find({
+    //   showDate: {
+    //     $gte: new Date(`${date}T00:00:00.000Z`),
+    //     $lt: new Date(`${date}T23:59:59.999Z`),
+    //   },
+    //   showTime: time,
+    // }).populate("movie", "image movieName").populate("cinema", "halls");
+
+    const listing = await MovieListing.aggregate([
+      {
+        $match: {
+          showDate: {
+            $gte: new Date(`${date}T00:00:00.000Z`),
+            $lt: new Date(`${date}T23:59:59.999Z`),
+          },
+          showTime: time
+        }
+      },
+      {
+        $lookup: {
+          from: "movies",
+          localField: "movie",
+          foreignField: "_id",
+          as: "movieDetails"
+        },
+      },
+      {
+        $unwind: {path: "$movieDetails", preserveNullAndEmptyArrays: true}
+      },
+      {
+        $lookup: {
+          from: "cinemas",
+          localField: "cinema", // this comes from movieListing
+          foreignField: "_id", // this comes from Cinemas
+          as: "cinemaDetails"
+        }
+      },
+      {
+        $unwind: "$cinemaDetails"
+      },
+      {
+        $project: {
+          hallId: 1,
+          movie: 1,
+          cinema: 1, 
+          showTime: 1,
+          showDate: 1, 
+          hallName: {
+            $let: {
+              vars: {
+                hall: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$cinemaDetails.halls", // Access the halls array inside cinemaDetails
+                        as: "hall",
+                        cond: { $eq: [{ $toObjectId: "$$hall._id" }, { $toObjectId: "$hallId" }] } // Match hallId from MovieListing to hall._id
+                      },
+                    },
+                    0, // Get the first matching hall (since it's an array)
+                  ],
+                },
+              },
+              in: { $ifNull: ["$$hall.hall_name", null] }, // Return hall_name or null if not found
+            },
+          },
+          movieImage: { $ifNull: ["$movieDetails.image", null] },
+          movieName: { $ifNull: ["$movieDetails.movieName", null] },
+          seatingAvailability: 1
+        }
+      }
+    ]);
+
+    res.status(StatusCodes.OK).json(listing);
+  } catch (error) {
+    console.error(error);
+    res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
+  }
+};
+
+const bookSeats = async (req, res) => {
+  console.log('in the booking seats backend now!');
+  const {movieListingId, seatIds} = req.body;
+  console.log("request body = ");
+  console.log(req.body);
+
+  if(!movieListingId || !seatIds || !Array.isArray(seatIds)){
+    return res.status(StatusCodes.BAD_REQUEST).json({error: "Missing or invalid data"});
+  }
+
+  try {
+    console.log(movieListingId);
+    const movieListing = await MovieListing.findById(movieListingId);
+
+    if(!movieListing){
+      throw new CustomError.NotFoundError("Movie listing not found");
+    }
+
+    let seatsUpdated = 0;
+
+    movieListing.seatingAvailability.forEach((bay) => {
+      Object.keys(bay).forEach((rowKey) => {
+        if (Array.isArray(bay[rowKey])) {
+          bay[rowKey] = bay[rowKey].map((seat) => {
+            if(seat && seatIds.includes(seat.seat_id) && seat.status === "available"){
+              seatsUpdated++;
+              return {...seat, status: "booked"};
+            }
+            return seat;
+          });
+        }
+      });
+    });
+
+    if(seatsUpdated == 0){
+      return res.status(StatusCodes.BAD_REQUEST).json({error: "No seats were updated"});
+    }
+
+    await movieListing.save();
+
+    res.status(StatusCodes.OK).json({
+      msg: `${seatsUpdated} seats(s) booked successfully!`
+    });
+
+  } catch (error) {
+    console.error(error.message);
+    // res.status(StatusCodes.INTERNAL_SERVER_ERROR({error: error.message}));
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "No seats were updated"});
+  }
+}
+
 module.exports = {
   createMovieListing,
   selectAllMovieListings,
   showCinemaMovieListings,
   selectMovieListing,
+  bookSeats,
+  selectSingleTimeSlot
 };

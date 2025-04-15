@@ -15,6 +15,8 @@ const {
   showCinemaMovieListings,
   selectMovieListing,
   selectMoviesByDateAndCinema,
+  bookSeats,
+  selectSingleTimeSlot
 } = require("../controllers/movieListingController");
 
 router.route("/create-movie-listing").post(createMovieListing);
@@ -31,5 +33,9 @@ router
 router
   .route("/show-movie-listing/:id")
   .get(authenticateUser, selectMovieListing);
+
+router.route("/book-seats").post(bookSeats);
+
+router.route("/select-single-time-slot/:date/:time").get(authenticateUser, selectSingleTimeSlot);
 
 module.exports = router;

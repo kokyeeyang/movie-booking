@@ -77,13 +77,13 @@ app.use("/api/v1/customer", customerRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.post("/create-payment-intent", async (req, res) => {
   const { totalPrice, currency } = req.body; // receive totalPrice from frontend
-
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalPrice * 100, // Amount is in cents, so multiply by 100
       currency: currency || "myr",
       payment_method_types: ["card"],
     });
+    
 
     res.status(200).send({
       clientSecret: paymentIntent.client_secret,

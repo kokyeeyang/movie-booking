@@ -11,29 +11,35 @@ const ClientOnlyStage = dynamic(() => import("../components/ClientOnlyStage"), {
 });
 
 interface Bay {
-  layout: Record<string, string[]>;
-  seats_per_row: number;
-  rows: number;
-  bay_name: string;
-  _id: string;
+  layout: Record<string, string[]>; // This will map bay sections (e.g., "A", "B", etc.) to seat statuses (e.g., "available", "booked")
+  seats_per_row: number;            // Number of seats per row in the bay
+  rows: number;                     // Number of rows in the bay
+  bay_name: string;                 // Name of the bay (e.g., "Bay 1", "Bay 2")
+  _id: string;                      // Unique identifier for the bay
 }
 
 interface MovieDetails {
-  stageWidth: number;
-  paddingBottom: number;
+  stageWidth: number;      // The width of the stage for rendering the seating layout
+  paddingBottom: number;   // Padding for layout
+  image: string;           // Image URL of the movie (e.g., from the "movie" field in your MovieListing)
 }
 
 interface MovieListing {
-  seatingAvailability: Bay[];
-  movieDetails: MovieDetails;
-  image: string;
+  _id: string;                 // Unique identifier for the movie listing
+  seatingAvailability: Bay[];  // Array of seating availability data for the showtime
+  showDate: string;            // Date the show is scheduled for
+  showTime: string;            // Time of the show
+  movie: MovieDetails;         // Movie details including image and layout information
+  cinema: string;              // Reference to the cinema (probably stored as an ObjectId)
+  hallId: string;              // Hall ID for this movie listing
 }
 
 interface MovieScreenProps {
-  imageUrl: string;
-  stageWidth: number;
-  paddingBottom: number;
+  imageUrl: string;      // URL of the movie image
+  stageWidth: number;    // Width of the stage for rendering the layout
+  paddingBottom: number; // Padding for the layout
 }
+
 
 const MovieScreen = ({ imageUrl, stageWidth, paddingBottom = 0 }: MovieScreenProps) => (
   <img
@@ -51,10 +57,10 @@ const MovieScreen = ({ imageUrl, stageWidth, paddingBottom = 0 }: MovieScreenPro
 );
 
 interface MainStageProps {
-  movieListing: MovieListing;
+  timeSlot: MovieListing;
 }
 
-const MainStage = ({ movieListing }: MainStageProps) => {
+const MainStage = ({ timeSlot }: MainStageProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { backendDomain, user } = useAppContext();
   const router = useRouter();
@@ -87,16 +93,18 @@ const MainStage = ({ movieListing }: MainStageProps) => {
 
   const handlePurchase = async () => {
     const selectedSeats = selectedSeatsIds.join(",");
+    console.log('movie listing herereeeeeeeee');
+    console.log(timeSlot);
     router.push(
-      `/checkout?userId=${user?.id}&selectedSeats=${selectedSeats}&movieListing=${JSON.stringify(
-        movieListing
-      )}`
+      `/checkout?userId=${user?.userId}&selectedSeats=${selectedSeats}&movieListing=${JSON.stringify(timeSlot)}`
     );
   };
 
-  if (!movieListing) {
+  if (!timeSlot) {
     return <div ref={containerRef}>Loading...</div>;
   }
+
+  console.log('here la!');
 
   return (
     <div
@@ -105,7 +113,7 @@ const MainStage = ({ movieListing }: MainStageProps) => {
     >
       {/* Movie Screen */}
       <MovieScreen
-        imageUrl={movieListing.image}
+        imageUrl={Array.isArray(timeSlot) && timeSlot.length > 0 ? timeSlot[0].movie.image : ""}
         stageWidth={size.width - 20}
         paddingBottom={0}
       />
@@ -115,7 +123,7 @@ const MainStage = ({ movieListing }: MainStageProps) => {
         width={size.width}
         height={size.height}
         scale={scale}
-        seatingAvailability={movieListing.seatingAvailability}
+        seatingAvailability={Array.isArray(timeSlot) && timeSlot.length > 0 ? timeSlot[0].seatingAvailability : ""}
         selectedSeats={selectedSeatsIds}
         onSelect={handleSelect}
       />
