@@ -344,9 +344,10 @@ const selectSingleTimeSlot = async (req, res) => {
 const bookSeats = async (req, res) => {
   console.log('in the booking seats backend now!');
   const {movieListingId, seatIds} = req.body;
-  console.log("request body = ");
-  console.log(req.body);
+  console.log("seat ids = ");
+  // console.log(req.body);
 
+  console.log(seatIds);
   if(!movieListingId || !seatIds || !Array.isArray(seatIds)){
     return res.status(StatusCodes.BAD_REQUEST).json({error: "Missing or invalid data"});
   }
@@ -362,15 +363,20 @@ const bookSeats = async (req, res) => {
     let seatsUpdated = 0;
 
     movieListing.seatingAvailability.forEach((bay) => {
-      Object.keys(bay).forEach((rowKey) => {
-        if (Array.isArray(bay[rowKey])) {
-          bay[rowKey] = bay[rowKey].map((seat) => {
-            if(seat && seatIds.includes(seat.seat_id) && seat.status === "available"){
-              seatsUpdated++;
-              return {...seat, status: "booked"};
-            }
-            return seat;
-          });
+      const layout = bay.layout; // This is a Map
+      seatIds.forEach((seatId) => {
+        const [bayId, rowLetter, seatNumberStr] = seatId.split('-');
+        const seatNumber = parseInt(seatNumberStr);
+        const isCorrectBay = bay._id.toString() === bayId; // match the movieListing bay with the bay that the customer has chosen
+
+        if(isCorrectBay){
+          const layout = bay.layout;
+          const rowArray = typeof layout.get === 'function' ? layout.get(rowLetter) : layout[rowLetter]; // to cater for when the layout is a Map or an object
+
+          if(rowArray && rowArray[seatNumber] === "available"){
+            rowArray[seatNumber] = 'booked';
+            seatsUpdated++;
+          }
         }
       });
     });

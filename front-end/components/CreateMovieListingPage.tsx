@@ -97,6 +97,8 @@ const CreateMovieListingPage: React.FC = () => {
     try {
       const response = await axios.get<Hall[]>(`${backendDomain}/api/v1/cinema/${cinemaId}/halls`);
       setHalls(response.data);
+      console.log('halls! = ');
+      console.log(halls);
     } catch (error) {
       console.error("Error fetching halls:", error);
     }
@@ -123,6 +125,7 @@ const CreateMovieListingPage: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
+      console.log(formData)
       for (let i = 0; i < formData.timing.length; i++) {
         const timing = formData.timing[i];
         const start = new Date(formData.startDate);
@@ -137,7 +140,8 @@ const CreateMovieListingPage: React.FC = () => {
             showTime: timing,
             showDate: currentDate,
           };
-
+          console.log('weeee');
+          console.log(movieListingData);
           await axios.post(
             `${backendDomain}/api/v1/movieListing/create-movie-listing`,
             movieListingData,
@@ -173,6 +177,39 @@ const CreateMovieListingPage: React.FC = () => {
               </option>
             ))}
           </select>
+        </div>
+        <div className="form-group">
+            <label htmlFor="hall">Halls</label>
+            <select name="hall" value={formData.hall} onChange={handleChange}>
+              <option value="">Select a hall</option>
+              {halls.map((hall) => (
+                <option key={hall._id} value={hall._id}>
+                  {hall.hall_name}
+                </option>
+              ))}
+            </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select Show Timings
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {timings.map((timing) => (
+              <button
+                key={timing.id}
+                type="button"
+                onClick={() => toggleBox(timing.value)}
+                className={`px-4 py-2 rounded-full border text-sm transition-all duration-200
+                  ${
+                    selectedBox.includes(timing.value)
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200"
+                  }`}
+              >
+                {timing.value}
+              </button>
+            ))}
+          </div>
         </div>
         <button type="submit" className="submit-button">Submit</button>
       </form>

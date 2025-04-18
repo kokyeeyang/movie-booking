@@ -20,7 +20,8 @@ const CheckoutForm = () => {
 
   const searchParams = useSearchParams();
   const selectedSeats = searchParams.get("selectedSeats");
-  const movieListing = JSON.parse(localStorage.getItem('movieListing'));
+  const movieListing = JSON.parse(localStorage.getItem('movieListing') ?? 'null');
+  console.log("here");
   console.log(movieListing[0]);
 
   const router = useRouter();
@@ -106,19 +107,29 @@ const CheckoutForm = () => {
       console.error("Payment failed:", error);
       alert("Payment failed. Please try again.");
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      console.log('paying now!');
-      console.log(movieListing);
-      await fetch(`${backendDomain}/api/v1/movieListing/book-seats`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          movieListingId: movieListing._id,
-          seatIds: selectedSeatsArray,
-          userId: user?.userId
-        }),
-      });
+      console.log(movieListing[0]._id);
+      try {
+        const res = await fetch(`${backendDomain}/api/v1/movieListing/book-seats`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            movieListingId: movieListing[0]?._id,
+            seatIds: selectedSeatsArray,
+            userId: user?.userId
+          }),
+        });
+      
+        const data = await res.json();
+        if (!res.ok) {
+          console.error("Booking failed:", data);
+        } else {
+          console.log("Booking success:", data);
+        }
+      } catch (err) {
+        console.error("Network or server error:", err);
+      }
       alert("Payment successful!");
 
       // router.push('homepage');

@@ -5,7 +5,8 @@ const { attachCookiesToResponse } = require("../utils");
 
 const authenticateUser = async (req, res, next) => {
   // const token = req.signedCookies.token;
-  const { refreshToken, accessToken } = req.signedCookies;
+  // console.log(req.cookies);
+  const { refreshToken, accessToken } = req.cookies;
   console.log("Access Token:", accessToken);
   console.log("Refresh Token:", refreshToken);
   try {
@@ -28,6 +29,7 @@ const authenticateUser = async (req, res, next) => {
 
     if (!existingToken || !existingToken?.isValid) {
       console.log("something is wrong");
+      console.log('existingToken = ', existingToken);
       throw new CustomError.UnauthenticatedError("Authentication Invalid");
     }
     attachCookiesToResponse({

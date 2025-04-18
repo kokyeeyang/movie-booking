@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useContext } from "react";
-// import { useHistory } from "react-router-dom"; // Import Link from react-router-dom
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { AppContext } from "../src/AppContext";
 
 function SignupForm() {
-  // the properties here are the names in the signup form
   const appContext = useContext(AppContext);
-  const backendDomain = appContext?.backendDomain || process.env.NEXT_PUBLIC_BACKEND_URL || "https://localhost:5000";
-  // const { backendDomain } = useContext(AppContext);
-  // const history = useHistory();
+  const backendDomain =
+    appContext?.backendDomain ||
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    "https://localhost:5000";
+
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstname: "",
@@ -28,7 +28,7 @@ function SignupForm() {
     }));
   };
 
-  const handleSubmit = async (event: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       const response = await axios.post(
@@ -36,90 +36,95 @@ function SignupForm() {
         formData
       );
 
-      if (response.status == 201) {
+      if (response.status === 201) {
         alert("Successfully signed up!");
         router.push("/login");
       }
-    } catch (error:any) {
-      if (error.response && error.response.data && error.response.data.error) {
-        console.log(error);
+    } catch (error: any) {
+      if (error.response?.data?.error) {
         alert(error.response.data.error);
       } else {
-        alert(error);
+        alert("An error occurred.");
       }
     }
-
-    // const onSubmit = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    //   console.log(event);
-    // };
-
-    // onSubmit(formData);
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <h4>Sign Up Form</h4>
-      <div className="form-row">
-        <label className="form-label" htmlFor="firstname">
-          First name
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md space-y-6 mt-10"
+    >
+      <h2 className="text-2xl font-bold text-center text-gray-800">Sign Up</h2>
+
+      <div>
+        <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">
+          First Name
         </label>
         <input
           type="text"
-          className="form-input string-input"
           name="firstname"
           value={formData.firstname}
           onChange={handleChange}
+          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
-      <div className="form-row">
-        <label className="form-label" htmlFor="lastname">
-          Last name
+
+      <div>
+        <label htmlFor="lastname" className="block text-sm font-medium text-gray-700">
+          Last Name
         </label>
         <input
           type="text"
-          className="form-input string-input"
           name="lastname"
           value={formData.lastname}
           onChange={handleChange}
+          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
-      <div className="form-row">
-        <label htmlFor="email" className="form-label">
+
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
           Email
         </label>
         <input
           type="email"
-          className="form-input email-input"
           name="email"
           value={formData.email}
           onChange={handleChange}
+          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
-      <div className="form-row">
-        <label htmlFor="password" className="form-label">
+
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
           Password
         </label>
         <input
           type="password"
           name="password"
-          className="form-input password-input"
           value={formData.password}
           onChange={handleChange}
+          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
-      <div className="form-row">
-        <label htmlFor="password" className="form-label">
+
+      <div>
+        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
           Repeat Password
         </label>
         <input
           type="password"
           name="confirmPassword"
-          className="form-input password-input"
           value={formData.confirmPassword}
           onChange={handleChange}
+          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
-      <button type="submit" className="btn btn-block submit-btn">
+
+      <button
+        type="submit"
+        className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 transition duration-200"
+      >
         Sign Up
       </button>
     </form>

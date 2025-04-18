@@ -49,7 +49,7 @@ const MovieScreen = ({ imageUrl, stageWidth, paddingBottom = 0 }: MovieScreenPro
       width: `${stageWidth * 0.4}px`,
       height: "200px",
       paddingBottom: `${paddingBottom}px`,
-      left: "50%",
+      left: "35%",
       transform: "translateX(-50%)",
     }}
     alt="Movie Screen"
@@ -113,9 +113,9 @@ const MainStage = ({ timeSlot }: MainStageProps) => {
     >
       {/* Movie Screen */}
       <MovieScreen
-        imageUrl={Array.isArray(timeSlot) && timeSlot.length > 0 ? timeSlot[0].movie.image : ""}
+        imageUrl={Array.isArray(timeSlot) && timeSlot.length > 0 ? `${backendDomain}/${timeSlot[0].movieImage}` : ""}
         stageWidth={size.width - 20}
-        paddingBottom={0}
+        paddingBottom={40}
       />
 
       {/* Stage */}

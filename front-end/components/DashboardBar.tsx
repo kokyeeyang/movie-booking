@@ -21,8 +21,9 @@ export default function DashboardBar() {
       });
 
       if (response.ok) {
-        localStorage.removeItem("user");
-        showAlert("Logged out successfully", "success");
+        // localStorage.removeItem("user");
+        localStorage.clear();
+        alert("Logged out successfully");
         router.push("/login");
       } else {
         alert("Something went wrong with logging out");
