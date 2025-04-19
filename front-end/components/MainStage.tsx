@@ -24,7 +24,7 @@ interface MovieDetails {
   image: string;           // Image URL of the movie (e.g., from the "movie" field in your MovieListing)
 }
 
-interface MovieListing {
+export interface MovieListing {
   _id: string;                 // Unique identifier for the movie listing
   seatingAvailability: Bay[];  // Array of seating availability data for the showtime
   showDate: string;            // Date the show is scheduled for
@@ -41,20 +41,25 @@ interface MovieScreenProps {
 }
 
 
-const MovieScreen = ({ imageUrl, stageWidth, paddingBottom = 0 }: MovieScreenProps) => (
-  <img
-    src={imageUrl}
-    style={{
-      position: "relative",
-      width: `${stageWidth * 0.4}px`,
-      height: "200px",
-      paddingBottom: `${paddingBottom}px`,
-      left: "35%",
-      transform: "translateX(-50%)",
-    }}
-    alt="Movie Screen"
-  />
-);
+// if (!imageUrl) return null;
+const MovieScreen = ({ imageUrl, stageWidth, paddingBottom = 0 }: MovieScreenProps) => {
+
+  if (!imageUrl) return null;
+  return(
+    <img
+      src={imageUrl}
+      style={{
+        position: "relative",
+        width: `${stageWidth * 0.4}px`,
+        height: "200px",
+        paddingBottom: `${paddingBottom}px`,
+        left: "35%",
+        transform: "translateX(-50%)",
+      }}
+      alt="Movie Screen"
+    />
+  )
+};
 
 interface MainStageProps {
   timeSlot: MovieListing;

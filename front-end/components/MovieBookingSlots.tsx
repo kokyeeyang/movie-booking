@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import MainStage from "../components/MainStage";
+import MainStage, {MovieListing} from "../components/MainStage";
 import { useAppContext } from "@/AppContext";
 
 const timings = [
@@ -15,7 +15,7 @@ const timings = [
 const MovieBookingSlots = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [listing, setListing] = useState<any[]>([]);
-  const [timeSlot, setTimeSlot] = useState<string[]>([]);
+  const [timeSlot, setTimeSlot] = useState<MovieListing | null>(null);
   const {backendDomain} = useAppContext();
 
   useEffect(() => {
@@ -58,6 +58,7 @@ const MovieBookingSlots = () => {
     }
   };
 
+  // console.log("seatingAvailability is here! = ", timeSlot?.[0]?.seatingAvailability);
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">Select a Show Time</h1>
@@ -75,7 +76,7 @@ const MovieBookingSlots = () => {
       </div>
 
       {/* {selectedTime && <MainStage movie={"testing"} selectedTime={selectedTime} />} Conditionally render MainStage */}
-      {selectedTime && timeSlot.length > 0 && <MainStage timeSlot={timeSlot} />} {/* Conditionally render MainStage */}
+      {selectedTime && Array.isArray(timeSlot) && timeSlot.length > 0 && <MainStage timeSlot={timeSlot} />} {/* Conditionally render MainStage */}
     </div>
   );
 };

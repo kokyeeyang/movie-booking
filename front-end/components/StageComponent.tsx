@@ -1,5 +1,6 @@
 "use client";
 // import { useState, useEffect } from "react";
+import React from "react";
 import { Stage, Layer, Rect, Text } from "react-konva";
 
 interface StageComponentProps {
@@ -19,7 +20,7 @@ const StageComponent = ({
   selectedSeats,
   onSelect,
 }: StageComponentProps) => {
-  console.log(selectedSeats);
+  console.log("seatingAvailability = ", seatingAvailability);
   return (
     <Stage width={width} height={height} scaleX={scale} scaleY={scale}>
       <Layer>
@@ -38,7 +39,7 @@ const StageComponent = ({
               const seatWidth = 30; // Fixed width for each seat
               const xOffset = xOffsetForBays + seatIndex * seatWidth; 
               return (
-                <>
+                <React.Fragment key={`${bay._id}-${rowName}-${seatIndex}`}>
                   <Rect
                     key={`${bay._id}-${rowName}-${seatIndex}`}
                     x={xOffset}
@@ -62,7 +63,7 @@ const StageComponent = ({
                       />
                     )
                   }
-                </>
+                </React.Fragment>
               )
             })
           })
