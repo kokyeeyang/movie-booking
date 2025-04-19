@@ -39,9 +39,6 @@
     "build": "next build",
     "start": "next start"
   },
-  "eslintConfig": {
-    "extends": "next"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
