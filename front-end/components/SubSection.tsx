@@ -6,6 +6,7 @@ import { SEATS_DISTANCE, SUBSECTION_PADDING, SEAT_SIZE } from "./layout";
 
 interface SeatData {
   name: string;
+  status: "booked" | "available";
   [key: string]: any;
 }
 
@@ -40,7 +41,7 @@ const seatLayout = ({width, x, y, data, onSelectSeat, selectedSeatsIds} : Sectio
                   x={seatIndex * SEATS_DISTANCE + SUBSECTION_PADDING}
                   y={rowIndex * SEATS_DISTANCE + SUBSECTION_PADDING}
                   data={seat}
-                  onSelect={onSelectSeat}
+                  onSelect={()=>onSelectSeat(seat)}
                   isSelected={isSelected}
                 />
               );
