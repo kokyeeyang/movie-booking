@@ -43,6 +43,16 @@ const CinemaMovieTimesPage = () => {
     image: string;
     showDates: string[];
     showTimes: string[];
+    ageRating: string;
+    duration: number;
+    genre: string;
+    hallId: string;
+    cinemaDetails : {
+      _id:string;
+      operator: string;
+      location: string;
+    };
+
   }
 
   useEffect(() => {
