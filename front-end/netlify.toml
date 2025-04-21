@@ -1,6 +1,7 @@
 [build]
+  base = "front-end"
   # Directory to publish (this should match the folder where your build output is)
-  publish = "front-end/out"
+  publish = "out"
   # Command to build your app (adjust if you're using yarn or have a different build script)
   command = "npm run build"
 
