@@ -55,8 +55,12 @@ pipeline {
             }
 
             steps {
-                echo 'Deploying to Netlify...'
-                    bat 'netlify deploy --prod --dir=front-end/out --site=%NETLIFY_SITE_ID% --auth=%NETLIFY_AUTH_TOKEN%'
+                // echo 'Deploying to Netlify...'
+                //     bat 'netlify deploy --prod --dir=front-end/out --site=%NETLIFY_SITE_ID% --auth=%NETLIFY_AUTH_TOKEN%'
+
+                dir('front-end') {
+                    bat 'npx netlify deploy --prod --dir=out --site=%NETLIFY_SITE_ID% --auth=%NETLIFY_AUTH_TOKEN%'
+                }
             }
         }
     }
