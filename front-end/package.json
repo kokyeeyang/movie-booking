@@ -65,10 +65,12 @@
     "eslint": "^9.24.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
     "netlify-cli": "^20.0.2",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.8.2"
+  },
+  "optionalDependencies": {
+    "jest-environment-jsdom": "^29.7.0"
   }
 }
