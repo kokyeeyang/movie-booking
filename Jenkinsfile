@@ -13,7 +13,11 @@ pipeline {
         stage('Install Frontend Dependencies') {
             steps {
                 dir('front-end') {
-                    bat 'npm install --legacy-peer-deps'
+                    if (isUnix()) {
+                        sh 'npm install --legacy-peer-deps'
+                    } else {
+                        bat 'npm install --legacy-peer-deps'
+                    }
                 }
             }
         }
@@ -29,7 +33,11 @@ pipeline {
         stage('Install Backend Dependencies') {
             steps {
                 dir('server') {
-                    bat 'npm install --legacy-peer-deps'
+                    if (isUnix()) {
+                        sh 'npm install --legacy-peer-deps'
+                    } else {
+                        bat 'npm install --legacy-peer-deps'
+                    }
                 }
             }
         }
