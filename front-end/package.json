@@ -29,7 +29,8 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^5.3.6",
     "use-image": "^1.1.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "tailwindcss": "^3.4.17"
   },
   "scripts": {
     "dev": "next dev",
@@ -68,7 +69,6 @@
     "jest-environment-jsdom": "^29.7.0",
     "netlify-cli": "^20.0.2",
     "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.10",
     "typescript": "^5.8.2"
   }
 }
