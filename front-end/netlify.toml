@@ -3,7 +3,7 @@
   # Directory to publish (this should match the folder where your build output is)
   publish = "out"
   # Command to build your app (adjust if you're using yarn or have a different build script)
-  command = "npm run build"
+  command = "npm install --legacy-peer-deps && npm run build"
 
 [build.environment]
   # Set environment variables here if needed (already available through Netlify UI, but you can set them here too)
