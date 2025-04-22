@@ -96,10 +96,9 @@ const MovieLocationsPage = () => {
                     >
                       <img
                         src={imageUrl}
-                        alt={cinema.name}
+                        alt={cinema.location}
                         className="w-full h-40 object-cover rounded-lg shadow-md"
                       />
-                      <h3 className="mt-2 text-lg font-semibold">{cinema.name}</h3>
                       <p className="text-gray-600">{cinema.location}</p>
                     </div>
                   );
