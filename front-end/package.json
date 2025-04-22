@@ -35,8 +35,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest",
-    "export": "next export"
+    "test": "jest"
   },
   "browserslist": {
     "production": [

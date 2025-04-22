@@ -20,7 +20,6 @@ pipeline {
                 dir('front-end') {
                     bat 'npm install --legacy-peer-deps'
                     bat 'npm run build'
-                    bat 'npm run export'
                 }
             }
         }
