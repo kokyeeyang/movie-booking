@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Set the environment variables for Netlify deployment
-        NETLIFY_SITE_ID = 'bookanymovie.netlify.app'
+        NETLIFY_SITE_ID = '2b300bd0-5cc2-4b21-a37f-d9be4c4123e7'
         NETLIFY_AUTH_TOKEN = credentials('netlify_auth_token')
     }
     stages {
@@ -56,7 +56,7 @@ pipeline {
 
             steps {
                 echo 'Deploying to Netlify...'
-                    bat 'npx netlify deploy --prod --dir-out --site=%NETLIFY_SITE_ID% --auth=%NETLIFY_AUTH_TOKEN%'
+                    bat 'npx netlify deploy --prod --dir=front-end/out --site=%NETLIFY_SITE_ID% --auth=%NETLIFY_AUTH_TOKEN%'
             }
         }
     }
