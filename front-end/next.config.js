@@ -12,6 +12,7 @@ const nextConfig = {
     // This ensures the typescript resolver works for Next.js
     ignoreBuildErrors: true,
   },
+  output: 'export',
 }
 
 module.exports = nextConfig
