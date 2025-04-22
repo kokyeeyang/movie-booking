@@ -38,6 +38,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const initialFrontendDomain = isLocal
     ? process.env.NEXT_PUBLIC_FRONTEND_URL_LOCAL || "http://localhost:3000"
     : process.env.NEXT_PUBLIC_FRONTEND_URL;
+    console.log("Initial Backend Domain:", initialBackendDomain);
 
   const [backendDomain, setBackendDomain] = useState<string>(initialBackendDomain || "");
   const [frontendDomain, setFrontendDomain] = useState<string>(initialFrontendDomain || "");
