@@ -98,8 +98,8 @@
     "skipLibCheck": true, /* Skip type checking all .d.ts files. */
     "baseUrl": ".",  // Set the baseUrl to current folder (front-end)
     "paths": {
-      "components/*": ["components/*"],  // Map 'components/*' to 'front-end/components/*'
-      "@/*": ["src/*"]  // Optionally, if you want to alias the 'src' folder
+      "components/*": ["components/*"],  // Maps alias to components folder
+      "@/*": ["src/*"]  // If you want to use the src alias
     },
     "lib": [
       "dom",
