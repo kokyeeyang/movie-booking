@@ -96,10 +96,10 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true, /* Skip type checking all .d.ts files. */
-    "baseUrl": ".",  // Set the baseUrl to current folder (front-end)
+    "baseUrl": "./",  // The base URL is now the root of the 'front-end' folder
     "paths": {
-      "components/*": ["components/*"],  // Maps alias to components folder
-      "@/*": ["src/*"]  // If you want to use the src alias
+      "@/*": ["src/*"],  // Alias '@' points to 'src' directory
+      "components/*": ["components/*"]  // Alias 'components' points to the 'components' directory
     },
     "lib": [
       "dom",

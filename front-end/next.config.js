@@ -4,6 +4,7 @@ const path = require('path')
 const nextConfig = {
   webpack: (config) => {
     // Fix alias resolution for components folder
+    config.resolve.alias['@'] = path.resolve(__dirname, 'src');
     config.resolve.alias['components'] = path.resolve(__dirname, 'components');
     return config;
   },
