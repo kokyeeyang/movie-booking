@@ -29,7 +29,10 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^5.3.6",
     "use-image": "^1.1.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.8.2"
   },
   "scripts": {
     "dev": "next dev",
@@ -66,9 +69,6 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "netlify-cli": "^20.0.2",
-    "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.8.2"
+    "netlify-cli": "^20.0.2"
   }
 }
