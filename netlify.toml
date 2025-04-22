@@ -1,7 +1,7 @@
 [build]
   base = "front-end"
   publish = "out"
-  command = "npm install --legacy-peer-deps && npm run build && npm run export"
+  command = "npm install --legacy-peer-deps && npm run build"
 
 [build.environment]
   NODE_VERSION = "22"
