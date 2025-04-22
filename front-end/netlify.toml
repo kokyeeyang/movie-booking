@@ -1,18 +1,17 @@
 [build]
   base = "front-end"
-  # Directory to publish (this should match the folder where your build output is)
   publish = "out"
-  # Command to build your app (adjust if you're using yarn or have a different build script)
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "npm run build"
 
 [build.environment]
-  # Set environment variables here if needed (already available through Netlify UI, but you can set them here too)
-  REACT_APP_BACKEND_URL = "https://movie-booking-wrhs.onrender.com"
-  # Optionally specify the Node.js version you want Netlify to use
   NODE_VERSION = "22"
+  REACT_APP_BACKEND_URL = "https://movie-booking-wrhs.onrender.com"
+
+[build.lifecycle]
+  # This overrides the default install command
+  onInstall = "./netlify-preinstall.sh"
 
 [[redirects]]
-  # Ensure client-side routing works (like using React Router)
   from = "/*"
   to = "/index.html"
   status = 200
