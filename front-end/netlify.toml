@@ -1,6 +1,5 @@
 [build]
-  base = "front-end"
-  publish = "front-end/out"
+  publish = "out"
   command = "npm install --legacy-peer-deps && npm run build"
 
 [build.environment]
