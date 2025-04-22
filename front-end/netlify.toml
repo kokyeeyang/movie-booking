@@ -1,15 +1,11 @@
 [build]
-  base = "front-end"
-  publish = "out"
-  command = "npm run build"
+   base = "front-end"
+  publish = "front-end/out"
+  command = "npm install --legacy-peer-deps && npm run build"
 
 [build.environment]
   NODE_VERSION = "22"
   REACT_APP_BACKEND_URL = "https://movie-booking-wrhs.onrender.com"
-
-[build.lifecycle]
-  # This overrides the default install command
-  onInstall = "./netlify-preinstall.sh"
 
 [[redirects]]
   from = "/*"
