@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        // Set the environment variables for Netlify deployment
+        NETLIFY_SITE_ID = 'bookanymovie.netlify.app'
+        NETLIFY_AUTH_TOKEN = credentials('netlify_auth_token')
+    }
     stages {
         stage('Checkout code') {
             steps {
@@ -14,6 +19,8 @@ pipeline {
             steps {
                 dir('front-end') {
                     bat 'npm install --legacy-peer-deps'
+                    bat 'npm run build'
+                    bat 'npm run export'
                 }
             }
         }
@@ -39,6 +46,18 @@ pipeline {
                 dir('server') {
                     bat 'npm test'
                 }
+            }
+        }
+        stage('Deploy to Netlify'){
+            when {
+                expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                }
+            }
+
+            steps {
+                echo 'Deploying to Netlify...'
+                    bat 'npx netlify deploy --prod --dir-out --site=%NETLIFY_SITE_ID% --auth=%NETLIFY_AUTH_TOKEN%'
             }
         }
     }
