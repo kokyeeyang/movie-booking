@@ -1,0 +1,13 @@
+[build]
+  base = "front-end"
+  publish = "out"
+  command = "npm install --legacy-peer-deps && npm run build"
+
+[build.environment]
+  NODE_VERSION = "22"
+  REACT_APP_BACKEND_URL = "https://movie-booking-wrhs.onrender.com"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
