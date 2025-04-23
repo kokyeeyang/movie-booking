@@ -24,31 +24,31 @@ const allowedOrigins = [
   "http://localhost:3000",  // Local development URL
 ];
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);  // Allow the request
-    } else {
-      callback(new Error("Not allowed by CORS"));  // Deny the request
-    }
-  },
-  credentials: true,  // Allow sending credentials (cookies, authorization headers, etc.)
-};
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);  // Allow the request
+//     } else {
+//       callback(new Error("Not allowed by CORS"));  // Deny the request
+//     }
+//   },
+//   credentials: true,  // Allow sending credentials (cookies, authorization headers, etc.)
+// };
 
 // app.use(cors(corsOptions));
 
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     console.log("Origin:", origin); // Debugging the incoming origin
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       console.error("Blocked by CORS:", origin); // Log the blocked origin
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   credentials: true,
-// };
+const corsOptions = {
+  origin: (origin, callback) => {
+    console.log("Origin:", origin); // Debugging the incoming origin
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error("Blocked by CORS:", origin); // Log the blocked origin
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
 
 app.use(cors(corsOptions));
 // app.use(
