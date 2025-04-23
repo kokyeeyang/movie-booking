@@ -12,14 +12,6 @@ const nextConfig = {
     // This ensures the typescript resolver works for Next.js
     ignoreBuildErrors: true,
   },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/:path*',
-  //       destination: 'https://movie-booking-wrhs.onrender.com/api/:path*', // Proxy to backend
-  //     },
-  //   ];
-  // },
   output: 'export',
 }
 
