@@ -16,6 +16,11 @@ const attachCookiesToResponse = ({ res, user, token }) => {
   const oneDay = 1000 * 60 * 60 * 24;
   const longerExp = 1000 * 60 * 60 * 24 * 30;
 
+  // Dynamically determine the domain
+  const cookieDomain = process.env.NODE_ENV === "production"
+    ? "bookanymovie.netlify.app" // Production domain (Netlify)
+    : "localhost"; // Local domain for development
+
   try {
     console.log("Setting accessToken cookie");
     res.cookie("accessToken", accessTokenJWT, {
@@ -24,7 +29,7 @@ const attachCookiesToResponse = ({ res, user, token }) => {
       secure: process.env.NODE_ENV === "production", // Secure for production
       sameSite: "None", // Allow cross-site cookies
       path: "/",
-      domain: "bookanymovie.netlify.app", // Set the domain to the Netlify app domain
+      domain: cookieDomain, // Set the domain dynamically based on environment
     });
 
     console.log("Setting refreshToken cookie");
@@ -34,7 +39,7 @@ const attachCookiesToResponse = ({ res, user, token }) => {
       secure: process.env.NODE_ENV === "production", // Secure for production
       sameSite: "None", // Allow cross-site cookies
       path: "/",
-      domain: "bookanymovie.netlify.app", // Set the domain to the Netlify app domain
+      domain: cookieDomain, // Set the domain dynamically based on environment
     });
 
     console.log("Cookies set successfully!");
