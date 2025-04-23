@@ -14,10 +14,7 @@
   to = "https://movie-booking-wrhs.onrender.com/api/:splat"
   status = 200
   force = true
-  headers = { 
-    Access-Control-Allow-Origin = "*",
-    Access-Control-Allow-Credentials = "true"
-  }
+  headers = { Access-Control-Allow-Origin = "*", Access-Control-Allow-Credentials = "true" }
 
 [[redirects]]
   from = "/*"
