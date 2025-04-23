@@ -8,6 +8,7 @@ const createJWT = ({ payload }) => {
 };
 
 const isTokenValid = (token) => jwt.verify(token, process.env.JWT_SECRET);
+const isProduction = process.env.NODE_ENV === "production";
 
 const attachCookiesToResponse = ({ res, user, token }) => {
   const accessTokenJWT = createJWT({ payload: { user } });
@@ -21,8 +22,8 @@ const attachCookiesToResponse = ({ res, user, token }) => {
     res.cookie("accessToken", accessTokenJWT, {
       httpOnly: true,
       expires: new Date(Date.now() + oneDay),
-      secure: process.env.NODE_ENV === "production", // Secure for production
-      sameSite: "None", // Allow cross-site cookies
+      secure: isProduction, // Secure for production
+      sameSite: isProduction ? "None": "Lax", // Allow cross-site cookies
       path: "/",
     });
 
@@ -30,8 +31,8 @@ const attachCookiesToResponse = ({ res, user, token }) => {
     res.cookie("refreshToken", refreshTokenJWT, {
       httpOnly: true,
       expires: new Date(Date.now() + longerExp),
-      secure: process.env.NODE_ENV === "production", // Secure for production
-      sameSite: "None", // Allow cross-site cookies
+      secure: isProduction, // Secure for production
+      sameSite: isProduction ? "None" : "Lax", // Allow cross-site cookies
       path: "/",
     });
 

@@ -35,9 +35,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-router.get("/me", (req, res, next) => {
-  next();
-}, verifyToken, (req, res) => {
+router.get("/me", verifyToken, (req, res) => {
   res.status(200).json({ user: req.user });
 });
 
