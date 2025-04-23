@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useContext, ChangeEvent, FormEvent } from "react";
+import { useState, useContext, ChangeEvent, FormEvent, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { AppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
+import Cookies from "js-cookie";
 
 interface LoginFormProps {
   onSubmit?: (user: any) => void;
@@ -49,6 +50,11 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
       console.log(error);
       showAlert("Login failed. Please try again.", "error");
     }
+
+    useEffect(() => {
+      console.log("document.cookie:", document.cookie);
+      console.log("js-cookie accessToken:", Cookies.get("accessToken"));
+    }, []);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
