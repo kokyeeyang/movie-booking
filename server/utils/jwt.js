@@ -16,24 +16,33 @@ const attachCookiesToResponse = ({ res, user, token }) => {
   const oneDay = 1000 * 60 * 60 * 24;
   const longerExp = 1000 * 60 * 60 * 24 * 30;
 
-  const isProduction = process.env.NODE_ENV === 'production';
+  try {
+    console.log("Setting accessToken cookie");
+    res.cookie("accessToken", accessTokenJWT, {
+      httpOnly: true,
+      expires: new Date(Date.now() + oneDay),
+      secure: process.env.NODE_ENV === "production", // Secure for production
+      sameSite: "None", // Allow cross-site cookies
+      path: "/",
+      domain: "bookanymovie.netlify.app", // Set the domain to the Netlify app domain
+    });
 
-  res.cookie("accessToken", accessTokenJWT, {
-    httpOnly: true,
-    secure: isProduction,
-    expires: new Date(Date.now() + oneDay),
-    sameSite: isProduction ? "None" : "Lax",
-    path: "/",
-  });
+    console.log("Setting refreshToken cookie");
+    res.cookie("refreshToken", refreshTokenJWT, {
+      httpOnly: true,
+      expires: new Date(Date.now() + longerExp),
+      secure: process.env.NODE_ENV === "production", // Secure for production
+      sameSite: "None", // Allow cross-site cookies
+      path: "/",
+      domain: "bookanymovie.netlify.app", // Set the domain to the Netlify app domain
+    });
 
-  res.cookie("refreshToken", refreshTokenJWT, {
-    httpOnly: true,
-    secure: isProduction,
-    expires: new Date(Date.now() + longerExp),
-    sameSite: isProduction ? "None" : "Lax",
-    path: "/",
-  });
+    console.log("Cookies set successfully!");
+  } catch (error) {
+    console.log("Error setting cookies:", error);
+  }
 };
+
 
 // const attachSingleCookieToResponse = ({ res, user }) => {
 //   const token = createJWT({ payload: user });
