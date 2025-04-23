@@ -15,8 +15,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: 'https://movie-booking-wrhs.onrender.com/api/:path*',
-        destination: '/api/:path*', // Proxy to backend
+        source: '/api/:path*',
+        destination: 'https://movie-booking-wrhs.onrender.com/api/:path*', // Proxy to backend
       },
     ];
   },
