@@ -32,7 +32,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         console.log(email)
         const login = { email, password };
         const data = await axios.post(
-          `${backendDomain}/api/v1/auth/login`,
+          `/api/v1/auth/login`,
           login,
           { withCredentials: true }
         );
