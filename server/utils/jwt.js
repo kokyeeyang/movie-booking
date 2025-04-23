@@ -22,7 +22,7 @@ const attachCookiesToResponse = ({ res, user, token }) => {
   try {
     console.log("Setting accessToken cookie");
     res.cookie("accessToken", accessTokenJWT, {
-      httpOnly: false,
+      httpOnly: true,
       expires: new Date(Date.now() + oneDay),
       secure: true,
       // signed: true,
@@ -32,7 +32,7 @@ const attachCookiesToResponse = ({ res, user, token }) => {
     });
     console.log("Setting refreshToken cookie");
     res.cookie("refreshToken", refreshTokenJWT, {
-      httpOnly: false,
+      httpOnly: true,
       expires: new Date(Date.now() + longerExp),
       secure: true,
       // signed: true,
