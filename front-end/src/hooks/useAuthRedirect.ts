@@ -17,45 +17,53 @@ export default function useAuthRedirect(protectedRole: "admin" | "user" | null) 
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setHydrated(true); // Ensures this only runs on client
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
     if (!hydrated) return;
 
-    const token = Cookies.get("accessToken");
-    console.log("TOKEN FOUND:", token);
+    const checkAuth = async () => {
+      const token = Cookies.get("accessToken");
+      console.log("TOKEN FOUND:", token);
 
-    if (!token) {
-      if (window.location.pathname !== "/login") {
-        router.replace("/login");
-      }
-      return;
-    }
-
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
-      console.log("DECODED TOKEN:", decoded);
-
-      if (window.location.pathname === "/") {
-        if (decoded.user.role === "admin") {
-          router.replace("/admin-landing-page");
-        } else if (decoded.user.role === "user") {
-          router.replace("/homepage");
+      if (!token) {
+        if (window.location.pathname !== "/login") {
+          console.log("No token, redirecting to login");
+          router.replace("/login");
         }
         return;
       }
 
-      if (protectedRole && decoded.user.role !== protectedRole) {
-        if (decoded.user.role === "admin") {
-          router.replace("/admin-landing-page");
-        } else {
-          router.replace("/homepage");
+      try {
+        const decoded = jwtDecode<JwtPayload>(token);
+        const currentPath = window.location.pathname;
+        console.log("DECODED TOKEN:", decoded, "Current path:", currentPath);
+
+        if (currentPath === "/") {
+          if (decoded.user.role === "admin") {
+            router.replace("/admin-landing-page");
+          } else {
+            router.replace("/homepage");
+          }
+          return;
         }
+
+        if (protectedRole && decoded.user.role !== protectedRole) {
+          console.log("Wrong role, redirecting");
+          if (decoded.user.role === "admin") {
+            router.replace("/admin-landing-page");
+          } else {
+            router.replace("/homepage");
+          }
+        }
+      } catch (err) {
+        console.error("JWT decode failed", err);
+        router.replace("/login");
       }
-    } catch (err) {
-      console.error("JWT decode failed", err);
-      router.replace("/login");
-    }
+    };
+
+    // Delay slightly to wait for cookie availability
+    setTimeout(checkAuth, 100);
   }, [hydrated, router, protectedRole]);
 }
