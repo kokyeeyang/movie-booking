@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -13,10 +14,17 @@ interface JwtPayload {
 
 export default function useAuthRedirect(protectedRole: "admin" | "user" | null) {
   const router = useRouter();
-  const [checking, setChecking] = useState(true); // New state to prevent premature redirects
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true); // Ensures this only runs on client
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
     const token = Cookies.get("accessToken");
+    console.log("TOKEN FOUND:", token);
 
     if (!token) {
       if (window.location.pathname !== "/login") {
@@ -27,8 +35,8 @@ export default function useAuthRedirect(protectedRole: "admin" | "user" | null) 
 
     try {
       const decoded = jwtDecode<JwtPayload>(token);
+      console.log("DECODED TOKEN:", decoded);
 
-      // Redirect if on root
       if (window.location.pathname === "/") {
         if (decoded.user.role === "admin") {
           router.replace("/admin-landing-page");
@@ -38,22 +46,16 @@ export default function useAuthRedirect(protectedRole: "admin" | "user" | null) 
         return;
       }
 
-      // Redirect if wrong role
       if (protectedRole && decoded.user.role !== protectedRole) {
         if (decoded.user.role === "admin") {
           router.replace("/admin-landing-page");
         } else {
           router.replace("/homepage");
         }
-        return;
       }
-
-      setChecking(false); // All good
     } catch (err) {
-      console.error("Invalid token", err);
+      console.error("JWT decode failed", err);
       router.replace("/login");
     }
-  }, [router, protectedRole]);
-
-  return !checking;
+  }, [hydrated, router, protectedRole]);
 }
