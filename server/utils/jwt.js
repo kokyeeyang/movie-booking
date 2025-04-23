@@ -22,23 +22,19 @@ const attachCookiesToResponse = ({ res, user, token }) => {
   try {
     console.log("Setting accessToken cookie");
     res.cookie("accessToken", accessTokenJWT, {
-      httpOnly: false,
+      httpOnly: false, // change to true if not using document.cookie
+      secure: true,
+      sameSite: "none",
+      path: "/",
       expires: new Date(Date.now() + oneDay),
-      secure: true,
-      // not entirely sure why this is needed, last resort
-      // domain: "bookanymovie.netlify.app",
-      sameSite: "none",
-      path: "/",
     });
-    console.log("Setting refreshToken cookie");
+    
     res.cookie("refreshToken", refreshTokenJWT, {
-      httpOnly: false,
-      expires: new Date(Date.now() + longerExp),
+      httpOnly: false, // change to true if not using document.cookie
       secure: true,
-      // not entirely sure why this is needed, last resort
-      // domain: "bookanymovie.netlify.app",
       sameSite: "none",
       path: "/",
+      expires: new Date(Date.now() + longerExp),
     });
 
     console.log("after setting the token");
