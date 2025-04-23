@@ -21,13 +21,14 @@ export default function useAuthRedirect(protectedRole: "admin" | "user" | null) 
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated) return; // Wait for hydration to complete
 
-    const checkAuth = async () => {
-      const token = Cookies.get("accessToken");
+    const checkAuth = () => {
+      const token = Cookies.get("accessToken"); // Fetch token from cookies
       console.log("TOKEN FOUND:", token);
 
       if (!token) {
+        // If no token, redirect to login page
         if (window.location.pathname !== "/login") {
           console.log("No token, redirecting to login");
           router.replace("/login");
@@ -63,7 +64,6 @@ export default function useAuthRedirect(protectedRole: "admin" | "user" | null) 
       }
     };
 
-    // Delay slightly to wait for cookie availability
-    setTimeout(checkAuth, 100);
+    checkAuth();
   }, [hydrated, router, protectedRole]);
 }
