@@ -1,49 +1,53 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 
-
-const backendDomain = process.env.NEXT_PUBLIC_BACKEND_URL; // or hardcode if needed
+const backendDomain = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function useAuthRedirect(protectedRole: "admin" | "user" | null) {
-    const router = useRouter();
-    const [hydrated, setHydrated] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname(); // ✅ this replaces window.location.pathname
+  const [hydrated, setHydrated] = useState(false);
 
-    useEffect(() => {
-        setHydrated(true);
-    }, []);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
-    useEffect(() => {  
-        if (!hydrated) return; // Prevent premature render
+  useEffect(() => {
+    if (!hydrated) return;
 
-        const checkAuth = async () => {
-            try {
-                const res = await axios.get(`${backendDomain}/api/v1/auth/me`, {
-                    withCredentials: true,
-                });
+    const checkAuth = async () => {
+      try {
+        console.log("Running auth redirect check. Current pathname:", pathname);
+        const res = await axios.get(`${backendDomain}/api/v1/auth/me`, {
+          withCredentials: true,
+        });
 
-                const user = res.data.user;
-                console.log("Authenticated user:", user);
+        const user = res.data.user;
+        console.log("Authenticated user:", user);
 
-                // If on "/" path, redirect based on role
-                if (window.location.pathname === "/") {
-                    router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
-                    return;
-                }
+        if (pathname === "/") {
+          router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
+          return;
+        }
 
-                // If role mismatch, redirect them
-                if (protectedRole && user.role !== protectedRole) {
-                    router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
-                }
+        if (protectedRole && user.role !== protectedRole) {
+          router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
+        }
 
-            } catch (err) {
-                console.error("Auth check failed:", err);
-                router.replace("/login");
-            }
-        };
+      } catch (err) {
+        console.error("Auth check failed:", err);
 
-        checkAuth();
-    }, [hydrated,router, protectedRole]);
+        if (pathname === "/") {
+          router.replace("/login"); // send unauthenticated users to login from root
+        } else {
+          router.replace("/login");
+        }
+      }
+    };
+
+    checkAuth();
+  }, [hydrated, pathname, router, protectedRole]);
 }
