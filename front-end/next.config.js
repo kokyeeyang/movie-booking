@@ -12,7 +12,16 @@ const nextConfig = {
     // This ensures the typescript resolver works for Next.js
     ignoreBuildErrors: true,
   },
-  // output: 'export',
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/login',
+        permanent: false,
+      },
+    ];
+  },
+  output: 'export',
 }
 
 module.exports = nextConfig

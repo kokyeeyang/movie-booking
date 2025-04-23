@@ -96,10 +96,12 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true, /* Skip type checking all .d.ts files. */
-    "baseUrl": "./",  // The base URL is now the root of the 'front-end' folder
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],  // Alias '@' points to 'src' directory
-      "components/*": ["components/*"]  // Alias 'components' points to the 'components' directory
+      "@/*": [
+        "src/*"
+      ]
     },
     "lib": [
       "dom",

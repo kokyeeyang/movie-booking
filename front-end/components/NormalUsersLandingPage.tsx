@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAlert } from "../src/AlertContext";
 
 const NormalUsersLandingPage = () => {
-  const router = useRouter();
+  const router = useRouter(); 
   const { user } = useAppContext();  // Use this for accessing the user
   const { showAlert } = useAlert();
 
