@@ -8,11 +8,6 @@
   NODE_ENV = "production"
   REACT_APP_BACKEND_URL = "https://movie-booking-wrhs.onrender.com"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
 # This proxies API calls to backend
 [[redirects]]
   from = "/api/*"
@@ -23,3 +18,8 @@
     Access-Control-Allow-Origin = "*",
     Access-Control-Allow-Credentials = "true"
   }
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
