@@ -29,13 +29,13 @@ export default function useAuthRedirect(protectedRole: "admin" | "user" | null) 
 
                 // If on "/" path, redirect based on role
                 if (window.location.pathname === "/") {
-                router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
-                return;
+                    router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
+                    return;
                 }
 
                 // If role mismatch, redirect them
                 if (protectedRole && user.role !== protectedRole) {
-                router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
+                    router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
                 }
 
             } catch (err) {

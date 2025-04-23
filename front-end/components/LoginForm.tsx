@@ -32,7 +32,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         console.log(email)
         const login = { email, password };
         const data = await axios.post(
-          `/api/v1/auth/login`,
+          `${backendDomain}/api/v1/auth/login`,
           login,
           { withCredentials: true }
         );
@@ -50,13 +50,11 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
       console.log(error);
       showAlert("Login failed. Please try again.", "error");
     }
-
-    useEffect(() => {
-      console.log("document.cookie:", document.cookie);
-      console.log("js-cookie accessToken:", Cookies.get("accessToken"));
-    }, []);
   };
-
+  useEffect(() => {
+    console.log("document.cookie:", document.cookie);
+    console.log("js-cookie accessToken:", Cookies.get("accessToken"));
+  }, []);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await loginUser(values.email, values.password);
