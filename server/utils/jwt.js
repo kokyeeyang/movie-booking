@@ -25,9 +25,9 @@ const attachCookiesToResponse = ({ res, user, token }) => {
       httpOnly: false,
       expires: new Date(Date.now() + oneDay),
       secure: true,
-      // signed: true,
+      // not entirely sure why this is needed, last resort
+      domain: "bookanymovie.netlify.app",
       sameSite: "none",
-      // path: ".localhost",
       path: "/",
     });
     console.log("Setting refreshToken cookie");
@@ -35,9 +35,9 @@ const attachCookiesToResponse = ({ res, user, token }) => {
       httpOnly: false,
       expires: new Date(Date.now() + longerExp),
       secure: true,
-      // signed: true,
+      // not entirely sure why this is needed, last resort
+      domain: "bookanymovie.netlify.app",
       sameSite: "none",
-      // path: ".localhost",
       path: "/",
     });
 
