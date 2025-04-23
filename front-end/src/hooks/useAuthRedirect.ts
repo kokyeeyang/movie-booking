@@ -2,68 +2,48 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
-interface JwtPayload {
-  user: {
-    userId: string;
-    role: string;
-  };
-}
+
+const backendDomain = process.env.NEXT_PUBLIC_BACKEND_URL; // or hardcode if needed
 
 export default function useAuthRedirect(protectedRole: "admin" | "user" | null) {
-  const router = useRouter();
-  const [hydrated, setHydrated] = useState(false);
+    const router = useRouter();
+    const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
 
-  useEffect(() => {
-    if (!hydrated) return; // Wait for hydration to complete
+    useEffect(() => {  
+        if (!hydrated) return; // Prevent premature render
 
-    const checkAuth = () => {
-      const token = Cookies.get("accessToken"); // Fetch token from cookies
-      console.log("TOKEN FOUND:", token);
+        const checkAuth = async () => {
+            try {
+                const res = await axios.get(`${backendDomain}/api/v1/auth/me`, {
+                    withCredentials: true,
+                });
 
-      if (!token) {
-        // If no token, redirect to login page
-        if (window.location.pathname !== "/login") {
-          console.log("No token, redirecting to login");
-          router.replace("/login");
-        }
-        return;
-      }
+                const user = res.data.user;
+                console.log("Authenticated user:", user);
 
-      try {
-        const decoded = jwtDecode<JwtPayload>(token);
-        const currentPath = window.location.pathname;
-        console.log("DECODED TOKEN:", decoded, "Current path:", currentPath);
+                // If on "/" path, redirect based on role
+                if (window.location.pathname === "/") {
+                router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
+                return;
+                }
 
-        if (currentPath === "/") {
-          if (decoded.user.role === "admin") {
-            router.replace("/admin-landing-page");
-          } else {
-            router.replace("/homepage");
-          }
-          return;
-        }
+                // If role mismatch, redirect them
+                if (protectedRole && user.role !== protectedRole) {
+                router.replace(user.role === "admin" ? "/admin-landing-page" : "/homepage");
+                }
 
-        if (protectedRole && decoded.user.role !== protectedRole) {
-          console.log("Wrong role, redirecting");
-          if (decoded.user.role === "admin") {
-            router.replace("/admin-landing-page");
-          } else {
-            router.replace("/homepage");
-          }
-        }
-      } catch (err) {
-        console.error("JWT decode failed", err);
-        router.replace("/login");
-      }
-    };
+            } catch (err) {
+                console.error("Auth check failed:", err);
+                router.replace("/login");
+            }
+        };
 
-    checkAuth();
-  }, [hydrated, router, protectedRole]);
+        checkAuth();
+    }, [hydrated,router, protectedRole]);
 }

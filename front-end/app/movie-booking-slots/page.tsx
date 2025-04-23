@@ -4,9 +4,7 @@ import MovieBookingSlotsComponent from "components/MovieBookingSlots";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 export default function MovieBookingTimes () {
-    const isAuthorized = useAuthRedirect("user"); // or "admin"
-
-    if (!isAuthorized) return null; // Prevent premature render
+    useAuthRedirect("user"); // or "admin"
     return (
         <MovieBookingSlotsComponent />
     )

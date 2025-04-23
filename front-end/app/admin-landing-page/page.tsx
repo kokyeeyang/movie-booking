@@ -4,9 +4,7 @@ import AdminLandingPageComponent  from "components/AdminLandingPage";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 export default function AdminLandingPage() {
-    const isAuthorized = useAuthRedirect("admin"); // or "admin"
-
-    if (!isAuthorized) return null; // Prevent premature render
+    useAuthRedirect("admin");
     return (
         <div>
             <AdminLandingPageComponent />
