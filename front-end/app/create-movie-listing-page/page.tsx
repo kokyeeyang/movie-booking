@@ -3,7 +3,9 @@ import CreateMovieListingPageComponent from "components/CreateMovieListingPage";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 export default function CreateMovieListing () {
-    useAuthRedirect("admin");
+    const isAuthorized = useAuthRedirect("admin"); // or "admin"
+
+    if (!isAuthorized) return null; // Prevent premature render
     return (
         <div>
             <h1>Create Movie Listing here!</h1>
