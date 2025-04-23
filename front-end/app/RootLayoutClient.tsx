@@ -12,8 +12,6 @@ export default function RootLayoutClient({
   const shouldShowDashboardBar = pathname && pathname !== "/login";
 
   useEffect(() => {
-    console.log("🏷️ pathname:", pathname);
-    console.log("✅ shouldShowDashboardBar:", shouldShowDashboardBar);
   }, [pathname]);
 
   return (

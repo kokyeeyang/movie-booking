@@ -30,17 +30,18 @@ const publicRoutes = ['/', '/login', 'sign-up'];
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-
+  
   const isAdminRoute = protectedAdminRoutes.some((route) => path.startsWith(route));
   const isUserRoute = protectedUserRoutes.some((route) => path.startsWith(route));
   const isPublicRoute = publicRoutes.includes(path);
-
+  
   const rawToken = req.cookies.get('accessToken')?.value;
   const accessToken = rawToken ? decodeURIComponent(rawToken) : "";
   const user = await verifyAccessToken(accessToken);
-  console.log(user);
+  console.log(path);
 
   if ((isAdminRoute || isUserRoute) && !user?.userId) {
+    console.log("User is not authenticated, redirecting to login page.");
     return NextResponse.redirect(new URL('/login', req.url));
   }
   
