@@ -26,10 +26,8 @@ const CheckoutForm = () => {
 
   const router = useRouter();
   // const { selectedSeats, movieListing } = router.query; // Fetch query params from URL
-
+  console.log(selectedSeats);
   const selectedSeatsArray = selectedSeats ? selectedSeats.split(",") : [];
-  console.log('selected seats array = ')
-  console.log(selectedSeatsArray)
   const totalSeats = selectedSeatsArray.length;
   const date = new Date();
 
@@ -107,7 +105,7 @@ const CheckoutForm = () => {
       console.error("Payment failed:", error);
       alert("Payment failed. Please try again.");
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      console.log(movieListing[0]._id);
+
       try {
         const res = await fetch(`${backendDomain}/api/v1/movieListing/book-seats`, {
           method: "POST",
@@ -132,6 +130,29 @@ const CheckoutForm = () => {
       }
       alert("Payment successful!");
 
+      const res = await fetch(`${backendDomain}/api/v1/booking/create-booking`, {
+        method: "POST",
+        credentials:"include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user?.userId,
+          movieListingId: movieListing[0]?._id,
+          movieTitle: movieListing[0]?.movieName,
+          cinemaId: movieListing[0]?.cinema,
+          hallName: movieListing[0]?.hallName,
+          seats: selectedSeatsArray,
+          bookingDate: movieListing[0]?.showDate,
+          timeSlot: movieListing[0]?.showTime,
+          totalPrice: totalPrice,
+          studentSeat: numberOfTickets1,
+          seniorSeat: numberOfTickets2,
+          paymentId: paymentIntent.id
+        })
+      });
+
+      const data = await res.json();
       // router.push('homepage');
     }
   };

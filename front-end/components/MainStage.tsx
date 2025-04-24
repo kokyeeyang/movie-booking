@@ -98,18 +98,15 @@ const MainStage = ({ timeSlot }: MainStageProps) => {
 
   const handlePurchase = async () => {
     const selectedSeats = selectedSeatsIds.join(",");
-    console.log('movie listing herereeeeeeeee');
-    console.log(timeSlot);
+    localStorage.setItem("movieListing", JSON.stringify(timeSlot));
     router.push(
-      `/checkout?userId=${user?.userId}&selectedSeats=${selectedSeats}&movieListing=${JSON.stringify(timeSlot)}`
+      `/checkout?userId=${user?.userId}&selectedSeats=${selectedSeats}`
     );
   };
 
   if (!timeSlot) {
     return <div ref={containerRef}>Loading...</div>;
   }
-
-  console.log('here la!');
 
   return (
     <div

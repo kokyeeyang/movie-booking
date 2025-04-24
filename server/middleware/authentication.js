@@ -4,16 +4,11 @@ const Token = require("../models/Token");
 const { attachCookiesToResponse } = require("../utils");
 
 const authenticateUser = async (req, res, next) => {
-  // const token = req.signedCookies.token;
-  // console.log(req.cookies);
   const { refreshToken, accessToken } = req.cookies;
-  console.log("Access Token:", accessToken);
-  console.log("Refresh Token:", refreshToken);
   try {
     if (accessToken) {
       const payload = isTokenValid(accessToken);
       req.user = payload.user;
-      console.log("i am here!");
       return next();
     }
 
@@ -24,12 +19,8 @@ const authenticateUser = async (req, res, next) => {
       user: payload.user.userId,
       refreshToken: payload.refreshToken,
     });
-    console.log("heloooooooooooooooooooooooooo");
-    console.log(payload);
 
     if (!existingToken || !existingToken?.isValid) {
-      console.log("something is wrong");
-      console.log('existingToken = ', existingToken);
       throw new CustomError.UnauthenticatedError("Authentication Invalid");
     }
     attachCookiesToResponse({
@@ -37,7 +28,6 @@ const authenticateUser = async (req, res, next) => {
       user: payload.user,
       refreshToken: existingToken.refreshToken,
     });
-    console.log("we are here!");
   } catch (error) {
     throw new CustomError.UnauthenticatedError("Authentication Invalid");
   }
