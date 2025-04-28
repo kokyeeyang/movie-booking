@@ -1,44 +1,47 @@
 "use client";
-import React, { useState, useContext } from "react";
-import { AppContext, useAppContext } from "../src/AppContext";
+import React from "react";
+import { useAppContext } from "../src/AppContext";
 import { useRouter } from "next/navigation";
-import { useAlert } from "../src/AlertContext";
+import { Film, MapPin, Ticket } from "lucide-react"; // icons from lucide-react
 
 const NormalUsersLandingPage = () => {
-  const router = useRouter(); 
-  const { user } = useAppContext();  // Use this for accessing the user
-  const { showAlert } = useAlert();
-
+  const router = useRouter();
+  const { user } = useAppContext();
   const userFirstname = user?.firstname ?? "";
-  const redirectToMovieListingsPage = (): void => {
-    router.push("view-all-movie-listings");
-  };
 
-  const redirectToCinemaLocationsPage = (): void => {
-    router.push("view-all-cinema-locations");
-  };
+  const actions = [
+    {
+      label: "Cinema Locations",
+      icon: <MapPin className="h-6 w- text-blue-600" />,
+      onClick: () => router.push("view-all-cinema-locations"),
+    },
+    {
+      label: "My Bookings",
+      icon: <Ticket className="h-6 w-6 text-blue-600" />,
+      onClick: () => router.push("my-bookings"),
+    },
+  ];
 
   return (
-    <div className="flex flex-col items-center p-4 mt-4 sm:p-10 mx-4 sm:mx-16 lg:mx-auto lg:mt-10 max-w-screen-lg border-2 border-black lg:border-red-900">
-      <h1 className="text-xl sm:text-3xl font-bold mb-4">
-        Welcome! {userFirstname}
+    <div className="flex flex-col items-center px-4 pt-6 sm:pt-10 mx-auto max-w-screen-lg">
+      <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-center">
+        Welcome, {userFirstname}!
       </h1>
-      <h2 className="text-lg sm:text-2sm mb-6">
-        Here are your movie bookings so far
-      </h2>
-      <div className="mb-8">
-        <button
-          className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition"
-          onClick={redirectToMovieListingsPage}
-        >
-          Movie Listings
-        </button>
-        <button
-          className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition"
-          onClick={redirectToCinemaLocationsPage}
-        >
-          View all locations
-        </button>
+      <p className="text-md sm:text-lg text-gray-600 mb-8 text-center">
+        What would you like to do today?
+      </p>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-10 sm:px-8">
+        {actions.map((action) => (
+          <button
+            key={action.label}
+            onClick={action.onClick}
+            className="flex items-center justify-start gap-4 p-6 border rounded-2xl shadow hover:shadow-lg transition-all bg-white hover:bg-blue-50"
+          >
+            {action.icon}
+            <span className="text-lg font-medium text-gray-800">{action.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
