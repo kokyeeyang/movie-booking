@@ -167,6 +167,7 @@ const showCinemaMovieListings = async (req, res) => {
         $project: {
           _id: 1,
           movieListingIds: 1,
+          movie: 1,
           movieName: 1,
           genre: 1,
           duration: 1,
@@ -259,15 +260,7 @@ const selectMovieListing = async (req, res) => {
 
 const selectSingleTimeSlot = async (req, res) => {
   try {
-    const { date, time } = req.params;
-
-    // const listing = await MovieListing.find({
-    //   showDate: {
-    //     $gte: new Date(`${date}T00:00:00.000Z`),
-    //     $lt: new Date(`${date}T23:59:59.999Z`),
-    //   },
-    //   showTime: time,
-    // }).populate("movie", "image movieName").populate("cinema", "halls");
+    const { date, time, movieId } = req.params;
 
     const listing = await MovieListing.aggregate([
       {
@@ -276,7 +269,9 @@ const selectSingleTimeSlot = async (req, res) => {
             $gte: new Date(`${date}T00:00:00.000Z`),
             $lt: new Date(`${date}T23:59:59.999Z`),
           },
-          showTime: time
+          showTime: time,
+          // movie: movieId,
+          movie: new mongoose.Types.ObjectId(movieId)
         }
       },
       {
@@ -317,7 +312,7 @@ const selectSingleTimeSlot = async (req, res) => {
                       $filter: {
                         input: "$cinemaDetails.halls", // Access the halls array inside cinemaDetails
                         as: "hall",
-                        cond: { $eq: [{ $toObjectId: "$$hall._id" }, { $toObjectId: "$hallId" }] } // Match hallId from MovieListing to hall._id
+                        cond: { $eq: [{ $toObjectId: "$hall._id" }, { $toObjectId: "$hallId" }] } // Match hallId from MovieListing to hall._id
                       },
                     },
                     0, // Get the first matching hall (since it's an array)

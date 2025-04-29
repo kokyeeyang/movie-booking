@@ -107,7 +107,7 @@ const CheckoutForm = () => {
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
 
       try {
-        const res = await fetch(`${backendDomain}/api/v1/movieListing/book-seats`, {
+        let res = await fetch(`${backendDomain}/api/v1/movieListing/book-seats`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -130,7 +130,7 @@ const CheckoutForm = () => {
       }
       alert("Payment successful!");
 
-      const res = await fetch(`${backendDomain}/api/v1/booking/create-booking`, {
+      await fetch(`${backendDomain}/api/v1/booking/create-booking`, {
         method: "POST",
         credentials:"include",
         headers: {
@@ -152,7 +152,17 @@ const CheckoutForm = () => {
         })
       });
 
-      const data = await res.json();
+      let res = await fetch(`${backendDomain}/api/v1/membershipPoints/update-membership-points`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId : user?.userId,
+          amountInCents: totalPrice * 100
+        })
+      })
       // router.push('homepage');
     }
   };

@@ -30,10 +30,12 @@ const MovieBookingSlots = () => {
     const encodedDate = encodeURIComponent(selectedDay ?? "");
     const cleanedTime = time?.replace(/^"|"$/g, "")
     const encodedTime = encodeURIComponent(cleanedTime);
-  
+    const movieId = localStorage.getItem("movieId");
+    const cleanedId = movieId?.replace(/^"|"$/g, ""); 
+
     try {
       const timeSlot = await fetch(
-        `${backendDomain}/api/v1/movieListing/select-single-time-slot/${encodedDate}/${encodedTime}`,
+        `${backendDomain}/api/v1/movieListing/select-single-time-slot/${encodedDate}/${encodedTime}/${cleanedId}`,
         {
           method: "GET",
           credentials: "include",
@@ -44,13 +46,9 @@ const MovieBookingSlots = () => {
       );
   
       const timeSlotData = await timeSlot.json(); // assuming the response is JSON
-      console.log('Time slot:', timeSlotData);
       localStorage.setItem('movieListing', JSON.stringify(timeSlotData));
   
       // If `listing` comes from somewhere else (e.g., context or props), make sure it's accessible
-      console.log('weeeee');
-      console.log(timeSlotData);
-
       setSelectedTime(time);
       setTimeSlot(timeSlotData);
     } catch (error) {
@@ -58,7 +56,6 @@ const MovieBookingSlots = () => {
     }
   };
 
-  // console.log("seatingAvailability is here! = ", timeSlot?.[0]?.seatingAvailability);
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">Select a Show Time</h1>

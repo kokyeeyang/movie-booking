@@ -17,6 +17,7 @@ const cinemaRouter = require("./routes/cinemaRoutes");
 const movieListingRouter = require("./routes/movieListingRoutes");
 const customerRouter = require("./routes/customerRoutes");
 const bookingRouter = require("./routes/bookingRoutes");
+const membershipPointsRouter = require("./routes/membershipPointsRoutes");
 
 const port = process.env.PORT || 5000;
 
@@ -25,22 +26,8 @@ const allowedOrigins = [
   "http://localhost:3000",  // Local development URL
 ];
 
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);  // Allow the request
-//     } else {
-//       callback(new Error("Not allowed by CORS"));  // Deny the request
-//     }
-//   },
-//   credentials: true,  // Allow sending credentials (cookies, authorization headers, etc.)
-// };
-
-// app.use(cors(corsOptions));
-
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log("Origin:", origin); // Debugging the incoming origin
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -52,23 +39,17 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// app.use(
-//   cors({
-//     // origin: "http://localhost:3000",
-//     origin: process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000",
-//     credentials: true,
-//   })
-// );
-
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(express.urlencoded({ extended: true }));
+
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/movie", movieRouter);
 app.use("/api/v1/cinema", cinemaRouter);
 app.use("/api/v1/movieListing", movieListingRouter);
 app.use("/api/v1/customer", customerRouter);
 app.use("/api/v1/booking", bookingRouter);
+app.use("/api/v1/membershipPoints", membershipPointsRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.post("/create-payment-intent", async (req, res) => {

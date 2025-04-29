@@ -42,6 +42,11 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Please provide password"],
     minLength: 6,
   },
+  tier: {
+    type: String,
+    enum: ['Bronze', 'Silver', 'Gold'],
+    default: 'Bronze'
+  }
 });
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;

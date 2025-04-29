@@ -36,6 +36,6 @@ router
 
 router.route("/book-seats").post(bookSeats);
 
-router.route("/select-single-time-slot/:date/:time").get(authenticateUser, selectSingleTimeSlot);
+router.route("/select-single-time-slot/:date/:time/:movieId").get(authenticateUser, selectSingleTimeSlot);
 
 module.exports = router;

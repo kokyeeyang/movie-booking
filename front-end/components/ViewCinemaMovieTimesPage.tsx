@@ -15,7 +15,6 @@ const CinemaMovieTimesPage = () => {
   const [movieListings, setMovieListing] = useState<MovieListing[]>([]);
   const [filteredListings, setFilteredListings] = useState<MovieListing[]>([]);
   console.log("filtered listings : ", filteredListings);
-  const [loading, setLoading] = useState(true);
   const appContext = useAppContext();
   const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN || "http://localhost:5000";
   const [selectedDate, setSelectedDate] = useState(
@@ -134,6 +133,7 @@ const CinemaMovieTimesPage = () => {
   const redirectToBookingSlots = (listing: Listing) => {
     console.log('this is the listing', listing)
     localStorage.setItem('selectedDate', JSON.stringify(selectedDate));
+    localStorage.setItem('movieId', JSON.stringify(listing._id));
     router.push(`movie-booking-slots`);
   };
 
