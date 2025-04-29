@@ -3,6 +3,7 @@ const User = require("../models/User");
 const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 const updateMembershipPoints = async (req, res) => {
     let {userId, amountInCents} = req.body;
@@ -53,8 +54,11 @@ const updateMembershipPoints = async (req, res) => {
 
 const getUserPoints = async (req, res) => {
     try {
-        const {userId} = req.params;
+        const accessToken = req.cookies.accessToken;
+        const user = jwt.verify(accessToken, process.env.JWT_SECRET);
+        const userId = user.user.userId;
         const now = new Date();
+        console.log(userId);
 
         const result = await MembershipPoints.aggregate([
             {$match: {

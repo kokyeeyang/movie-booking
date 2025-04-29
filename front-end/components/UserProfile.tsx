@@ -3,38 +3,37 @@ import axios from 'axios';
 import { useAppContext } from '@/AppContext';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<userProps | null>(null);
   const [points, setPoints] = useState(0);
   const [email, setEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [status, setStatus] = useState('');
-  const backendDomain = useAppContext();
+  const {backendDomain} = useAppContext();
+  console.log(backendDomain);
 
+  interface userProps {
+    firstname:string;
+    lastname:string;
+    email:string;
+    tier:string;
+  } 
   useEffect(() => {
-    // const fetchUserProfile = async () => {
-    //   try {
-    //     const { data } = await axios.get(`${backendDomain}/api/user/getCurrentUser`);
-    //     setUser(data.user);
-    //     setEmail(data.user.email);
-    //   } catch (err) {
-    //     console.error('Failed to fetch user profile:', err);
-    //   }
-    // };
-
     const fetchUserProfile = async () => {
         try {
-            const user = await fetch(
-                `${backendDomain}/api/user/getCurrentUser`,
+            const res = await fetch(
+                `${backendDomain}/api/v1/user/getCurrentUser`,
                 {
-                    method: "GET",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+                  method: "GET",
+                  credentials: "include",
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
                 }
             );
-            console.log(user);
+            const user = await res.json();
+            setUser(user.userInfo);
+            console.log('hellooo');
         } catch (error) {
             console.error("Failed to fetch user profile:", error);
         }
@@ -42,7 +41,17 @@ export default function ProfilePage() {
 
     const fetchPoints = async () => {
       try {
-        const { data } = await axios.get('/api/user/points');
+        const res = await fetch(
+          `${backendDomain}/api/v1/membershipPoints/get-user-points`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        );
+        const data = await res.json();
         setPoints(data.totalPoints);
       } catch (err) {
         console.error('Failed to fetch points:', err);
@@ -53,23 +62,41 @@ export default function ProfilePage() {
     fetchPoints();
   }, []);
 
-  const handleUpdateEmail = async (e) => {
+  const handleUpdateEmail = async (e:any) => {
     e.preventDefault();
     try {
-      await axios.put('/api/user/profile', { email });
-      setStatus('Email updated successfully!');
+      // await axios.put(`${backendDomain}/api/v1/user/profile`, { email });
+      const res = await fetch(
+        `${backendDomain}/api/v1/user/updateUserInfo`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email })
+        }
+      )
+      setStatus('Info updated successfully!');
     } catch (err) {
-      setStatus('Failed to update email');
+      setStatus('Failed to update info');
     }
   };
 
-  const handleChangePassword = async (e) => {
+  const handleChangePassword = async (e:any) => {
     e.preventDefault();
     try {
-      await axios.post('/api/user/change-password', {
-        currentPassword,
-        newPassword,
-      });
+      await fetch(`${backendDomain}/api/v1/user/change-password`, 
+        {
+          method : "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+
+          }, 
+          body: JSON.stringify({ currentPassword, newPassword})
+        }
+      );
       setStatus('Password changed successfully!');
     } catch (err) {
       setStatus('Failed to change password');
