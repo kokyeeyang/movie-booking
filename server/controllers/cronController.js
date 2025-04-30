@@ -1,6 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
 const MembershipPoints = require("../models/MembershipPoints");
-const {StatusCodes} = require("http-status-codes");
 
 const expireAllExpiredPoints = async(req, res) => {
     console.log("Cron job triggered: Expiring points");
