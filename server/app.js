@@ -19,6 +19,7 @@ const customerRouter = require("./routes/customerRoutes");
 const bookingRouter = require("./routes/bookingRoutes");
 const membershipPointsRouter = require("./routes/membershipPointsRoutes");
 const userRouter = require("./routes/userRoutes");
+const cronRouter = require("./routes/cronRoutes");
 
 const port = process.env.PORT || 5000;
 
@@ -52,6 +53,7 @@ app.use("/api/v1/customer", customerRouter);
 app.use("/api/v1/booking", bookingRouter);
 app.use("/api/v1/membershipPoints", membershipPointsRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/cron", cronRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.post("/create-payment-intent", async (req, res) => {

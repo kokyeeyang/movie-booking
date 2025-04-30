@@ -1,0 +1,15 @@
+name: Expire Membership Points
+
+on:
+  schedule:
+    - cron: '15 17 * * *'  # Every day
+  workflow_dispatch:     # Allows manual run
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make API call to Render endpoint
+        run: |
+          curl -X PATCH https://movie-booking-wrhs.onrender.com/api/v1/cron/expire-all-expired-points \
+          -H "Authorization: Bearer ${{ secrets.CRON_API_SECRET }}"

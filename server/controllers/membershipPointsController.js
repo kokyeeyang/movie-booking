@@ -6,12 +6,12 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 const updateMembershipPoints = async (req, res) => {
-    let {userId, amountInCents} = req.body;
+    let {userId, amountInCents, redemptionAmount} = req.body;
 
     /* possible for amountInCents to be empty, as this function also handles the case 
     of expiring points or usage of points */
 
-    if(amountInCents){
+    if(amountInCents && amountInCents > 0){
         const points = amountInCents;
         const earnedAt = new Date();
         const expiresAt = new Date(earnedAt.getTime() + 365 * 24 * 60 * 60 * 1000);
@@ -29,6 +29,28 @@ const updateMembershipPoints = async (req, res) => {
         {userId: req.user.userId, expiresAt: {$lt: now}},
         {$set: {points: 0}}
     );
+
+    if(redemptionAmount){
+        // whatever points that the user wants to redeem
+        let remainingToRedeem = redemptionAmount;
+
+        const pointEntries = await MembershipPoints.find({
+            userId: req.user.userId,
+            expriesAt: {$gt: now},
+            points: {$gt: 0}
+        }).sort({earnedAt: 1});
+
+        for(const entry of pointEntries){
+            if(remainingToRedeem <= 0) break;
+
+            // to ensure that we do not deduct more points than what is inside a particular entry
+            const deduct = Math.min(entry.points, remainingToRedeem);
+            entry.points -= deduct;
+            remainingToRedeem -= deduct;
+
+            await entry.save();
+        }
+    }
 
     const validPoints = await MembershipPoints.aggregate([
         {$match: {userId: mongoose.Types.ObjectId(req.user.userId), expiresAt: {$gt: now}}},

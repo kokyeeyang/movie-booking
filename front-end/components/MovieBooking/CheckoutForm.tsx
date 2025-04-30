@@ -17,12 +17,14 @@ const CheckoutForm = () => {
   const [totalStudentPrice, setTotalStudentPrice] = useState(0);
   const [totalSeniorPrice, setTotalSeniorPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [pointsToRedeem, setPointsToRedeem] = useState(0);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [originalTotalPrice, setOriginalTotalPrice] = useState(0);
 
   const searchParams = useSearchParams();
   const selectedSeats = searchParams.get("selectedSeats");
   const movieListing = JSON.parse(localStorage.getItem('movieListing') ?? 'null');
-  console.log("here");
-  console.log(movieListing[0]);
 
   const router = useRouter();
   // const { selectedSeats, movieListing } = router.query; // Fetch query params from URL
@@ -78,9 +80,27 @@ const CheckoutForm = () => {
     setTotalPrice(totalStudentPrice + value * calculatedSeniorPrice + calculatedRegularPrice);
   };
 
+  const updateUserPoints = async () => {
+    try {
+      const res = await fetch(`${backendDomain}/api/v1/membershipPoints/get-user-points`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const data = await res.json();
+      setTotalPoints(data.totalPoints);
+    } catch (error){
+      console.error("Error fetching user points:", error);
+    }
+  }
+
   useEffect(() => {
     const regularPriceTickets = seatPrice * totalSeats;
+    updateUserPoints();
     setTotalPrice(regularPriceTickets);
+    setOriginalTotalPrice(regularPriceTickets);
   }, [seatPrice, totalSeats]);
 
   const confirmPayment = async (clientSecret: string) => {
@@ -160,7 +180,8 @@ const CheckoutForm = () => {
         },
         body: JSON.stringify({
           userId : user?.userId,
-          amountInCents: totalPrice * 100
+          amountInCents: totalPrice * 100,
+          redemptionAmount: pointsToRedeem
         })
       })
       // router.push('homepage');
@@ -278,12 +299,44 @@ const CheckoutForm = () => {
             ))}
           </select>
         </div>
-
-        <div className="mb-6">
+        <div className="mb-4">
           <h3 className="text-lg font-semibold">Total Price</h3>
-          <div className="text-lg font-semibold">
-            Total: <span className="text-green-600">${totalPrice}</span>
+          <p className="text-xl font-bold text-green-600">
+            RM {totalPrice.toFixed(2)}
+          </p>
+        </div>
+        <div className="mt-4 border-t pt-4">
+          <h2 className="text-lg font-semibold">Redeem Membership Points</h2>
+
+          <p className="text-sm text-gray-600">
+            You have <span className="font-bold">{totalPoints}</span> points available.
+          </p>
+
+          <div className="mt-2 flex items-center gap-2">
+            <input
+              type="number"
+              min="0"
+              max={totalPoints}
+              value={pointsToRedeem}
+              onChange={(e) => {
+                const val = Math.min(Number(e.target.value), totalPoints);
+                setPointsToRedeem(val);
+
+                const discount = val * 0.0001;
+                setDiscountAmount(discount);
+
+                setTotalPrice(
+                  Math.max(originalTotalPrice - discount, 0)
+                );
+              }}
+              className="w-28 border px-2 py-1 rounded"
+            />
+            <span className="text-sm text-gray-700">points</span>
           </div>
+
+          <p className="mt-1 text-sm text-green-600">
+            Discount applied: ${discountAmount.toFixed(2)}
+          </p>
         </div>
 
         <div

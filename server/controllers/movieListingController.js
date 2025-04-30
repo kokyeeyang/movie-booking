@@ -312,13 +312,14 @@ const selectSingleTimeSlot = async (req, res) => {
                       $filter: {
                         input: "$cinemaDetails.halls", // Access the halls array inside cinemaDetails
                         as: "hall",
-                        cond: { $eq: [{ $toObjectId: "$hall._id" }, { $toObjectId: "$hallId" }] } // Match hallId from MovieListing to hall._id
+                        cond: { $eq: [{ $toObjectId: "$$hall._id" }, { $toObjectId: "$hallId" }] } // Match hallId from MovieListing to hall._id
                       },
                     },
                     0, // Get the first matching hall (since it's an array)
                   ],
                 },
               },
+              // use $$ when accessing hall_name inside cinemaDetails filters
               in: { $ifNull: ["$$hall.hall_name", null] }, // Return hall_name or null if not found
             },
           },
