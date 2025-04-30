@@ -2,7 +2,7 @@ name: Expire Membership Points
 
 on:
   schedule:
-    - cron: '15 17 * * *'  # Every day
+    - cron: '15 9 * * *'  # Every day, converted to UTC time (9:15 AM UTC)
   workflow_dispatch:     # Allows manual run
 
 jobs:
