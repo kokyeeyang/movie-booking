@@ -6,6 +6,7 @@ const expireAllExpiredPoints = async(req, res) => {
     const CRON_API_SECRET = process.env.CRON_API_SECRET;
     const authHeader = req.headers.authorization;
 
+    console.log("Authorization header:", req.headers.authorization);
     if(!authHeader || authHeader !== `Bearer ${CRON_API_SECRET}`){
         return res.status(401).json({message:"Unauthorized"});
     }   
