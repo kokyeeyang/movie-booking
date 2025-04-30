@@ -22,6 +22,9 @@ const expireAllExpiredPoints = async(req, res) => {
         {$set: {points: 0}}
     );
 
+    const expired = await MembershipPoints.find({ expiresAt: { $lt: now } });
+    console.log("Expired documents:", expired);
+
     res.status(StatusCodes.OK).json({message: `${result.modifiedCount} points are expired`});
 
 }
