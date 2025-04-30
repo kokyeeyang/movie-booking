@@ -3,12 +3,11 @@ const MembershipPoints = require("../models/MembershipPoints");
 
 const expireAllExpiredPoints = async(req, res) => {
     console.log("Cron job triggered: Expiring points");
-    const CRON_API_SECRET = process.env.CRON_API_SECRET;
-    const authHeader = req.headers.authorization;
+    const CRON_API_SECRET = process.env.CRON_API_SECRET.trim();
+    const authHeader = req.headers.authorization.trim();
 
-    console.log("Authorization header:", req.headers.authorization);
-    console.log("CRON_API_SECRET:", CRON_API_SECRET);
-    console.log("Auth header:", authHeader);
+    console.log("CRON_API_SECRET:", JSON.stringify(CRON_API_SECRET));
+    console.log("Auth header:", JSON.stringify(authHeader));
     if(!authHeader || authHeader !== `Bearer ${CRON_API_SECRET}`){
         return res.status(401).json({message:"Unauthorized"});
     }   
