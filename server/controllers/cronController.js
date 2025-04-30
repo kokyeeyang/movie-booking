@@ -13,7 +13,7 @@ const expireAllExpiredPoints = async(req, res) => {
     const now = new Date();
 
     const result = await MembershipPoints.updateMany(
-        {userId: req.user.userId, expiresAt: {$lt: now}},
+        {expiresAt: {$lt: now}},
         {$set: {points: 0}}
     );
 
