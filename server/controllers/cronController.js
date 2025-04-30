@@ -8,10 +8,15 @@ const expireAllExpiredPoints = async(req, res) => {
 
     if(!authHeader || authHeader !== `Bearer ${CRON_SECRET}`){
         return res.status(401).json({message:"Unauthorized"});
-    }
+    }   
 
+    await MembershipPoints.updateMany(
+        {"expiresAt": {$type: "string"}},
+        [
+            {$set: {expiresAt: {$toDate: "$expiresAt"}}}
+        ]
+    )
     const now = new Date();
-
     const result = await MembershipPoints.updateMany(
         {expiresAt: {$lt: now}},
         {$set: {points: 0}}
