@@ -31,7 +31,8 @@ global.fetch = jest.fn(() => {
           resolve([
             { _id: "1", location: "Pavilion Bukit Bintang", image: "uploads/gsc pavilion bukit jalil.jpg" },
             { _id: "2", location: "IOI Mall", image: "uploads/1732517657291-gsc ioi mall.jpg" }
-          ]), 1000)  // Adding a 1-second delay to mock fetching data
+          ]), 1000
+        )  // Adding a 1-second delay to mock fetching data
       )
   })
 }) as jest.Mock;

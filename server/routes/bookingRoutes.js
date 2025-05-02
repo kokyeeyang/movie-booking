@@ -15,6 +15,7 @@ const {
 router.route('/create-booking').post(authenticateUser, createBooking);
 
 router.route('/my-bookings').get(authenticateUser, userBookings);
-router.route('/:id').get(authenticateUser, fetchBookingDetails);
+// dont need to authenticate user to allow users to share the ticket with other people
+router.route('/:id').get(fetchBookingDetails);
 
 module.exports = router;

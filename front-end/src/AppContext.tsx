@@ -9,7 +9,7 @@ type User = {
   email: string;
 };
 
-type AppContextType = {
+export type AppContextType = {
   backendDomain: string;
   setBackendDomain: (domain: string) => void;
   frontendDomain: string;

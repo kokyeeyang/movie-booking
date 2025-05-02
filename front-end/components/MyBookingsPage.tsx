@@ -24,7 +24,9 @@ export default function MyBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [activeTab, setActiveTab] = useState("current");
   const {user, backendDomain} = useAppContext();
+  const [status, setStatus] = useState("loading");
   const { Canvas } = useQRCode();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -41,16 +43,20 @@ export default function MyBookingsPage() {
           );
           const data = await res.json();
           setBookings(data);
+          console.log("Fetched bookings IN TEST!!!!!:", data);
+          setStatus("loaded");
         }
       } catch (error){
         console.error("Error fetching bookings:", error);
+        setError("error fetching bookings");
       }
     };
     fetchBookings();
   }, [user, backendDomain]);
 
   console.log("Bookings:", bookings);
-  const today = new Date();
+  // needs to be Date.now() to accomodate testing
+  const today = new Date(Date.now());
 
   const currentBookings = bookings.filter((b) => new Date(b.bookingDate) >= today);
   const pastBookings = bookings.filter((b) => new Date(b.bookingDate) < today);
@@ -89,7 +95,6 @@ export default function MyBookingsPage() {
       </div>
     )
   };
-
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6 text-center">My Bookings</h1>

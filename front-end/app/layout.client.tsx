@@ -14,7 +14,7 @@ export default function RootLayoutClient({ children }: { children: React.ReactNo
 
   if (!hasMounted) return null; // Prevent premature rendering before hydration
 
-  const noDashboardBarArray = ['/login', '/sign-up'];
+  const noDashboardBarArray = ['/login', '/sign-up', '/ticket-page'];
   const shouldShowDashboardBar = !noDashboardBarArray.includes(pathname);
 
   return (
