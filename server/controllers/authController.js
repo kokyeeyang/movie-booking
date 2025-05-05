@@ -28,11 +28,13 @@ const login = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new CustomError.BadRequestError("Invalid credentials");
+    // throw new CustomError.BadRequestError("Invalid credentials");
+    return res.status(StatusCodes.UNAUTHORIZED).json("Invalid credentials");
   }
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
-    throw new CustomError.BadRequestError("Invalid credentials");
+    // throw new CustomError.BadRequestError("Invalid credentials");
+    return res.status(StatusCodes.UNAUTHORIZED).json({msg: "Invalid credentials"});
   }
   const tokenUser = createTokenUser(user);
 
@@ -42,7 +44,8 @@ const login = async (req, res) => {
   if (existingToken) {
     const { isValid } = existingToken;
     if (!isValid) {
-      throw new CustomError.UnauthenticatedError("Invalid Credentials");
+      // throw new CustomError.UnauthenticatedError("Invalid Credentials");
+      return res.status(StatusCodes.UNAUTHORIZED).json({msg: "Invalid credentials"});
     }
     refreshToken = existingToken.refreshToken;
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });

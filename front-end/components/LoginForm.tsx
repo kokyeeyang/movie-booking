@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { AppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
+
 import Cookies from "js-cookie";
 
 interface LoginFormProps {
@@ -46,9 +47,25 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         }
         return data.data.user;
       }
-    } catch (error) {
-      console.log(error);
-      showAlert("Login failed. Please try again.", "error");
+    } catch (error: any) {
+      console.log("Error logging in:", error.response);
+    
+      let message = "Login failed. Please try again.";
+    
+      if (error.response) {
+        console.log('hello')
+        message =
+          error.response.data?.msg ||
+          error.response.data?.error ||
+          `Login failed with status ${error.response.status}`;
+      } else if (error.response.request) {
+        message = "No response from server. Please check your network.";
+      } else {
+        // Something else happened setting up the request
+        message = error.message;
+      }
+      console.log("here");
+      showAlert(message, "error");
     }
   };
   useEffect(() => {

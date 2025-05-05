@@ -69,7 +69,7 @@ export default function MyBookingsPage() {
     return (
       <div
         key={booking._id}
-        className="p-4 mb-4 border rounded-lg shadow-sm bg-white flex items-center justify-between"
+        className="p-4 mb-4 border rounded-lg shadow-sm bg-white flex items-center justify-between dark:bg-gray-900 dark:text-white"
       >
         <div>
           <h3 className="text-lg font-semibold">{booking.movieTitle}</h3>
@@ -96,7 +96,7 @@ export default function MyBookingsPage() {
     )
   };
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-8 dark:bg-gray-900 dark:text-white">
       <h1 className="text-2xl font-bold mb-6 text-center">My Bookings</h1>
 
       <div className="flex justify-center mb-6">
