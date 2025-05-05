@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function DashboardBar() {
   const router = useRouter();
@@ -46,6 +47,9 @@ export default function DashboardBar() {
             My Dashboard
           </button>
         </h1>
+      </div>
+      <div className="flex items-center space-x-4">
+        <ThemeToggle />
       </div>
       {user && (
         <div className="flex items-center space-x-4">

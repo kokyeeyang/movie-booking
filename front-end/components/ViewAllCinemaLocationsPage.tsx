@@ -69,7 +69,7 @@ const MovieLocationsPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <Box className="bg-white border-2 border-black p-4 mb-4">
+      <Box className="bg-white border-2 border-black p-4 mb-4 dark:bg-gray-900 dark:text-white">
         {/* Movie Locations Title */}
         <Typography variant="h6" component="h2">
           Cinema Locations

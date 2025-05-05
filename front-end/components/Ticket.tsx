@@ -54,7 +54,8 @@ export default function TicketPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-lg mt-8">
+    // <div className="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-lg mt-8">
+    <div className="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-lg mt-8 dark:bg-gray-900 dark:text-white">
       {/* Ticket Header */}
       <h1 className="text-4xl font-semibold text-center text-blue-600 mb-6">Your Movie Ticket</h1>
 
