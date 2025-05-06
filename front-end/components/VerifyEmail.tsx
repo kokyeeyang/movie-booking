@@ -1,4 +1,4 @@
-"use client"; // ✅ Ensures it's a client component
+"use client";
 
 import React, { useState, useEffect, useContext } from "react";
 import { useSearchParams } from "next/navigation";

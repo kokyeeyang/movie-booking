@@ -3,6 +3,7 @@ import React, { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { AppContext } from "../src/AppContext";
+import  { useAlert } from "../src/AlertContext";
 
 function SignupForm() {
   const appContext = useContext(AppContext);
@@ -19,6 +20,8 @@ function SignupForm() {
     password: "",
     confirmPassword: "",
   });
+
+  const {showAlert} = useAlert(); 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -37,14 +40,14 @@ function SignupForm() {
       );
 
       if (response.status === 201) {
-        alert("Successfully signed up!");
+        showAlert("Successfully signed up!", "success");
         router.push("/login");
       }
     } catch (error: any) {
       if (error.response?.data?.error) {
-        alert(error.response.data.error);
+        showAlert("Please verify your email address first", "errorr");
       } else {
-        alert("An error occurred.");
+        showAlert("An error occurred.", "error");
       }
     }
   };

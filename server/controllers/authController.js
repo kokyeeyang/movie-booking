@@ -26,10 +26,16 @@ const login = async (req, res) => {
   }
 
   const user = await User.findOne({ email });
-
+  console.log('user hello ');
+  console.log(user.isVerified);
   if (!user) {
     // throw new CustomError.BadRequestError("Invalid credentials");
-    return res.status(StatusCodes.UNAUTHORIZED).json("Invalid credentials");
+    return res.status(StatusCodes.UNAUTHORIZED).json({msg: "Invalid credentials"});
+  }
+  if (user.isVerified == false) {
+    console.log('user is not verified!');
+    // throw new CustomError.BadRequestError("Please verify your account first");
+    return res.status(StatusCodes.BAD_REQUEST).json({msg: "Please verify your account first"});
   }
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
@@ -60,9 +66,7 @@ const login = async (req, res) => {
   const userToken = { refreshToken, userAgent, ipAddress, user: user._id };
 
   await Token.create(userToken);
-  if (user.isVerified != true) {
-    throw new CustomError.BadRequestError("Please verify your account first");
-  }
+  console.log(user);
   attachCookiesToResponse({ res, user: tokenUser, refreshToken });
   res.status(StatusCodes.OK).json({ user: tokenUser });
 };

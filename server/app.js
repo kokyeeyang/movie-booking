@@ -5,7 +5,9 @@ const stripe = Stripe(
   "sk_test_51QDe7hJBWqEZm7T0UULpU5Jxqf0d4RnUiCIhO9z5h9FV2h4fQuUatpN0TEcprUcdbkBaNIDyreIDEFK1JgLfmCyB00Q9cAlBO1"
 );
 
-require("dotenv").config();
+require("dotenv").config({
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.local'
+});
 const connectDB = require("./db/connect");
 const cors = require("cors");
 const path = require("path");

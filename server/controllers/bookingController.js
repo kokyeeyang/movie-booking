@@ -42,9 +42,11 @@ const createBooking = async (req, res) => {
 const userBookings = async (req, res) => {
     const accessToken = req.cookies.accessToken;
     const user = jwt.verify(accessToken, process.env.JWT_SECRET);
-    const userId = user.userId;
+    const userId = user.user.userId;
     try {
-        const bookings = await Booking.find(userId).populate('cinemaId');
+        const bookings = await Booking.find({userId}).populate('cinemaId');
+        console.log('inside here!');
+        console.log(userId);
 
         const formattedBookings = bookings.map(booking => {
             const bookingObj = booking.toObject();

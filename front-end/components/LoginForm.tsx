@@ -51,8 +51,9 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
       console.log("Error logging in:", error.response);
     
       let message = "Login failed. Please try again.";
-    
-      if (error.response) {
+      
+      console.log(error);
+      if (error) {
         console.log('hello')
         message =
           error.response.data?.msg ||
