@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAppContext } from "../src/AppContext";
 import { useAlert } from "../src/AlertContext";
 import ThemeToggle from "../components/ThemeToggle";
+import { Home, User, Power } from "lucide-react";
 
 export default function DashboardBar() {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function DashboardBar() {
             }
             className="hover:text-blue-400 transition"
           >
-            My Dashboard
+            <Home size={24} />
           </button>
         </h1>
       </div>
@@ -54,13 +55,13 @@ export default function DashboardBar() {
       {user && (
         <div className="flex items-center space-x-4">
           <Link href="/profile" className="text-sm sm:text-base hover:text-blue-400 transition">
-            View {user.firstname}'s Profile
+            <User size={24} />
           </Link>
           <button
             onClick={handleLogout}
             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm sm:text-base"
           >
-            Logout
+             <Power size={24} />
           </button>
         </div>
       )}
