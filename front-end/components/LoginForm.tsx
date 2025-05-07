@@ -21,6 +21,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const { showAlert } = useAlert();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +30,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
 
   const loginUser = async (email: string, password: string) => {
     try {
+      setLoading(true);
       if (email && password) {
         console.log(email)
         const login = { email, password };
@@ -67,6 +69,8 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
       }
       console.log("here");
       showAlert(message, "error");
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -84,6 +88,11 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md"
       >
+        {loading && (
+          <div className="mb-4 text-center text-sm text-blue-700 bg-blue-100 px-4 py-2 rounded-lg animate-pulse">
+            Hang tight, the loging process is taking some time...
+          </div>
+        )}
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Login
         </h2>
@@ -119,8 +128,35 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         <button
           type="submit"
           className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200"
+          disabled={loading}
         >
-          Sign In
+          {loading ? (
+            <div className="flex items-center">
+              <svg
+                className="animate-spin h-5 w-5 mr-2 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+                />
+              </svg>
+              Signing in...
+            </div>
+          ) : (
+            "Sign In"
+          )}
         </button>
 
         <p className="mt-4 text-sm text-center text-gray-600">
