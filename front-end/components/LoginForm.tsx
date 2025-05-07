@@ -90,7 +90,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
       >
         {loading && (
           <div className="mb-4 text-center text-sm text-blue-700 bg-blue-100 px-4 py-2 rounded-lg animate-pulse">
-            Hang tight, the loging process is taking some time...
+            Hang tight, the logging in process is taking some time...
           </div>
         )}
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
