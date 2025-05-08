@@ -47,3 +47,7 @@ pnpm-lock.yaml
 # nextjs
 .next/
 front-end/.next
+
+artifacts/
+cache/
+*.dbg.json
