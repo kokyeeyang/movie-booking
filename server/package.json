@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test" :  "echo \" No test specified \""
+    "test": "echo \" No test specified \""
   },
   "author": "",
   "license": "ISC",
@@ -30,9 +30,12 @@
     "nodemailer": "^6.9.7",
     "stripe": "^17.3.0",
     "validator": "^13.6.0",
+    "web3": "^4.16.0",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.23.0",
     "nodemon": "^2.0.9"
   },
   "engines": {
