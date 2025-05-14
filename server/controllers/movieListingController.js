@@ -28,7 +28,7 @@ const createMovieListing = async (req, res) => {
 
       res.status(201).json(movieListing);
     } else {
-      console.log("cant find related halls");
+      res.status(404).json({"msg": "Cant find related halls"});
       return null;
     }
   } catch (error) {
