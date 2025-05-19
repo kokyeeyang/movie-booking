@@ -47,9 +47,8 @@ jobs:
 
       - name: Install dependencies (backend)
         run: npm install
-
       - name: Run Tests (backend)
-        run: npm test || echo "No tests defined"
+        run: npm test -- --watchAll=false || echo "No tests defined"
 
   build-and-deploy-frontend:
     name: Build & Deploy Frontend to Netlify
