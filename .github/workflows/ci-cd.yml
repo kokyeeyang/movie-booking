@@ -71,9 +71,6 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps && npm run build
 
-      - name: Build Next.js frontend
-        run: npm run build
-
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
 
@@ -101,17 +98,17 @@ jobs:
     if: always()
 
     steps: 
-      -name: Send notification to Discord
+      - name: Send notification to Discord
       run: |
         STATUS="${{ job.status }}"
-        if [ "$STATUS" = "success"]; then
+        if [ "$STATUS" = "success" ]; then
           MESSAGE="Deployment succeeded: frontend and backend are live."
         else 
           MESSAGE="Deployment failed: Check Github Actions logs for details."
         fi
         curl -H "Content-Type: application/json" \
              -X POST \
-             -d "{\"content\": \"$MESSAGE\"}" \ 
+             -d "{\"content\": \"$MESSAGE\"}" \
              ${{ secrets.DISCORD_WEBHOOK_URL }}
 
   # notify:
