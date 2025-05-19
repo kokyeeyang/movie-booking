@@ -60,9 +60,6 @@ const userBookings = async (req, res) => {
     const userId = user.user.userId;
     try {
         const bookings = await Booking.find({userId}).populate('cinemaId');
-        console.log('inside here!');
-        console.log(userId);
-
         const formattedBookings = bookings.map(booking => {
             const bookingObj = booking.toObject();
             bookingObj.cinema = bookingObj.cinemaId;
@@ -87,12 +84,6 @@ const fetchBookingDetails = async (req, res) => {
         bookingObj.cinema = bookingObj.cinemaId;
         delete bookingObj.cinemaId;
         const formattedBooking = bookingObj;
-        // const formattedBooking = booking.map(booking => {
-        //     const bookingObj = booking.toObject();
-        //     bookingObject.cinema = bookingObj.cinemaId;
-        //     delete bookingObj.cinemaId;
-        //     return bookingObj;
-        // });
         res.status(StatusCodes.OK).json(formattedBooking);
     } catch(error) {
         res.status(StatusCodes.BAD_REQUEST).json({ error: error.message});
