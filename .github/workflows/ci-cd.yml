@@ -25,7 +25,7 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies (frontend)
-        run: npm install
+        run: npm install --legacy-peer-deps && npm run build
 
       - name: Run ESLint (frontend)
         run: npm run lint
