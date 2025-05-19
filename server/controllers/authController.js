@@ -5,6 +5,7 @@ const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 // require("dotenv").config();
 const dotenv = require('dotenv');
+const axios = require('axios');
 
 // Load the environment variables
 dotenv.config();
@@ -24,7 +25,17 @@ const login = async (req, res) => {
       "Please provide an email address or password"
     );
   }
-
+  const sendLoginNotification = async (userEmail) => {
+    const message = {
+      content: `User ${userEmail} just logged in.`
+    }
+  
+    try {
+      await axios.post(process.env.DISCORD_WEBHOOK_URL, message);
+    } catch (error) {
+      console.error(`Failed to send login notification: ${error.message}`);
+    }
+  }
   const user = await User.findOne({ email });
   console.log('user hello ');
   console.log(user.isVerified);
@@ -55,6 +66,7 @@ const login = async (req, res) => {
     }
     refreshToken = existingToken.refreshToken;
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+    await sendLoginNotification(user.email);
 
     res.status(StatusCodes.OK).json({ user: tokenUser, refreshToken });
     return;

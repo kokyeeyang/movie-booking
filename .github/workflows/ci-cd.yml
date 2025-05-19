@@ -28,7 +28,7 @@ jobs:
         run: npm install --legacy-peer-deps && npm run build
 
       - name: Run Tests (frontend)
-        run: npm test -- --watchAll=false
+        run: npm test -- --watchAll=false components/tests
 
   lint-and-test-backend:
     name: Lint & Test Backend

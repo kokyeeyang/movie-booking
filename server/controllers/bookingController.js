@@ -1,6 +1,20 @@
 const { StatusCodes } = require('http-status-codes');
 const Booking = require('../models/Booking');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
+
+const sendBookingNotification = async (booking) => {
+    const {userId, movieTitle, bookingDate} = booking;
+    const message = {
+        content: `User ${userId} just booked tickets for ${movieTitle} on ${bookingDate}.`
+    }
+
+    try {
+        await axios.post(process.env.DISCORD_WEBHOOK_URL, message);
+    } catch (error) {
+        console.error(`Failed to send booking notification: ${error.message}`);
+    }
+}
 
 const createBooking = async (req, res) => {
     const {
@@ -33,6 +47,7 @@ const createBooking = async (req, res) => {
             seniorSeat,
             paymentId
         });
+        sendBookingNotification(booking);
         res.status(StatusCodes.CREATED).json(booking);
     } catch (error){
         res.status(StatusCodes.BAD_REQUEST).json({ error: error.message})
