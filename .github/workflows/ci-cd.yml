@@ -99,17 +99,25 @@ jobs:
 
     steps: 
       - name: Send notification to Discord
-      run: |
-        STATUS="${{ job.status }}"
-        if [ "$STATUS" = "success" ]; then
-          MESSAGE="Deployment succeeded: frontend and backend are live."
-        else 
-          MESSAGE="Deployment failed: Check Github Actions logs for details."
-        fi
-        curl -H "Content-Type: application/json" \
-             -X POST \
-             -d "{\"content\": \"$MESSAGE\"}" \
-             ${{ secrets.DISCORD_WEBHOOK_URL }}
+        id: set-status
+        run: |
+          if [ "${{ needs.build-and-deploy-frontend.result }}" = "success" ] && [ "${{ needs.deploy-backend.result }}" = "success" ]; then
+          echo "status=success" >> $GITHUB_OUTPUT
+          else
+          echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+          - name: Send notification to Discord
+          run: |
+          if [ "${{ steps.set-status.outputs.status }}" = "success" ]; then
+            MESSAGE="✅ Deployment succeeded: frontend and backend are live."
+          else
+            MESSAGE="❌ Deployment failed: Check GitHub Actions logs for details."
+          fi
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"$MESSAGE\"}" \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
 
   # notify:
   #   name: Notify Slack on Success
