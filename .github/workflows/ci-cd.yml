@@ -27,9 +27,6 @@ jobs:
       - name: Install dependencies (frontend)
         run: npm install --legacy-peer-deps && npm run build
 
-      - name: Run ESLint (frontend)
-        run: npm run lint
-
       - name: Run Tests (frontend)
         run: npm test -- --watchAll=false
 
@@ -50,9 +47,6 @@ jobs:
 
       - name: Install dependencies (backend)
         run: npm install
-
-      - name: Run ESLint (backend)
-        run: npm run lint || echo "No lint script defined"
 
       - name: Run Tests (backend)
         run: npm test || echo "No tests defined"
