@@ -71,8 +71,8 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps && npm run build
 
-      - name: Build Next.js frontend (static export)
-        run: npm run build && npm run export
+      - name: Build Next.js frontend
+        run: npm run build
 
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
