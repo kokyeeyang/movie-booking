@@ -39,6 +39,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
           login,
           { withCredentials: true }
         );
+        console.log("Current user:", data.data.user);
         showAlert("Logged in successfully!", "success");
         appContext?.setUser(data.data.user);
         localStorage.setItem("user", JSON.stringify(data.data.user));
