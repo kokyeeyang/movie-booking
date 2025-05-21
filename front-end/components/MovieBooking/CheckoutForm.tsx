@@ -6,11 +6,13 @@ import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { AppContext, useAppContext } from "@/AppContext";
 import { useRouter } from "next/navigation"; // Use Next.js router for navigation
 import {useSearchParams} from "next/navigation";
+import{addPoints, getUserPoints} from "../../src/utils/blockchain";
 
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const {user, backendDomain} = useAppContext();
+  const [blockchainPoints, setBlockchainPoints] = useState("");
   
   const [numberOfTickets1, setNumberOfTickets1] = useState(0);
   const [numberOfTickets2, setNumberOfTickets2] = useState(0);
@@ -25,6 +27,10 @@ const CheckoutForm = () => {
   const searchParams = useSearchParams();
   const selectedSeats = searchParams.get("selectedSeats");
   const movieListing = JSON.parse(localStorage.getItem('movieListing') ?? 'null');
+
+  if (!movieListing || !movieListing[0]) {
+    return <div className="p-4 text-red-500">Missing movie listing info.</div>;
+  }
 
   const router = useRouter();
   // const { selectedSeats, movieListing } = router.query; // Fetch query params from URL
@@ -97,6 +103,20 @@ const CheckoutForm = () => {
   }
 
   useEffect(() => {
+    const fetchBlockchainPoints = async () => {
+      try {
+        const points = await getUserPoints();
+        setBlockchainPoints(points);
+        console.log("Blockchain Points: ", points);
+      } catch (err){
+        console.error("Error fetching blockchain points: ", err);
+      }
+    }
+
+    fetchBlockchainPoints();
+  }, [user?.userId]);
+  
+  useEffect(() => {
     const regularPriceTickets = seatPrice * totalSeats;
     updateUserPoints();
     setTotalPrice(regularPriceTickets);
@@ -144,6 +164,12 @@ const CheckoutForm = () => {
           console.error("Booking failed:", data);
         } else {
           console.log("Booking success:", data);
+        }
+        try {
+          await addPoints(Math.round(totalPrice * 100));
+          console.log("Points written to blockchain");
+        } catch (err) {
+          console.error("Error writing points to blockchain:", err);
         }
       } catch (err) {
         console.error("Network or server error:", err);
