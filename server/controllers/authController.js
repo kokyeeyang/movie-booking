@@ -67,6 +67,7 @@ const login = async (req, res) => {
 
   await Token.create(userToken);
   console.log(user);
+  console.log('hwhewh')
   attachCookiesToResponse({ res, user: tokenUser, refreshToken });
   res.status(StatusCodes.OK).json({ user: tokenUser });
 };
