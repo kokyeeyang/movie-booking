@@ -23,6 +23,8 @@ router.delete("/logout", logout);
 // Example middleware to protect the route
 const verifyToken = (req, res, next) => {
   const token = req.cookies.accessToken;
+  console.log(req);
+  console.log("Token from cookies:", token); // Log the token for debugging
   if (!token) return res.status(401).json({ message: "No token provided" });
 
   try {
