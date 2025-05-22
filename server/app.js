@@ -28,6 +28,7 @@ const port = process.env.PORT || 5000;
 const allowedOrigins = [
   "https://bookanymovie.netlify.app",  // Your Netlify frontend
   "http://localhost:3000",  // Local development URL
+  "https://bookanymovie-staging.netlify.app", // Staging URL
 ];
 
 const corsOptions = {
