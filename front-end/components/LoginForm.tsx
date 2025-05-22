@@ -41,6 +41,8 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         );
         console.log("Current user:", data.data.user);
         showAlert("Logged in successfully!", "success");
+        console.log("Login response data:", data.data);
+        console.log("Login response data user:", data.data.user);
         appContext?.setUser(data.data.user);
         localStorage.setItem("user", JSON.stringify(data.data.user));
         console.log("Login response data:", data.data);
