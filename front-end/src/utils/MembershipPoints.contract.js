@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS; // Replace with your deployed address
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS; // Replace with your deployed address
 
 const ABI = [
   "function getPoints() view returns (uint256)",
