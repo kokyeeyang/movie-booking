@@ -15,6 +15,7 @@ export async function getTotalUserPoints() {
   const provider = new ethers.BrowserProvider(window.ethereum);
   const signer = await provider.getSigner();
   const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+  console.log(CONTRACT_ADDRESS);
 
   const points = await contract.getPoints();
   return points.toString(); // Convert BigInt to string
