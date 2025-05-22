@@ -17,13 +17,15 @@ const attachCookiesToResponse = ({ res, user, token }) => {
   const oneDay = 1000 * 60 * 60 * 24;
   const longerExp = 1000 * 60 * 60 * 24 * 30;
 
+  const isSecureEnv = ["production", "staging"].includes(process.env.NODE_ENV);
+
   try {
     console.log("Setting accessToken cookie");
     res.cookie("accessToken", accessTokenJWT, {
       httpOnly: true,
       expires: new Date(Date.now() + oneDay),
-      secure: isProduction, // Secure for production
-      sameSite: isProduction ? "None": "Lax", // Allow cross-site cookies
+      secure: isSecureEnv,
+      sameSite: isSecureEnv ? "None" : "Lax",
       path: "/",
     });
 
@@ -31,8 +33,8 @@ const attachCookiesToResponse = ({ res, user, token }) => {
     res.cookie("refreshToken", refreshTokenJWT, {
       httpOnly: true,
       expires: new Date(Date.now() + longerExp),
-      secure: isProduction, // Secure for production
-      sameSite: isProduction ? "None" : "Lax", // Allow cross-site cookies
+      secure: isSecureEnv,
+      sameSite: isSecureEnv ? "None" : "Lax",
       path: "/",
     });
 
