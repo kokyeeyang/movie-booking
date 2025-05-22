@@ -44,6 +44,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         appContext?.setUser(data.data.user);
         localStorage.setItem("user", JSON.stringify(data.data.user));
         console.log("Login response data:", data.data);
+        console.log("Login response data user:", data.data.user);
         if (data.data.user.role === "user") {
           router.push("/homepage");
         } else if (data.data.user.role === "admin") {
