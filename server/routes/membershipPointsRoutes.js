@@ -3,6 +3,7 @@ const MembershipPoints = require("../contracts/MembershipPoints.json");
 
 const RPC_URL = process.env.ALCHEMY_API_URL || "http://localhost:8545";
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+console.log("Contract Address:", CONTRACT_ADDRESS);
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 const provider = new ethers.JsonRpcProvider(RPC_URL);
