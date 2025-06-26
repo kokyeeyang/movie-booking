@@ -16,7 +16,7 @@ const CinemaMovieTimesPage = () => {
   const [filteredListings, setFilteredListings] = useState<MovieListing[]>([]);
   console.log("filtered listings : ", filteredListings);
   const appContext = useAppContext();
-  const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN || "http://localhost:5000";
+  const backendDomain = appContext?.backendDomain || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );

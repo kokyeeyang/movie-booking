@@ -23,7 +23,7 @@ interface MovieListingProps {
 
 const MovieListingsPage = () => {
   const appContext = useContext(AppContext);
-  const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN || "http://localhost:5000";
+  const backendDomain = appContext?.backendDomain || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
   const [movieListings, setMovieListing] = useState<MovieListingProps[]>([]);
   const { showAlert } = useAlert();
 

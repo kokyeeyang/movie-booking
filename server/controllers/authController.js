@@ -7,7 +7,10 @@ const { StatusCodes } = require("http-status-codes");
 const dotenv = require('dotenv');
 
 // Load the environment variables
-dotenv.config();
+// dotenv.config();
+const isProdLike = ["production", "staging"].includes(process.env.NODE_ENV);
+const isDockerLocal = process.env.IS_DOCKER_LOCAL === "true";
+
 const {
   attachCookiesToResponse,
   createTokenUser,
@@ -15,10 +18,12 @@ const {
   sendResetPasswordEmail,
   createHash,
 } = require("../utils");
+
 const login = async (req, res) => {
   console.log("made it to the backend!!!");
+  console.log('new log!');
   const { email, password } = req.body;
-
+  console.log('skaffold is ready!')
   if (!email || !password) {
     throw new CustomError.BadRequestError(
       "Please provide an email address or password"
@@ -73,26 +78,48 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  await Token.findOneAndDelete({ user: req.userId });
-  res.cookie("accessToken", "logout", {
-    httpOnly: false,
-    expires: new Date(Date.now()),
-    signed: true,
-    sameSite: "None",
-    path: "/",
-    secure: true,
-  });
+  console.log("🚪 Logout endpoint hit");
 
-  res.cookie("refreshToken", "logout", {
-    httpOnly: false,
-    expires: new Date(Date.now()),
-    secure: true,
-    signed: true,
-    sameSite: "None",
-    path: "/",
-  });
+  try {
+    console.log("🧾 Attempting to delete token for user:", req.userId);
+    await Token.findOneAndDelete({ user: req.userId });
+    console.log("✅ Token deleted (if existed)");
+  } catch (err) {
+    console.error("❌ Error deleting token:", err);
+  }
 
-  res.status(StatusCodes.OK).json({ msg: "User logged out!" });
+  try {
+    console.log("🍪 Setting accessToken cookie...");
+
+    res.cookie("accessToken", "logout", {
+      httpOnly: false,
+      expires: new Date(Date.now()),
+      signed: true,
+      sameSite: isProdLike && !isDockerLocal ? "None" : "Lax",
+      path: "/",
+      secure: isProdLike && !isDockerLocal,
+    });
+
+    console.log("🍪 Setting refreshToken cookie...");
+    res.cookie("refreshToken", "logout", {
+      httpOnly: false,
+      expires: new Date(Date.now()),
+      secure: isProdLike && !isDockerLocal,
+      signed: true,
+      sameSite: isProdLike && !isDockerLocal ? "None" : "Lax",
+      path: "/",
+    });
+  } catch (err) {
+    console.error("❌ Error setting cookies:", err);
+  }
+
+  try {
+    console.log("📤 Sending logout success response");
+    res.status(StatusCodes.OK).json({ msg: "User logged out!" });
+  } catch (err) {
+    console.error("❌ Error sending response:", err);
+    res.status(500).json({ msg: "Logout failed unexpectedly" });
+  }
 };
 
 const signup = async (req, res) => {

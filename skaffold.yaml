@@ -1,0 +1,40 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+metadata:
+  name: movie-booking
+
+build:
+  artifacts:
+    - image: movie-booking-backend
+      context: server
+      docker:
+        dockerfile: Dockerfile
+    - image: movie-booking-frontend
+      context: front-end
+      docker:
+        dockerfile: Dockerfile
+
+manifests:
+  rawYaml:
+    - server/backend-deployment.yaml
+    - front-end/frontend-deployment.yaml
+
+profiles:
+  - name: aws
+    build:
+      artifacts:
+        - image: 420366006197.dkr.ecr.ap-southeast-1.amazonaws.com/movie-booking-backend
+          context: server
+          docker:
+            dockerfile: Dockerfile
+        - image: 420366006197.dkr.ecr.ap-southeast-1.amazonaws.com/movie-booking-frontend
+          context: front-end
+          docker:
+            dockerfile: Dockerfile
+            buildArgs:
+              # NEXT_PUBLIC_BACKEND_URL: "http://a5e18e3a257e34c3285f364f207dcab6-1140972258.ap-southeast-1.elb.amazonaws.com"
+              NEXT_PUBLIC_BACKEND_URL: "https://api.moviebooking.dev"
+    manifests:
+      rawYaml:
+        - server/backend-deployment-aws.yaml
+        - front-end/frontend-deployment-aws.yaml

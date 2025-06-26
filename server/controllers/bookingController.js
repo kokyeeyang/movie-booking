@@ -46,6 +46,8 @@ const userBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({userId}).populate('cinemaId');
         console.log('inside here!');
+        console.log('weweqweqweqewqeeweqw');
+        console.log('another one!')
         console.log(userId);
 
         const formattedBookings = bookings.map(booking => {

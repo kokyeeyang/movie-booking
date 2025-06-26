@@ -16,8 +16,10 @@ export default function DashboardBar() {
   console.log(user);
 
   const handleLogout = async () => {
+    console.log('qweqwewqewqeqwe');
     try {
-      const response = await fetch(`${backendDomain}/api/v1/auth/logout`, {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:5000';
+      const response = await fetch(`${backendUrl}/api/v1/auth/logout`, {
         method: "DELETE",
         credentials: "include",
       });

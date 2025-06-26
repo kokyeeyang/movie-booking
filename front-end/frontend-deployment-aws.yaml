@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-booking-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movie-booking-frontend
+  template:
+    metadata:
+      labels:
+        app: movie-booking-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: 420366006197.dkr.ecr.ap-southeast-1.amazonaws.com/movie-booking-frontend:rebuild
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_BACKEND_URL
+              # value: "http://a5e18e3a257e34c3285f364f207dcab6-1140972258.ap-southeast-1.elb.amazonaws.com"
+              value: "https://api.moviebooking.dev"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: movie-booking-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

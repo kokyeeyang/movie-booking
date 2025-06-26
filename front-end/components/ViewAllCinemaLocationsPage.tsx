@@ -16,7 +16,7 @@ import "slick-carousel/slick/slick-theme.css";
 const MovieLocationsPage = () => {
   const router = useRouter();
   const appContext = useContext(AppContext);
-  const backendDomain = appContext?.backendDomain || process.env.BACKEND_DOMAIN || "http://localhost:5000";
+  const backendDomain = appContext?.backendDomain || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
   const { showAlert } = useAlert();
 
   interface Cinema {
@@ -33,7 +33,8 @@ const MovieLocationsPage = () => {
     const fetchCinemaLocations = async () => {
       try {
         const response = await fetch(
-          `${backendDomain}/api/v1/cinema/show-all-cinema-locations`,
+          // `${backendDomain}/api/v1/cinema/show-all-cinema-locations`,
+          `/api/v1/cinema/show-all-cinema-locations`,
           {
             method: "GET",
             credentials: "include",

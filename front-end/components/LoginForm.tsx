@@ -15,7 +15,13 @@ interface LoginFormProps {
 
 const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const appContext = useContext(AppContext);
-  const backendDomain = appContext?.backendDomain || "http://localhost:5000";
+  const isBrowser = typeof window !== 'undefined';
+  // const backendDomain = appContext?.backendDomain || "http://localhost:5000";
+  // const backendDomain = appContext?.backendDomain || "http://backend-service:5000";
+  const backendDomain = isBrowser 
+  ? process.env.NEXT_PUBLIC_BACKEND_URL || "http://192.168.49.2:30080" 
+  : "http://backend-service:5000"
+
   const router = useRouter();
   const [values, setValues] = useState({
     email: "",
@@ -31,11 +37,12 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const loginUser = async (email: string, password: string) => {
     try {
       setLoading(true);
+      console.log("backendDomain:", backendDomain);
       if (email && password) {
         console.log(email)
         const login = { email, password };
         const data = await axios.post(
-          `${backendDomain}/api/v1/auth/login`,
+          `/api/v1/auth/login`,
           login,
           { withCredentials: true }
         );
@@ -54,6 +61,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
         return data.data.user;
       }
     } catch (error: any) {
+      console.log("backendDomain:", backendDomain);
       console.log("Error logging in:", error.response);
     
       let message = "Login failed. Please try again.";

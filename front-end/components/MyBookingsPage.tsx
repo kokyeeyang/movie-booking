@@ -29,24 +29,23 @@ export default function MyBookingsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchBookings = async () => {
+      const fetchBookings = async () => {
       try {
         if (user) {
-          const res = await fetch(`${backendDomain}/api/v1/booking/my-bookings`,
-            {
-              method: "GET",
-              credentials: "include",
-              headers: {
-                "content-type": "application/json"
-              }
+          const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:5000';
+          const res = await fetch(`${backendUrl}/api/v1/booking/my-bookings`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "content-type": "application/json"
             }
-          );
+          });
           const data = await res.json();
           setBookings(data);
           console.log("Fetched bookings IN TEST!!!!!:", data);
           setStatus("loaded");
         }
-      } catch (error){
+      } catch (error) {
         console.error("Error fetching bookings:", error);
         setError("error fetching bookings");
       }

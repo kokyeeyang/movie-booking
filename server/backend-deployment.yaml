@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-booking-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movie-booking-backend
+  template:
+    metadata:
+      labels:
+        app: movie-booking-backend
+    spec:
+      containers:
+      - name: backend
+        image: movie-booking-backend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000  # or your backend port
+        env:
+        - name: NODE_ENV
+          value: "development"
+        - name: IS_DOCKER_LOCAL
+          value: "true"
+        - name: MONGO_URL
+          value: "mongodb+srv://kokyeeyang1994:Allthebest1994@cluster0.l4drwfy.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0"  # <-- Replace this with actual URL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: movie-booking-backend
+spec:
+  selector:
+    app: movie-booking-backend
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+    nodePort: 30080
+  type: NodePort

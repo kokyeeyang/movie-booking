@@ -21,8 +21,9 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
         try {
+            const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:5000';
             const res = await fetch(
-                `${backendDomain}/api/v1/user/getCurrentUser`,
+                `${backendUrl}/api/v1/user/getCurrentUser`,
                 {
                   method: "GET",
                   credentials: "include",
