@@ -15,7 +15,7 @@ interface LoginFormProps {
 
 const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const appContext = useContext(AppContext);
-  const backendDomain = appContext?.backendDomain || "http://localhost:5000";
+  const backendDomain = appContext?.backendDomain!;
   const router = useRouter();
   const [values, setValues] = useState({
     email: "",

@@ -43,7 +43,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const initialBackendDomain = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
   const initialFrontendDomain = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
 
-  const [backendDomain, setBackendDomain] = useState<string>(initialBackendDomain || "");
+  const [backendDomain, setBackendDomain] = useState<string>(initialBackendDomain);
   const [frontendDomain, setFrontendDomain] = useState<string>(initialFrontendDomain || "");
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
